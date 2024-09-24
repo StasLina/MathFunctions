@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OxyPlot", "oxyplot\Source\O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "1-Current-Dev", "MathParser.org-mXparser\CURRENT\c-sharp\1-Current-Dev.csproj", "{DAB07121-1F1D-4D95-B837-539E2FE64BAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "WindowsFormsApp1\WindowsFormsApp1.csproj", "{369D79FE-D9EA-415D-A7F0-96965EFEB55E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OxyPlot.WindowsForms", "oxyplot\Source\OxyPlot.WindowsForms\OxyPlot.WindowsForms.csproj", "{592DD1EC-020F-46DC-80A3-EF1F54A0DDBC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathFunctionWPF", "MathFunctionWPF\MathFunctionWPF.csproj", "{CDE27FE7-80D1-4184-B8C9-47E989EE995C}"
@@ -53,14 +51,6 @@ Global
 		{DAB07121-1F1D-4D95-B837-539E2FE64BAB}.Release|Any CPU.Build.0 = Release|x86
 		{DAB07121-1F1D-4D95-B837-539E2FE64BAB}.Release|x86.ActiveCfg = Release|x86
 		{DAB07121-1F1D-4D95-B837-539E2FE64BAB}.Release|x86.Build.0 = Release|x86
-		{369D79FE-D9EA-415D-A7F0-96965EFEB55E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{369D79FE-D9EA-415D-A7F0-96965EFEB55E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{369D79FE-D9EA-415D-A7F0-96965EFEB55E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{369D79FE-D9EA-415D-A7F0-96965EFEB55E}.Debug|x86.Build.0 = Debug|Any CPU
-		{369D79FE-D9EA-415D-A7F0-96965EFEB55E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{369D79FE-D9EA-415D-A7F0-96965EFEB55E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{369D79FE-D9EA-415D-A7F0-96965EFEB55E}.Release|x86.ActiveCfg = Release|Any CPU
-		{369D79FE-D9EA-415D-A7F0-96965EFEB55E}.Release|x86.Build.0 = Release|Any CPU
 		{592DD1EC-020F-46DC-80A3-EF1F54A0DDBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{592DD1EC-020F-46DC-80A3-EF1F54A0DDBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{592DD1EC-020F-46DC-80A3-EF1F54A0DDBC}.Debug|x86.ActiveCfg = Debug|Any CPU

@@ -9,7 +9,7 @@
         xmlns:views="clr-namespace:MathFunctionWPF.Views"
         xmlns:models="clr-namespace:MathFunctionWPF.Models"
         
-        Title="MainWindow" Height="768" Width="1336">
+        Title="Маетматические методы" Height="768" Width="1336">
     <Window.Resources>
         <!-- DataTemplate для FirstView -->
         <DataTemplate DataType="{x:Type models:MathFunctionViewModel}">

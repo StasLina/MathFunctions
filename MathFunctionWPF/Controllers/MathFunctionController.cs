@@ -72,6 +72,7 @@ namespace MathFunctionWPF.Controllers
                     _functionInputView = new FunctionInputView();
                     model.SourceDataView = _functionInputView;
                 }
+                model.DescriptionView = new FunctionDescription();
                 _functionInputModel = (FunctionSourceData)_functionInputView.DataContext;
                 _functionInputView.AddFunctionStringChangedListener(this.TextFunctionHandler);
                 _functionInputView.AddArgXStartChangedListener(this.UpdateXStartArg);
@@ -249,11 +250,12 @@ namespace MathFunctionWPF.Controllers
                 Func<double, double> func = _calculation.Calculate;
                 var pm = new PlotModel
                 {
-                    Title = "Trigonometric functions",
-                    Subtitle = "Example using the FunctionSeries",
+                    Title = "Метод дихтомии",
+                    Subtitle = "",
                     PlotType = PlotType.Cartesian,
                     Background = OxyColors.White
                 };
+                pm.Series.Add(new FunctionSeries(val => { return 0; }, _functionInputModel.XStart, _functionInputModel.XEnd, Math.Pow(10, _functionInputModel.IncrementRate), "F(x)=0"));
                 pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, Math.Pow(10, _functionInputModel.IncrementRate), _calculation.Formula));
                 _graphPlotter.SetPlotterModel(pm);
             }
