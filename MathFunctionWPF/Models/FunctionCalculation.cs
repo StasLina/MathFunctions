@@ -40,6 +40,7 @@ namespace MathFunctionWPF.Models
                 throw new Exception(_sourceData.Formula + " не является формулой");
             }
         }
+
         public string Formula
         {
             get
