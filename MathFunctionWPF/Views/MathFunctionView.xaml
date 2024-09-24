@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="MathFunctionWPF.Views.MathFunctionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MathFunctionWPF.Views"
+            xmlns:views="clr-namespace:MathFunctionWPF.Views"
+            xmlns:models="clr-namespace:MathFunctionWPF.Models"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1366" >
+
+    <UserControl.Resources>
+        <!-- DataTemplate для FirstView -->
+        <DataTemplate DataType="{x:Type models:FunctionSourceData}">
+            <views:FunctionInputView/>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <ContentControl Content="{Binding DescriptionView}" HorizontalAlignment="Left" Margin="75,60,0,0" VerticalAlignment="Top" Height="176" Width="1245"/>
+        <ContentControl Content="{Binding SourceDataView}" HorizontalAlignment="Left" Margin="75,263,0,0" VerticalAlignment="Top" Height="275" Width="413" RenderTransformOrigin="0.21,3.694"/>
+        <ContentControl Content="{Binding GraphPlotterView}" HorizontalAlignment="Left" Margin="515,263,0,0" VerticalAlignment="Top" Height="413" Width="805"/>
+        <ContentControl Content="{Binding CalculationView}" HorizontalAlignment="Left" Margin="75,572,0,0" VerticalAlignment="Top" Height="104" Width="413" RenderTransformOrigin="0.21,3.694"/>
+        <ContentControl Content="Список" HorizontalAlignment="Left" VerticalAlignment="Center" Width="60" RenderTransformOrigin="0.024,3.133" Height="648" Margin="10,0,0,0"/>
+    </Grid>
+</UserControl>
