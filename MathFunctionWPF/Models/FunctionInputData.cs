@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace MathFunctionWPF.Models
 {
-    class FunctionSourceData : INotifyPropertyChanged
+    class FunctionInputData : INotifyPropertyChanged
     {
         public string Formula
         {

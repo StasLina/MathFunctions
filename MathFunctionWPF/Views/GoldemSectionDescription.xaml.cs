@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace MathFunctionWPF.Views
 {
     /// <summary>
-    /// Логика взаимодействия для FunctionDescription.xaml
+    /// Логика взаимодействия для GoldemSectionDescription.xaml
     /// </summary>
-    public partial class FunctionDescription : UserControl
+    public partial class GoldemSectionDescription : UserControl
     {
-        public FunctionDescription()
+        public GoldemSectionDescription()
         {
             InitializeComponent();
         }

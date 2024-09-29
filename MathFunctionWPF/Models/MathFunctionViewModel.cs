@@ -10,8 +10,10 @@ namespace MathFunctionWPF.Models
         private object _graphPlotter;
         private object _sourceDataView;
         private object _calculationView;
+        private object _listMethods;
         //private object _slideBarButton;
 
+        public TypeMathMethod TypeMethod;
         public MathFunctionViewModel()
         {
             //FunctionInputView functionInput = new FunctionInputView();
@@ -24,6 +26,15 @@ namespace MathFunctionWPF.Models
             {
                 _descriptionView = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public object ListMethods
+        {
+            get { return _listMethods; }
+            set
+            {
+                _listMethods = value; OnPropertyChanged();
             }
         }
 

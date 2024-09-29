@@ -11,7 +11,7 @@
 
     <UserControl.Resources>
         <!-- DataTemplate для FirstView -->
-        <DataTemplate DataType="{x:Type models:FunctionSourceData}">
+        <DataTemplate DataType="{x:Type models:FunctionInputData}">
             <views:FunctionInputView/>
         </DataTemplate>
     </UserControl.Resources>
@@ -21,6 +21,6 @@
         <ContentControl Content="{Binding SourceDataView}" HorizontalAlignment="Left" Margin="75,263,0,0" VerticalAlignment="Top" Height="275" Width="413" RenderTransformOrigin="0.21,3.694"/>
         <ContentControl Content="{Binding GraphPlotterView}" HorizontalAlignment="Left" Margin="515,263,0,0" VerticalAlignment="Top" Height="413" Width="805"/>
         <ContentControl Content="{Binding CalculationView}" HorizontalAlignment="Left" Margin="75,572,0,0" VerticalAlignment="Top" Height="104" Width="413" RenderTransformOrigin="0.21,3.694"/>
-        <ContentControl Content="" HorizontalAlignment="Left" VerticalAlignment="Center" Width="60" RenderTransformOrigin="0.024,3.133" Height="648" Margin="10,0,0,0"/>
+        <ContentControl Content="{Binding ListMethods}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.024,3.133" Height="648" Margin="10,0,0,0"/>
     </Grid>
 </UserControl>

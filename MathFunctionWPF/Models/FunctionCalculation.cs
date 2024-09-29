@@ -4,20 +4,41 @@ namespace MathFunctionWPF.Models
 {
     internal class FunctionCalculation
     {
-        FunctionSourceData _sourceData { get; set; }
+        FunctionInputData _sourceData { get; set; }
         Function _function;
-        
-        public FunctionCalculation(FunctionSourceData sourceData)
+
+        double _multiplier = 1;
+
+        public bool IsInverse
+        {
+            get
+            {
+                return _multiplier < 0;
+            }
+            set
+            {
+                if(value)
+                {
+                    _multiplier = -1;
+                }
+                else
+                {
+                    _multiplier = 1;
+                }
+            }
+        }
+
+        public FunctionCalculation(FunctionInputData sourceData)
         {
             SetFunctionSourceData(sourceData);
         }
 
         public double Calculate(double argX)
         {
-            return _function.calculate(argX);
+            return _multiplier * _function.calculate(argX);
         }
 
-        public void SetFunctionSourceData(FunctionSourceData data)
+        public void SetFunctionSourceData(FunctionInputData data)
         {
             _sourceData = data;
             UpdateFunction();

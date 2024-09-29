@@ -12,7 +12,8 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-
+using MathFunctionWPF.MathMethods;
+using System.Net.Http.Headers;
 
 namespace MathFunctionWPF.Controllers
 {
@@ -35,8 +36,8 @@ namespace MathFunctionWPF.Controllers
         }
 
         private FunctionInputView _functionInputView;
-        private FunctionSourceData _functionInputModel;
-        private FunctionOutputView _functionOutputView;
+        private FunctionInputData _functionInputModel;
+        private IFunctionOutputView _functionOutputView;
         private GraphPlotter _graphPlotter;
 
 
@@ -55,11 +56,14 @@ namespace MathFunctionWPF.Controllers
             }
         }
 
+        MathFunctionViewModel _mathFunctionViewModel;
         private void Init()
         {
             MathFunctionViewModel? model = _view.DataContext as MathFunctionViewModel;
             if (model != null)
             {
+                _mathFunctionViewModel = model;
+
                 // Окошко входных данных
                 var inputView = model.SourceDataView as FunctionInputView;
 
@@ -72,12 +76,13 @@ namespace MathFunctionWPF.Controllers
                     _functionInputView = new FunctionInputView();
                     model.SourceDataView = _functionInputView;
                 }
-                model.DescriptionView = new FunctionDescription();
-                _functionInputModel = (FunctionSourceData)_functionInputView.DataContext;
-                _functionInputView.AddFunctionStringChangedListener(this.TextFunctionHandler);
+
+                _functionInputModel = (FunctionInputData)_functionInputView.DataContext;
+                _functionInputView.AddFunctionStringChangedListener(this.TextFunctionChange);
                 _functionInputView.AddArgXStartChangedListener(this.UpdateXStartArg);
                 _functionInputView.AddArgXEndChangedListener(this.UpdateXEndArg);
                 _functionInputView.AddAverageChangedListener(this.UpdateAccuracyArg);
+
 
                 // Окошко графика
                 if (model.GraphPlotterView != null)
@@ -93,26 +98,79 @@ namespace MathFunctionWPF.Controllers
                     model.GraphPlotterView = _graphPlotter;
                 }
 
-                if (model.CalculationView != null)
-                {
-                    if (model.CalculationView is FunctionOutputView)
-                    {
-                        _functionOutputView = (FunctionOutputView)model.CalculationView;
-                    }
-                }
-                else
-                {
-                    _functionOutputView = new FunctionOutputView();
-                    model.CalculationView = _functionOutputView;
-                }
-                _functionOutputView.AddListenerUpdateFunction(UpdateFunctionView);
-                _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterView);
-                //UpdatePlotterView();
+                // Окно смены 
+                MethodListControl methodListControl = new MethodListControl();
+                model.ListMethods = methodListControl;
+                methodListControl.MethodChanged += MethodChanged;
+
+                MethodChanged(TypeMathMethod.Bisection);
             }
         }
 
+        private void MethodChanged(TypeMathMethod typeMethod)
+        {
+            switch (typeMethod)
+            {
+                case TypeMathMethod.Bisection:
+                    {
+                        InitBisectionMethod();
+                        break;
+                    }
+                case TypeMathMethod.GoldenSearch:
+                    {
+                        InitGoldenSearch();
+                        break;
+                    }
+            }
+        }
 
-        private void TextFunctionHandler(TextBox textBox)
+        // intersection 
+        // min
+        // max
+
+        private void InitBisectionMethod()
+        {
+            _mathFunctionViewModel.TypeMethod = TypeMathMethod.Bisection;
+
+            // Иницилизируем окно описания
+            _mathFunctionViewModel.DescriptionView = new BisectionMethodDescription();
+
+            if (_mathFunctionViewModel.CalculationView != null && _mathFunctionViewModel.CalculationView is FunctionOutputViewIntersection)
+            {
+                _functionOutputView = (FunctionOutputViewIntersection)_mathFunctionViewModel.CalculationView;
+            }
+            else
+            {
+                _functionOutputView = new FunctionOutputViewIntersection();
+                _mathFunctionViewModel.CalculationView = _functionOutputView;
+            }
+
+            _functionOutputView.AddListenerUpdateFunction(UpdateFunctionView);
+            _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterView);
+        }
+
+        private void InitGoldenSearch()
+        {
+            _mathFunctionViewModel.TypeMethod = TypeMathMethod.GoldenSearch;
+
+            _mathFunctionViewModel.DescriptionView = new GoldemSectionDescription();
+
+            if (_mathFunctionViewModel.CalculationView != null && _mathFunctionViewModel.CalculationView is FunctionOutputMinMaxView)
+            {
+
+                _functionOutputView = (FunctionOutputMinMaxView)_mathFunctionViewModel.CalculationView;
+            }
+            else
+            {
+                _functionOutputView = new FunctionOutputMinMaxView();
+                _mathFunctionViewModel.CalculationView = _functionOutputView;
+            }
+
+            _functionOutputView.AddListenerUpdateFunction(UpdateFunctionView);
+            _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterView);
+        }
+
+        private void TextFunctionChange(TextBox textBox)
         {
             if (_functionInputModel.Formula != textBox.Text)
             {
@@ -175,16 +233,16 @@ namespace MathFunctionWPF.Controllers
                 _functionInputModel.Accuracy = newValue;
                 _functionInputView.Precision.Text = _functionInputModel.IncrementRate.ToString();
             }
-
-
         }
 
         private bool NumberFunctionHandler(TextBox textBox, double oldValue, ref double updateValue)
         {
             try
             {
-                double newValue;
-                if (double.TryParse(textBox.Text, out newValue))
+                org.mariuszgromada.math.mxparser.Expression expression = new org.mariuszgromada.math.mxparser.Expression(textBox.Text);
+                double newValue = expression.calculate();
+
+                if (newValue != double.NaN)
                 {
                     if (oldValue != newValue)
                     {
@@ -196,6 +254,21 @@ namespace MathFunctionWPF.Controllers
                 {
                     throw new Exception("Введено не число");
                 }
+
+                return false;
+                //double newValue;
+                //if (double.TryParse(textBox.Text, out newValue))
+                //{
+                //    if (oldValue != newValue)
+                //    {
+                //        updateValue = newValue;
+                //        return true;
+                //    }
+                //}
+                //else
+                //{
+                //    throw new Exception("Введено не число");
+                //}
             }
             catch (Exception ex)
             {
@@ -220,27 +293,69 @@ namespace MathFunctionWPF.Controllers
             return false;
         }
 
-
         private void UpdateFunctionView()
         {
-            if(_calculation == null)
+            try
             {
-                return;
+                if (_calculation == null)
+                {
+                    return;
+                }
+                Func<double, double> func = _calculation.Calculate;
+
+                switch (_mathFunctionViewModel.TypeMethod)
+                {
+                    case TypeMathMethod.Bisection:
+                        {
+                            //double value = Dihtomia.Calc(func,_functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
+                            double value = BisectionMethod.Calc(func, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
+                            string text;
+                            if (_functionInputModel.IncrementRate < 0)
+                            {
+                                text = value.ToString($"F{-1 * _functionInputModel.IncrementRate}");
+                            }
+                            else
+                            {
+                                text = value.ToString();
+                            }
+
+                            _functionOutputView.SetResult(TypeMathResult.Intespection, text);
+                            break;
+                        }
+
+                    case TypeMathMethod.GoldenSearch:
+                        {
+                            //double value = Dihtomia.Calc(func,_functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
+                            double value = GoldenSectionSearch.Calc(func, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
+                            _calculation.IsInverse = true;
+                            double value2 = GoldenSectionSearch.Calc(func, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
+                            _calculation.IsInverse = false;
+                            string minimalValue, maximalValue;
+                            if (_functionInputModel.IncrementRate < 0)
+                            {
+                                minimalValue = value.ToString($"F{-1 * _functionInputModel.IncrementRate}");
+                                maximalValue = value2.ToString($"F{-1 * _functionInputModel.IncrementRate}");
+                            }
+                            else
+                            {
+                                minimalValue = value.ToString();
+                                maximalValue = value2.ToString();
+                            }
+
+                            _functionOutputView.SetResult(TypeMathResult.Minimum, minimalValue);
+                            _functionOutputView.SetResult(TypeMathResult.Maximum, maximalValue);
+
+                            _functionOutputView.SetResult(TypeMathResult.MinimumValue, func(value).ToString());
+                            _functionOutputView.SetResult(TypeMathResult.MaximumValue, func(value2).ToString());
+                            break;
+                        }
+                }
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "Ошибка");
             }
 
-            Func<double, double> func = _calculation.Calculate;
-            //double value = Dihtomia.Calc(func,_functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
-            double value = BisectionMethod.Calc(func,_functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
-            string text;
-            if (_functionInputModel.IncrementRate<0)
-            {
-                text = value.ToString($"F{-1*_functionInputModel.IncrementRate}");
-            }
-            else
-            {
-                text = value.ToString();
-            }
-            _functionOutputView.Result.Text = text;
         }
 
         private void UpdatePlotterView()
@@ -259,74 +374,6 @@ namespace MathFunctionWPF.Controllers
                 pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, Math.Pow(10, _functionInputModel.IncrementRate), _calculation.Formula));
                 _graphPlotter.SetPlotterModel(pm);
             }
-        }
-    }
-
-
-    //public class Dihtomia()
-    //{
-    //    public static double Calc(Func<double, double> _func,double a, double b, double e)
-    //    {
-    //        double c = (a + b) / 2;
-
-    //        while (b - a >= e)
-    //        {
-    //            if (_func(a) * _func(c) < 0)
-    //            {
-    //                b = c;
-    //            }
-    //            else
-    //            {
-    //                a = c;
-    //            }
-
-    //            c = (a + b) / 2;
-    //        }
-
-    //        double y1 = Math.Abs(_func(a)), y2 = Math.Abs(_func(b));
-    //        if (y1 > y2)
-    //        {
-    //            return b;
-    //        }
-    //        else
-    //        {
-    //            return a;
-    //        }
-    //    }
-    //}
-
-    public class BisectionMethod
-    {
-        public static double Calc(Func<double, double> _func, double a, double b, double e)
-        {
-            // Проверка, что значения a и b подходят
-            if (_func(a) * _func(b) >= 0)
-            {
-                throw new ArgumentException("Функция должна менять знак на интервале [a, b].");
-            }
-
-            double midpoint = 0;
-
-            while ((b - a) / 2 > e) // Пока длина интервала больше заданной точности
-            {
-                midpoint = (a + b) / 2; // Находим середину
-
-                // Проверяем, где функция меняет знак
-                if (_func(midpoint) == 0) // Если мы нашли корень
-                {
-                    return midpoint;
-                }
-                else if (_func(a) * _func(midpoint) < 0) // Корень находится в [a, midpoint]
-                {
-                    b = midpoint;
-                }
-                else // Корень находится в [midpoint, b]
-                {
-                    a = midpoint;
-                }
-            }
-
-            return (a + b) / 2; // Возвращаем приближенный корень
         }
     }
 

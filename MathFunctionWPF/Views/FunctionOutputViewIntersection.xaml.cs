@@ -16,30 +16,40 @@ using System.Windows.Shapes;
 
 namespace MathFunctionWPF.Views
 {
+
     /// <summary>
     /// Логика взаимодействия для FunctionOutputView.xaml
     /// </summary>
-    public partial class FunctionOutputView : UserControl
+    public partial class FunctionOutputViewIntersection : UserControl , IFunctionOutputView
     {
-        public FunctionOutputView()
+        public FunctionOutputViewIntersection()
         {
             InitializeComponent();
             DataContext = new FunctionOutputModel();
         }
 
-        public delegate void ButtonClick();
-
         List<ButtonClick> _listButtonUpdateFuncPlotterDelegates = new List<ButtonClick>();
         List<ButtonClick> _listCalcFunctionDelegates = new List<ButtonClick>();
 
-        public void AddListenerUpdatePlotter(ButtonClick listener)
+        void IFunctionOutputView.AddListenerUpdatePlotter(ButtonClick listener)
         {
             _listButtonUpdateFuncPlotterDelegates.Add(listener);
         }
         
-        public void AddListenerUpdateFunction(ButtonClick listener)
+        void IFunctionOutputView.AddListenerUpdateFunction(ButtonClick listener)
         {
             _listCalcFunctionDelegates.Add(listener);
+        }
+
+        void IFunctionOutputView.SetResult(MathFunctionWPF.Views.TypeMathResult typeResult, string value)
+        {
+            switch(typeResult) {
+                case TypeMathResult.Intespection:
+                    {
+                        Result.Text = value;
+                        break;
+                    }
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

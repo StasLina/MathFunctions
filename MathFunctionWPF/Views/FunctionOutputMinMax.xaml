@@ -1,0 +1,28 @@
+﻿<UserControl x:Class="MathFunctionWPF.Views.FunctionOutputMinMaxView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MathFunctionWPF.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="104" d:DesignWidth="413">
+    <Grid>
+        <Button Content="Нарисовать график" HorizontalAlignment="Left" Margin="41,21,0,0" VerticalAlignment="Top" Width="130" Click="Button_Click"/>
+
+        <!-- Кнопка для вычисления значения -->
+        <Button Content="Вычислить значение" HorizontalAlignment="Left" Margin="238,21,0,0" VerticalAlignment="Top" Width="135" Click="Button_Click_1"/>
+
+        <!-- Метка и поле для минимального значения -->
+        <TextBlock TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="26,55,0,0" Width="76" Text="МинимумX:"/>
+        <TextBox x:Name="MinValue" HorizontalAlignment="Left" Margin="113,55,0,0" VerticalAlignment="Top" Width="80"/>
+
+        <!-- Метка и поле для максимального значения -->
+        <TextBlock TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="203,56,0,0" Width="70"><Run Text="МаксимумX"/><Run Text=":"/></TextBlock>
+        <TextBox x:Name="MaxValue" HorizontalAlignment="Left" Margin="278,55,0,0" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="MinValueY" HorizontalAlignment="Left" Margin="113,78,0,0" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="MaxValueY" HorizontalAlignment="Left" Margin="278,78,0,0" VerticalAlignment="Top" Width="80"/>
+        <TextBlock TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="26,78,0,0" Width="76"><Run Language="ru-ru" Text="Значение"/></TextBlock>
+        <TextBlock TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="203,79,0,0" Width="70"><Run Language="ru-ru" Text="Значение"/></TextBlock>
+
+    </Grid>
+</UserControl>

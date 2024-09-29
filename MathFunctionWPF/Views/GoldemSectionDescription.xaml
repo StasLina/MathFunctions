@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="MathFunctionWPF.Views.GoldemSectionDescription"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MathFunctionWPF.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="176" d:DesignWidth="1245"
+             >
+    <Grid>
+        <!-- Заголовок -->
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" Margin="0,10,0,0" Text="Метод золотого сечения"/>
+
+        <!-- Описание метода -->
+        <TextBlock HorizontalAlignment="Center" Margin="0,60,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="1226" FontSize="14">
+            <Run Text="     Метод золотого сечения — это метод поиска минимума унимодальной функции на заданном интервале. "/>
+            <Run Text="Он основан на принципе пропорции золотого сечения, который позволяет эффективно сужать интервал поиска путем использования отношений между сторонами прямоугольника, разделенными по золотому сечению. "/>
+            <Run Text="Суть метода заключается в том, что при каждом шаге интервал делится на две части в пропорции золотого сечения, "/>
+            <Run Text="и меньшая часть отсекается, так как известно, что минимум лежит в одной из частей."/>
+            <LineBreak/>
+            <Run Text="Таким образом, метод позволяет минимизировать количество вычислений функции и является эффективным для поиска минимума в сложных численных задачах. "/>
+            <Run Text="Алгоритм подходит для функций, которые унимодальны на заданном интервале, то есть имеют ровно одну точку минимума."/>
+        </TextBlock>
+    </Grid>
+</UserControl>

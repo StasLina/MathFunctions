@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="MathFunctionWPF.Views.BisectionMethodDescription"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MathFunctionWPF.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="176" d:DesignWidth="1245">
+    <Grid>
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" Text="Метод бисекции (метод половинного деления)"/>
+
+        <!-- Описание метода бисекции -->
+        <TextBlock HorizontalAlignment="Center" Margin="0,27,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="1225" FontSize="14" Height="155">
+            <Run Text="Метод бисекции — это численный метод нахождения корня уравнения или минимума функции на заданном интервале. "/>
+            <Run Text="Суть метода заключается в том, что на каждом шаге интервал делится на две равные части, "/>
+            <Run Text="и далее выбирается половина, в которой, согласно теореме Больцано-Коши, должен находиться корень (если функция непрерывна и меняет знак на концах интервала)." />
+            <LineBreak/>
+            <Run Text="Алгоритм начинает с выбора начального интервала [a, b], где функция принимает разные знаки на концах интервала, "/>
+            <Run Text="после чего вычисляется значение функции в середине интервала. Затем определяются новые границы интервала, "/>
+            <Run Text="исходя из того, на каком подинтервале функция меняет знак. Интервал сужается до тех пор, пока не будет достигнута необходимая точность."/>
+            <LineBreak/>
+            <Run Text="Этот метод является простым и надёжным, однако он не является быстрым по сравнению с другими методами (например, методом Ньютона). "/>
+            <Run Text="Тем не менее, он особенно эффективен в ситуациях, когда трудно обеспечить быстрый сходимость других методов."/>
+        </TextBlock>
+    </Grid>
+</UserControl>

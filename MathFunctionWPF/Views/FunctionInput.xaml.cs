@@ -27,7 +27,7 @@ namespace MathFunctionWPF.Views
         public FunctionInputView()
         {
             InitializeComponent();
-            var model = new FunctionSourceData();
+            var model = new FunctionInputData();
             DataContext = model;
 
             foreach(var child in MyGrid.Children)
