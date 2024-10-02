@@ -9,7 +9,14 @@ namespace MathFunctionWPF.Views
     public delegate void ButtonClick();
     public enum TypeMathResult
     {
-        Minimum, Maximum, Intespection, MinimumValue, MaximumValue
+        MinimumArgument, 
+        MaximumArgument, 
+        IntespectionArgument, 
+        MinimumValue, 
+        MaximumValue, 
+        IntespectionValue,
+        Derevative1,
+        Derevative2
     }
 
     internal interface IFunctionOutputView

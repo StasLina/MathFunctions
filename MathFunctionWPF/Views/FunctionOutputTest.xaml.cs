@@ -17,17 +17,15 @@ using System.Windows.Shapes;
 namespace MathFunctionWPF.Views
 {
     /// <summary>
-    /// Логика взаимодействия для FunctionOutputMinMax.xaml
+    /// Логика взаимодействия для FunctionOutputText.xaml
     /// </summary>
-    public partial class FunctionOutputMinMaxView : UserControl , IFunctionOutputView
+    public partial class FunctionOutputTest : UserControl, IFunctionOutputView
     {
-        public FunctionOutputMinMaxView()
+        public FunctionOutputTest()
         {
             InitializeComponent();
-
-            DataContext = new FunctionOutputMinMaxModel();
+            DataContext = new FunctionOutputModel();
         }
-
         List<ButtonClick> _listButtonUpdateFuncPlotterDelegates = new List<ButtonClick>();
         List<ButtonClick> _listCalcFunctionDelegates = new List<ButtonClick>();
 
@@ -45,32 +43,22 @@ namespace MathFunctionWPF.Views
         {
             switch (typeResult)
             {
-                case TypeMathResult.MinimumArgument:
+                case TypeMathResult.Derevative1:
                     {
-                        MinValue.Text = value;
+                        Result.Text = value;
                         break;
                     }
-                case TypeMathResult.MaximumArgument:
+                case TypeMathResult.Derevative2:
                     {
-                        MaxValue.Text = value;
-                        break;
-                    }
-                case TypeMathResult.MinimumValue:
-                    {
-                        MinValueY.Text = value;
-                        break;
-                    }
-                case TypeMathResult.MaximumValue:
-                    {
-                        MaxValueY.Text = value;
+                        ResultFunction.Text = value;
                         break;
                     }
             }
         }
 
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            // Рисуем график
             foreach (var call in _listButtonUpdateFuncPlotterDelegates)
             {
                 call();
@@ -79,11 +67,11 @@ namespace MathFunctionWPF.Views
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            // Вычисляем значение
             foreach (var call in _listCalcFunctionDelegates)
             {
                 call();
             }
         }
-
     }
 }

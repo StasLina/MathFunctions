@@ -43,7 +43,8 @@ namespace MathFunctionWPF.Views
             XStart.Text = model.XStart.ToString();
             XEnd.Text = model.XEnd.ToString();
             accuracy.Text = model.Accuracy.ToString();
-            Precision.Text = model.IncrementRate.ToString();
+            //Precision.Text = model.IncrementRate.ToString();
+            model.PrecisionValue = model.CalcIncrementRate().ToString();
             FunctionString.Text = model.Formula.ToString();
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Resources;
 using System.Text;
@@ -13,6 +14,10 @@ namespace MathFunctionWPF
         [STAThread]
         public static int Main(string[] args)
         {
+            // Устанавливаем культуру с десятичной запятой
+            CultureInfo culture = CultureInfo.InvariantCulture; // Французская культура использует запятую
+            Thread.CurrentThread.CurrentCulture = culture;
+
             App app = new App();
             // Setup your application as you want before running it
             MainWindow mainWindow = new MainWindow();

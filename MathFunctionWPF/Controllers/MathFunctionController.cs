@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using MathFunctionWPF.Controls;
 using MathFunctionWPF.Models;
 using MathFunctionWPF.Views;
 using OxyPlot;
-using OxyPlot.Axes;
 using OxyPlot.Series;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using MathFunctionWPF.MathMethods;
-using System.Net.Http.Headers;
+using System.Text;
 
 namespace MathFunctionWPF.Controllers
 {
@@ -82,7 +75,9 @@ namespace MathFunctionWPF.Controllers
                 _functionInputView.AddArgXStartChangedListener(this.UpdateXStartArg);
                 _functionInputView.AddArgXEndChangedListener(this.UpdateXEndArg);
                 _functionInputView.AddAverageChangedListener(this.UpdateAccuracyArg);
-
+                _functionInputModel.UpdateWithData();
+                _functionInputModel.Formula = "";
+                TextFunctionChange(_functionInputView.FunctionString);
 
                 // Окошко графика
                 if (model.GraphPlotterView != null)
@@ -103,7 +98,8 @@ namespace MathFunctionWPF.Controllers
                 model.ListMethods = methodListControl;
                 methodListControl.MethodChanged += MethodChanged;
 
-                MethodChanged(TypeMathMethod.Bisection);
+                MethodChanged(TypeMathMethod.Test);
+                //MethodChanged(TypeMathMethod.Bisection);
             }
         }
 
@@ -121,12 +117,13 @@ namespace MathFunctionWPF.Controllers
                         InitGoldenSearch();
                         break;
                     }
+                case TypeMathMethod.Test:
+                    {
+                        InitTest();
+                        break;
+                    }
             }
         }
-
-        // intersection 
-        // min
-        // max
 
         private void InitBisectionMethod()
         {
@@ -170,16 +167,39 @@ namespace MathFunctionWPF.Controllers
             _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterView);
         }
 
+        private void InitTest()
+        {
+            _mathFunctionViewModel.TypeMethod = TypeMathMethod.Test;
+
+            _mathFunctionViewModel.DescriptionView = null;
+
+            if (_mathFunctionViewModel.CalculationView != null && _mathFunctionViewModel.CalculationView is FunctionOutputTest)
+            {
+
+                _functionOutputView = (FunctionOutputTest)_mathFunctionViewModel.CalculationView;
+            }
+            else
+            {
+                _functionOutputView = new FunctionOutputTest();
+                _mathFunctionViewModel.CalculationView = _functionOutputView;
+            }
+
+            _functionOutputView.AddListenerUpdateFunction(UpdateFunctionView);
+            _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterView);
+        }
+
         private void TextFunctionChange(TextBox textBox)
         {
             if (_functionInputModel.Formula != textBox.Text)
             {
                 string oldName = _functionInputModel.Formula;
 
+                FunctionCalculation calculation;
                 try
                 {
                     _functionInputModel.Formula = textBox.Text;
-                    _calculation = new FunctionCalculation(_functionInputModel);
+                    calculation = new FunctionCalculation(_functionInputModel);
+                    _calculation = calculation;
                 }
                 catch (Exception ex)
                 {
@@ -216,6 +236,7 @@ namespace MathFunctionWPF.Controllers
                 _functionInputModel.XStart = newValue;
             }
         }
+
         private void UpdateXEndArg(TextBox textBox)
         {
             double newValue = 0;
@@ -231,7 +252,8 @@ namespace MathFunctionWPF.Controllers
             if (NumberFunctionHandler(textBox, _functionInputModel.Accuracy, ref newValue))
             {
                 _functionInputModel.Accuracy = newValue;
-                _functionInputView.Precision.Text = _functionInputModel.IncrementRate.ToString();
+                _functionInputModel.PrecisionValue = _functionInputModel.CalcIncrementRate().ToString();
+                //_functionInputView.Precision.Text = _functionInputModel.IncrementRate().ToString();
             }
         }
 
@@ -242,7 +264,7 @@ namespace MathFunctionWPF.Controllers
                 org.mariuszgromada.math.mxparser.Expression expression = new org.mariuszgromada.math.mxparser.Expression(textBox.Text);
                 double newValue = expression.calculate();
 
-                if (newValue != double.NaN)
+                if (Double.IsNaN(newValue) == false)
                 {
                     if (oldValue != newValue)
                     {
@@ -254,21 +276,6 @@ namespace MathFunctionWPF.Controllers
                 {
                     throw new Exception("Введено не число");
                 }
-
-                return false;
-                //double newValue;
-                //if (double.TryParse(textBox.Text, out newValue))
-                //{
-                //    if (oldValue != newValue)
-                //    {
-                //        updateValue = newValue;
-                //        return true;
-                //    }
-                //}
-                //else
-                //{
-                //    throw new Exception("Введено не число");
-                //}
             }
             catch (Exception ex)
             {
@@ -309,17 +316,24 @@ namespace MathFunctionWPF.Controllers
                         {
                             //double value = Dihtomia.Calc(func,_functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
                             double value = BisectionMethod.Calc(func, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
-                            string text;
-                            if (_functionInputModel.IncrementRate < 0)
+                            string argValue, funcValue;
+
+                            double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+                            double valueFunc = GoldenSectionSearch.Calc(func, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
+
+                            if (incrementRate < 0)
                             {
-                                text = value.ToString($"F{-1 * _functionInputModel.IncrementRate}");
+                                argValue = value.ToString($"F{-1 * incrementRate}");
+                                funcValue = valueFunc.ToString($"F{-1 * incrementRate}");
                             }
                             else
                             {
-                                text = value.ToString();
+                                argValue = value.ToString("F0");
+                                funcValue = valueFunc.ToString("F0");
                             }
 
-                            _functionOutputView.SetResult(TypeMathResult.Intespection, text);
+                            _functionOutputView.SetResult(TypeMathResult.IntespectionArgument, argValue);
+                            _functionOutputView.SetResult(TypeMathResult.IntespectionValue, funcValue);
                             break;
                         }
 
@@ -331,22 +345,54 @@ namespace MathFunctionWPF.Controllers
                             double value2 = GoldenSectionSearch.Calc(func, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
                             _calculation.IsInverse = false;
                             string minimalValue, maximalValue;
-                            if (_functionInputModel.IncrementRate < 0)
+
+                            double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+
+                            string minimalVuncValue, maximalFuncValue;
+                            if (incrementRate < 0)
                             {
-                                minimalValue = value.ToString($"F{-1 * _functionInputModel.IncrementRate}");
-                                maximalValue = value2.ToString($"F{-1 * _functionInputModel.IncrementRate}");
+                                minimalValue = value.ToString($"F{-1 * incrementRate}");
+                                maximalValue = value2.ToString($"F{-1 * incrementRate}");
+
+                                minimalVuncValue = func(value).ToString($"F{-1 * incrementRate}");
+                                maximalFuncValue = func(value2).ToString($"F{-1 * incrementRate}");
                             }
                             else
                             {
                                 minimalValue = value.ToString();
                                 maximalValue = value2.ToString();
+                                minimalVuncValue = func(value).ToString("F0");
+                                maximalFuncValue = func(value2).ToString("F0");
                             }
 
-                            _functionOutputView.SetResult(TypeMathResult.Minimum, minimalValue);
-                            _functionOutputView.SetResult(TypeMathResult.Maximum, maximalValue);
+                            _functionOutputView.SetResult(TypeMathResult.MinimumArgument, minimalValue);
+                            _functionOutputView.SetResult(TypeMathResult.MaximumArgument, maximalValue);
 
-                            _functionOutputView.SetResult(TypeMathResult.MinimumValue, func(value).ToString());
-                            _functionOutputView.SetResult(TypeMathResult.MaximumValue, func(value2).ToString());
+                            _functionOutputView.SetResult(TypeMathResult.MinimumValue, minimalVuncValue);
+                            _functionOutputView.SetResult(TypeMathResult.MaximumValue, maximalFuncValue);
+                            break;
+                        }
+
+                    case TypeMathMethod.Test:
+                        {
+
+                            double der1 = _calculation.CalculateDer1(_functionInputModel.XStart);
+                            double der2 = _calculation.CalculateDer2(_functionInputModel.XStart);
+                            _functionOutputView.SetResult(TypeMathResult.Derevative1, der1.ToString());
+                            _functionOutputView.SetResult(TypeMathResult.Derevative2, der2.ToString());
+
+                            var list = _calculation.FindDiscontinuities(_functionInputModel.XStart, _functionInputModel.XEnd);
+                            StringBuilder stringBuilder = new StringBuilder();
+                            stringBuilder.Append("Count: ");
+                            stringBuilder.Append(list.Count);
+                            stringBuilder.Append(",");
+
+                            foreach (double val in list)
+                            {
+                                stringBuilder.Append(val);
+                                stringBuilder.Append(",");
+                            }
+                            MessageBox.Show(stringBuilder.ToString());
                             break;
                         }
                 }
@@ -355,7 +401,6 @@ namespace MathFunctionWPF.Controllers
             {
                 MessageBox.Show(exception.Message, "Ошибка");
             }
-
         }
 
         private void UpdatePlotterView()
@@ -365,18 +410,67 @@ namespace MathFunctionWPF.Controllers
                 Func<double, double> func = _calculation.Calculate;
                 var pm = new PlotModel
                 {
-                    Title = "Метод дихтомии",
+                    Title = _calculation.Formula,
                     Subtitle = "",
                     PlotType = PlotType.Cartesian,
                     Background = OxyColors.White
                 };
-                pm.Series.Add(new FunctionSeries(val => { return 0; }, _functionInputModel.XStart, _functionInputModel.XEnd, Math.Pow(10, _functionInputModel.IncrementRate), "F(x)=0"));
-                pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, Math.Pow(10, _functionInputModel.IncrementRate), _calculation.Formula));
+                double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+
+                //pm.Series.Add(new FunctionSeries(val => { return 0; }, _functionInputModel.XStart, _functionInputModel.XEnd, Math.Pow(10, incrementRate), "F(x)=0"));
+                //pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, Math.Pow(10, incrementRate), _calculation.Formula));
+                pm.Series.Add(new FunctionSeries(val => { return 0; }, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, "F(x)=0"));
+                pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, _calculation.Formula));
+
+                if (_mathFunctionViewModel.TypeMethod == TypeMathMethod.Test)
+                {
+                    //pm.Series.Add(new FunctionSeries(_calculation.CalculateDer1, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, "Производная1"));
+                    //pm.Series.Add(new FunctionSeries(_calculation.CalculateDer2, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, "Производная2"));
+                }
                 _graphPlotter.SetPlotterModel(pm);
             }
         }
+
+        /*
+        int FuncAnalyzer()
+        {
+            Expression exp = new Expression("sin(x)");
+            double start = 0;
+            double end = Math.PI * 2;
+            double step = 0.1;
+            double tolerance = 0.01; // Порог изменения
+
+            double previousDerivative = double.NaN;
+
+            for (double x = start; x <= end;)
+            {
+                exp.setArgumentValue("x", x);
+                double currentDerivative = exp.calculate();
+
+                // Если предыдущее значение существует, сравним его с текущим
+                if (!double.IsNaN(previousDerivative) && Math.Abs(currentDerivative - previousDerivative) > tolerance)
+                {
+                    // Уменьшаем шаг, если изменение производной велико
+                    step /= 2;
+                }
+                else
+                {
+                    // Увеличиваем шаг, если изменения незначительны
+                    step *= 1.5;
+                }
+
+                Console.WriteLine($"x: {x}, Производная: {currentDerivative}, Шаг: {step}");
+
+                // Сохраняем текущее значение производной
+                previousDerivative = currentDerivative;
+
+                // Переходим к следующей точке
+                x += step;
+            }
+        }
+        */
+
+
+
     }
-
-
-
 }

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MathFunctionWPF.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="104" d:DesignWidth="413">
+             d:DesignHeight="204" d:DesignWidth="413">
     <Grid>
         <Button Content="Нарисовать график" HorizontalAlignment="Left" Margin="41,21,0,0" VerticalAlignment="Top" Width="130" Click="Button_Click"/>
 

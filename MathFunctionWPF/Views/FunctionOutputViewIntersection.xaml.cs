@@ -44,9 +44,14 @@ namespace MathFunctionWPF.Views
         void IFunctionOutputView.SetResult(MathFunctionWPF.Views.TypeMathResult typeResult, string value)
         {
             switch(typeResult) {
-                case TypeMathResult.Intespection:
+                case TypeMathResult.IntespectionArgument:
                     {
                         Result.Text = value;
+                        break;
+                    }
+                case TypeMathResult.IntespectionValue:
+                    {
+                        ResultFunction.Text = value;
                         break;
                     }
             }

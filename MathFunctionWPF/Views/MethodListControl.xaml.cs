@@ -73,7 +73,7 @@ namespace MathFunctionWPF.Views
 
     public enum TypeMathMethod
     {
-        Bisection, GoldenSearch
+        Bisection, GoldenSearch, Test
     };
 
 
