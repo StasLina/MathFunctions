@@ -169,10 +169,12 @@ namespace MathFunctionWPF.Models
                 {
                     if (dfx_next - dfx > ddfx * step || (ddfx > 0 && dfx_next < dfx || ddfx < 0 && dfx_next > dfx))
                     {
-                        discontinuities.Add(x);
+                        //discontinuities.Add(x);
                     }
                     else if (CalculateDer2(x + step) - ddfx > CalculateDer3(x, step) *step) {
                         discontinuities.Add(x);
+                        x += step;
+                        continue;
                     }
                     else
                     {
@@ -180,9 +182,15 @@ namespace MathFunctionWPF.Models
                         if (step > minStep) step /= 2;
                     }
                 }
-                else if (dfx_next - dfx > ddfx * step || (ddfx > 0 && dfx_next < dfx || ddfx < 0 && dfx_next > dfx))
+                else if (dfx_next - dfx > ddfx * step)//|| (ddfx > 0 && dfx_next < dfx || ddfx < 0 && dfx_next > dfx)
                 {
-                    discontinuities.Add(x);
+                    if (CalculateDer2(x + step) - ddfx > CalculateDer3(x, step) * step)
+                    {
+                        discontinuities.Add(x);
+                        x += step;
+                        continue;
+                    }
+                    //discontinuities.Add(x);
                 }
                 else
                 {

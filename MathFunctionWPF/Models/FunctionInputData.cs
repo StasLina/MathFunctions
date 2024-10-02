@@ -14,7 +14,9 @@ namespace MathFunctionWPF.Models
         public string Formula
         {
             get; set;
-        } = "F(x)=1/tg(x)";
+        } 
+            //= "F(x)=x^2+2";
+            = "F(x)=1/tg(x)";
 
         public double XStart { get; set; } = 0;
         public double XEnd { get; set; } =  10;

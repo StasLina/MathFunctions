@@ -31,6 +31,7 @@ namespace MathFunctionWPF.Views
             InitializeComponent();
             AddButton("D", TypeMathMethod.Bisection);
             AddButton("S", TypeMathMethod.GoldenSearch);
+            AddButton("T", TypeMathMethod.Test);
         }
 
         private void AddButton(string name, TypeMathMethod method)
