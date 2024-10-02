@@ -17,8 +17,9 @@ namespace MathFunctionWPF.Models
         } 
             //= "F(x)=x^2+2";
             = "F(x)=1/tg(x)";
+        //= "F(x)=sin(x)/x";
 
-        public double XStart { get; set; } = 0;
+        public double XStart { get; set; } = -10;
         public double XEnd { get; set; } =  10;
         public double Accuracy { get; set; } = 0.0001;
 
