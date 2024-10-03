@@ -175,10 +175,14 @@ namespace MathFunctionWPF.Models
 
                 // Проверка разрывов
                 //if (Math.Abs(fx_next - fx) > thresholdFunction
-                if (fx_next - fx > thresholdFunction
-                    )
+                if(x+step > 0)
                 {
-                    if (dfx_next - dfx > ddfx * step || (ddfx > 0 && dfx_next < dfx || ddfx < 0 && dfx_next > dfx))
+                    int _d = 4;
+                }
+                if (fx_next - fx > thresholdFunction
+                     && (fx_next - fx) - thresholdFunction > step)
+                {
+                    if (dfx_next - dfx > ddfx * step)//|| (ddfx > 0 && dfx_next < dfx || ddfx < 0 && dfx_next > dfx)
                     {
                         if (CalculateDer2(x + step) - ddfx > CalculateDer3(x, step) * step)
                         {
@@ -199,7 +203,7 @@ namespace MathFunctionWPF.Models
                 }
                 else if ((dfx_next - dfx > ddfx * step))//|| (ddfx > 0 && dfx_next < dfx || ddfx < 0 && dfx_next > dfx)
                 {
-                    if (CalculateDer2(x + step) - ddfx > CalculateDer3(x, step) * step)
+                    if (CalculateDer2(x + step) - ddfx > CalculateDer3(x, step) * step && (fx_next - fx) - thresholdFunction > step)
                     {
                         discontinuities.Add(x);
                         x += step;

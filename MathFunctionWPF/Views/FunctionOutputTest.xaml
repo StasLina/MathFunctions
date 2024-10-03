@@ -9,10 +9,12 @@
     <Grid>
         <Button Content="Нарисовать график" HorizontalAlignment="Left" Margin="41,21,0,0" VerticalAlignment="Top" Width="130" Click="Button_Click"/>
         <Button Content="Вычислить значение" HorizontalAlignment="Left" Margin="187,21,0,0" VerticalAlignment="Top" Width="135" Click="Button_Click_1"/>
-        <TextBox x:Name="Result" HorizontalAlignment="Left" Margin="182,56,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" RenderTransformOrigin="0.208,0.668" IsEnabled="False"/>
+        <TextBox x:Name="ResultDer1" HorizontalAlignment="Left" Margin="182,56,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" RenderTransformOrigin="0.208,0.668" IsEnabled="False"/>
         <TextBlock TextAlignment="Right"  HorizontalAlignment="Left" Margin="58,57,0,0" VerticalAlignment="Top" Width="109"><Run Language="ru-ru" Text="Производная1"/></TextBlock>
         <TextBlock TextAlignment="Right" Text="Производная2"  HorizontalAlignment="Left" Margin="58,88,0,0" VerticalAlignment="Top" Width="108"/>
-        <TextBox x:Name="ResultFunction" HorizontalAlignment="Left" Margin="182,88,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" RenderTransformOrigin="0.208,0.668" IsEnabled="False"/>
+        <TextBox x:Name="ResultDer2" HorizontalAlignment="Left" Margin="182,88,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" RenderTransformOrigin="0.208,0.668" IsEnabled="False"/>
+        <TextBlock TextAlignment="Right" Text="Значение"  HorizontalAlignment="Left" Margin="58,116,0,0" VerticalAlignment="Top" Width="108"/>
+        <TextBox x:Name="Result" HorizontalAlignment="Left" Margin="182,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="161" RenderTransformOrigin="0.208,0.668" IsEnabled="False"/>
 
     </Grid>
 </UserControl>

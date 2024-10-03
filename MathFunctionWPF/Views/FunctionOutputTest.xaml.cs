@@ -45,12 +45,17 @@ namespace MathFunctionWPF.Views
             {
                 case TypeMathResult.Derevative1:
                     {
-                        Result.Text = value;
+                        ResultDer1.Text = value;
                         break;
                     }
                 case TypeMathResult.Derevative2:
                     {
-                        ResultFunction.Text = value;
+                        ResultDer2.Text = value;
+                        break;
+                    }
+                case TypeMathResult.MinimumValue:
+                    {
+                        Result.Text = value;
                         break;
                     }
             }

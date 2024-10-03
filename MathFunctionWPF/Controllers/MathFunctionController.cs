@@ -213,11 +213,8 @@ namespace MathFunctionWPF.Controllers
                     // Обработка результата
                     if (result == MessageBoxResult.Yes)
                     {
-                        //_functionInputView.IsFunctionFocusing = true;
                         _functionInputModel.Formula = oldName;
                         _functionInputView.ReturnedFocus = textBox;
-                        //textBox.Focus();
-                        //_functionInputView.IsFunctionFocusing = false;
                     }
                     else
                     {
@@ -375,11 +372,12 @@ namespace MathFunctionWPF.Controllers
 
                     case TypeMathMethod.Test:
                         {
-
+                            double result = _calculation.Calculate(_functionInputModel.XStart);
                             double der1 = _calculation.CalculateDer1(_functionInputModel.XStart);
                             double der2 = _calculation.CalculateDer2(_functionInputModel.XStart);
                             _functionOutputView.SetResult(TypeMathResult.Derevative1, der1.ToString());
                             _functionOutputView.SetResult(TypeMathResult.Derevative2, der2.ToString());
+                            _functionOutputView.SetResult(TypeMathResult.MinimumValue, result.ToString());
 
                             var list = _calculation.FindDiscontinuities(_functionInputModel.XStart, _functionInputModel.XEnd);
                             StringBuilder stringBuilder = new StringBuilder();
@@ -392,6 +390,7 @@ namespace MathFunctionWPF.Controllers
                                 stringBuilder.Append(val);
                                 stringBuilder.Append(",");
                             }
+
                             MessageBox.Show(stringBuilder.ToString());
                             break;
                         }
@@ -430,47 +429,5 @@ namespace MathFunctionWPF.Controllers
                 _graphPlotter.SetPlotterModel(pm);
             }
         }
-
-        /*
-        int FuncAnalyzer()
-        {
-            Expression exp = new Expression("sin(x)");
-            double start = 0;
-            double end = Math.PI * 2;
-            double step = 0.1;
-            double tolerance = 0.01; // Порог изменения
-
-            double previousDerivative = double.NaN;
-
-            for (double x = start; x <= end;)
-            {
-                exp.setArgumentValue("x", x);
-                double currentDerivative = exp.calculate();
-
-                // Если предыдущее значение существует, сравним его с текущим
-                if (!double.IsNaN(previousDerivative) && Math.Abs(currentDerivative - previousDerivative) > tolerance)
-                {
-                    // Уменьшаем шаг, если изменение производной велико
-                    step /= 2;
-                }
-                else
-                {
-                    // Увеличиваем шаг, если изменения незначительны
-                    step *= 1.5;
-                }
-
-                Console.WriteLine($"x: {x}, Производная: {currentDerivative}, Шаг: {step}");
-
-                // Сохраняем текущее значение производной
-                previousDerivative = currentDerivative;
-
-                // Переходим к следующей точке
-                x += step;
-            }
-        }
-        */
-
-
-
     }
 }
