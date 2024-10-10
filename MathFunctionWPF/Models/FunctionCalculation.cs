@@ -13,8 +13,7 @@ namespace MathFunctionWPF.Models
 
         Argument _argument0;
         string _argName;
-        Expression _der2Exp;
-        Expression _der1Exp;
+        Expression _der1Exp, _der2Exp, _der3Exp, _der4Exp;
 
         public bool IsInverse
         {
@@ -48,8 +47,19 @@ namespace MathFunctionWPF.Models
         public double CalculateDer2(double argX)
         {
             _der2Exp.setArgumentValue(_argName, argX);
-
             return _der2Exp.calculate();
+        }
+
+        public double CalculateDer3(double argX)
+        {
+            _der3Exp.setArgumentValue(_argName, argX);
+            return _der3Exp.calculate();
+        }
+
+        public double CalculateDer4(double argX)
+        {
+            _der4Exp.setArgumentValue(_argName, argX);
+            return _der4Exp.calculate();
         }
 
         public double CalculateDer1(double argX)
@@ -64,8 +74,6 @@ namespace MathFunctionWPF.Models
             _sourceData = data;
             UpdateFunction();
         }
-
-
 
         void UpdateFunction()
         {
@@ -84,6 +92,15 @@ namespace MathFunctionWPF.Models
                 expressionString = $"der({_functionExpression}, {_argName})";
                 _der1Exp = new Expression(expressionString);
                 _der1Exp.addArguments(new Argument(_argName, 0));
+
+                expressionString = $"der(der(der({_functionExpression}, {_argName}), {_argName}), {_argName})";
+                _der3Exp = new Expression(expressionString);
+                _der3Exp.addArguments(new Argument(_argName, 0));
+
+                expressionString = $"der(der(der(der({_functionExpression}, {_argName}), {_argName}), {_argName}), {_argName})";
+                _der4Exp = new Expression(expressionString);
+                _der4Exp.addArguments(new Argument(_argName, 0));
+
             }
             else
             {
@@ -125,12 +142,12 @@ namespace MathFunctionWPF.Models
         }
 
 
-        
+
         public List<double> FindDiscontinuities(double start, double end)
         {
-            if (true)
+            if (false)
             {
-                return FindDiscontinuitiesOld(start,end);
+                return FindDiscontinuitiesOld(start, end);
             }
             else
             {
@@ -153,7 +170,8 @@ namespace MathFunctionWPF.Models
 
                 if (double.IsNaN(fx_next))
                 {
-                    discontinuities.Add(x);
+                    discontinuities.Add(x - step);
+                    discontinuities.Add(x + step);
                     x += step;
                     continue;
                 }
@@ -169,33 +187,32 @@ namespace MathFunctionWPF.Models
                 // Динамические пороги, зависящие от производных
                 // Ожидаемое значение равно 
                 //double thresholdFunction = Math.Max(1e-6, (Math.Abs(dfx * step + ddfx * step * step / 2) * 1.001));
-                double thresholdFunction = dfx * step + ddfx * step * step / 2 *1.001;
+                double dddfx = CalculateDer3(x);
+                double thresholdFunction = dfx * step + ddfx * step * step / 2 + dddfx * Math.Pow(step, 3) / 6;
                 //double thresholdDer1 = Math.Max(1e-6, step * Math.Abs(ddfx));
                 //double thresholdDer2 = Math.Max(1e-6, step * Math.Abs(dddfx));
 
                 // Проверка разрывов
                 //if (Math.Abs(fx_next - fx) > thresholdFunction
-                if(x+step > 0)
-                {
-                    int _d = 4;
-                }
                 if (fx_next - fx > thresholdFunction
                      && (fx_next - fx) - thresholdFunction > step)
                 {
                     if (dfx_next - dfx > ddfx * step)//|| (ddfx > 0 && dfx_next < dfx || ddfx < 0 && dfx_next > dfx)
                     {
-                        if (CalculateDer2(x + step) - ddfx > CalculateDer3(x, step) * step)
+                        if (CalculateDer2(x + step) - ddfx > CalculateDer3(x) * step)
                         {
                             discontinuities.Add(x);
+                            discontinuities.Add(x + step);
                             x += step;
                             continue;
                         }
                     }
-                    
+
                     else if (Math.Abs(dfx_next - dfx) < 0.01)
                     {
                         if (step < 0.05) step *= 2;
-                    }else
+                    }
+                    else
                     {
                         //Уменьшаем шаг
                         if (step > minStep) step /= 2;
@@ -206,14 +223,19 @@ namespace MathFunctionWPF.Models
                     if (CalculateDer2(x + step) - ddfx > CalculateDer3(x, step) * step && (fx_next - fx) - thresholdFunction > step)
                     {
                         discontinuities.Add(x);
+                        discontinuities.Add(x + step);
                         x += step;
                         continue;
+                    }
+                    else
+                    {
+                        if (step < 0.05) step *= 2;
                     }
                     //discontinuities.Add(x);
                 }
                 else
                 {
-                    if(step < 0.05) step *= 2;
+                    if (step < 0.05) step *= 2;
                 }
             }
 
@@ -221,12 +243,107 @@ namespace MathFunctionWPF.Models
         }
 
 
-
         public List<double> FindDiscontinuitiesNew(double start, double end)
         {
-
-            const double minStep = 0.00002;
             double step = 0.00001;
+            List<double> discontinuities = new List<double>();
+            const double minStep = 0.002;
+            const double maxStep = 0.05;
+
+            // Итерируем по диапазону от start до end с шагом step
+            for (double x = start; x <= end; x += step)
+            {
+                // Вычисляем значения функции и её производных в точке x и x + step
+                double fx = _function.calculate(x);
+                double fx_next = _function.calculate(x + step);
+                double dfx = CalculateDer1(x);
+
+                //step = fx / dfx;
+                //step = Math.Abs(step);
+                //if (step< minStep)
+                //{
+                //    step = minStep;
+                //}
+                //if (step> maxStep)
+                //{
+                //    step = maxStep;
+                //}
+
+
+                if (double.IsNaN(fx_next))
+                {
+                    discontinuities.Add(x - step);
+                    discontinuities.Add(x + step);
+                    x += step;
+                    continue;
+                }
+                double dfx_next = CalculateDer1(x + step);
+
+                double ddfx = CalculateDer2(x);
+
+                // Динамические пороги, зависящие от производных
+                double dddfx = CalculateDer3(x);
+
+                double thresholdFunction = dfx * step + ddfx * step * step / 2 + dddfx * Math.Pow(step, 3) / 6;
+                if (thresholdFunction > 0 && fx_next < fx || thresholdFunction < 0 && fx_next > fx)
+                {
+                    discontinuities.Add(x);
+                    discontinuities.Add(x + step);
+                    x += step;
+                    continue;
+                }
+                else
+                {
+                    if (fx_next - fx > thresholdFunction && (fx_next - fx) - thresholdFunction > step)
+                    {
+                        if (dfx_next - dfx > ddfx * step)//|| (ddfx > 0 && dfx_next < dfx || ddfx < 0 && dfx_next > dfx)
+                        {
+                            if (CalculateDer2(x + step) - ddfx > CalculateDer3(x) * step)
+                            {
+                                // Слишком высокая скорость изменения функции
+                                //if (step > minStep) step /= 2;
+                                continue;
+                            }
+                        }
+
+                        else if (Math.Abs(dfx_next - dfx) < 0.01)
+                        {
+                            if (step < maxStep) step *= 2;
+                        }
+                        else
+                        {
+                            //Уменьшаем шаг
+                            if (step > minStep) step /= 2;
+                        }
+                    }
+                    else if ((dfx_next - dfx > ddfx * step))//|| (ddfx > 0 && dfx_next < dfx || ddfx < 0 && dfx_next > dfx)
+                    {
+                        if (CalculateDer2(x + step) - ddfx > dddfx * step && (fx_next - fx) - thresholdFunction > step)
+                        {
+                            // Слишком высокая скорость изменения функции
+                            //if (step > minStep) step /= 2;
+                            continue;
+                        }
+                        else
+                        {
+                            if (step < maxStep) step *= 2;
+                        }
+                    }
+                    else
+                    {
+                        if (step < maxStep) step *= 2;
+                    }
+                }
+
+            }
+
+            return discontinuities;
+        }
+
+
+        public List<double> FindDiscontinuitiesNew2(double start, double end)
+        {
+            double step = 0.1;
             List<double> discontinuities = new List<double>();
 
             // Итерируем по диапазону от start до end с шагом step
@@ -238,56 +355,25 @@ namespace MathFunctionWPF.Models
 
                 if (double.IsNaN(fx_next))
                 {
-                    discontinuities.Add(x);
+                    discontinuities.Add(x - step);
+                    discontinuities.Add(x + step);
                     x += step;
                     continue;
                 }
                 double dfx = CalculateDer1(x);
-                double dfx_next = CalculateDer1(x + step);
 
                 double ddfx = CalculateDer2(x);
 
                 // Динамические пороги, зависящие от производных
-                double thresholdFunction = Math.Max(1e-6, (Math.Abs(dfx * step + ddfx * step * step / 2) * 1.001));
+                double dddfx = CalculateDer3(x);
 
-                // Проверка разрывов
-                if (Math.Abs(fx_next - fx) > thresholdFunction
-                    )
+                double thresholdFunction = dfx * step + ddfx * step * step / 2 + dddfx * Math.Pow(step, 3) / 6;
+                if (thresholdFunction > 0 && fx_next < fx || thresholdFunction < 0 && fx_next > fx)
                 {
-                    if (dfx_next - dfx > ddfx * step || (ddfx > 0 && dfx_next < dfx || ddfx < 0 && dfx_next > dfx))
-                    {
-                        //discontinuities.Add(x);
-                    }
-                    else if (CalculateDer2(x + step) - ddfx > CalculateDer3(x, step) * step)
-                    {
-                        //x = GoldernSearchInterupt.Calc(this, x, x + step, minStep);
-                        discontinuities.Add(x);
-                        //step = minStep;
-                        x += step;
-                        continue;
-                    }
-                    else
-                    {
-                        //Уменьшаем шаг
-                        if (step > minStep) step /= 2;
-                    }
-                }
-                else if (dfx_next - dfx > ddfx * step)//|| (ddfx > 0 && dfx_next < dfx || ddfx < 0 && dfx_next > dfx)
-                {
-                    if (CalculateDer2(x + step) - ddfx > CalculateDer3(x, step) * step)
-                    {
-                        //x = GoldernSearchInterupt.Calc(this, x, x + step, minStep/2);
-                        discontinuities.Add(x);
-                        //step = minStep;
-                        //Необходимо локализовать разрыв
-                        x += step;
-                        continue;
-                    }
-                    //discontinuities.Add(x);
-                }
-                else
-                {
-                    step *= 2;
+                    discontinuities.Add(x);
+                    discontinuities.Add(x + step);
+                    x += step;
+                    continue;
                 }
             }
 

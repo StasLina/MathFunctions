@@ -17,11 +17,15 @@ namespace MathFunctionWPF.Models
         } 
             //= "F(x)=x^2+2";
             //= "F(x)=1/tg(x)";
-        = "F(x)=sin(x)/x";
+        //= "F(x)=sin(x)";
+        //= "F(x)=x^4+2*x^2+3*x^3+10-x";
+        //= "F(x)=2*x^4-3*x^2+5*x^3+10";
+        = "F(x)=tg(x)";
+        
 
-        public double XStart { get; set; } = -0.00001;
-        public double XEnd { get; set; } = +0.00001;
-        public double Accuracy { get; set; } = 0.0001;
+        public double XStart { get; set; } = 2;
+        public double XEnd { get; set; } = 4;
+        public double Accuracy { get; set; } = 0.1;
 
         public double CalcIncrementRate()
         {
@@ -116,6 +120,21 @@ namespace MathFunctionWPF.Models
             }
         }
 
+        public double CountSteps = 1;
+        string _countStepsText = "";
+        public string CountStepsText
+        {
+            get
+            {
+                return _countStepsText;
+            }
+            set
+            {
+                _countStepsText = value;
+                OnPropertyChanged();
+            }
+        }
+
         public void UpdateWithData()
         {
             this.FunctionText = Formula;
@@ -123,6 +142,7 @@ namespace MathFunctionWPF.Models
             this.X1EndText = XEnd.ToString();
             this.AccuracyText = Accuracy.ToString();
             this.PrecisionValue = CalcIncrementRate().ToString();
+            this.CountStepsText = CountSteps.ToString();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

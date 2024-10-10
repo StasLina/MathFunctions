@@ -31,7 +31,9 @@ namespace MathFunctionWPF.Views
             InitializeComponent();
             AddButton("D", TypeMathMethod.Bisection);
             AddButton("S", TypeMathMethod.GoldenSearch);
+            AddButton("N", TypeMathMethod.Newton);
             AddButton("T", TypeMathMethod.Test);
+            AddButton("I", TypeMathMethod.Integration);
         }
 
         private void AddButton(string name, TypeMathMethod method)
@@ -74,7 +76,7 @@ namespace MathFunctionWPF.Views
 
     public enum TypeMathMethod
     {
-        Bisection, GoldenSearch, Test
+        Bisection, GoldenSearch, Test, Integration, Newton
     };
 
 

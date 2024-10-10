@@ -7,6 +7,8 @@ using OxyPlot;
 using OxyPlot.Series;
 using MathFunctionWPF.MathMethods;
 using System.Text;
+using MathFunctionWPF.Views.Descriptions;
+using OxyPlot.Axes;
 
 namespace MathFunctionWPF.Controllers
 {
@@ -28,7 +30,7 @@ namespace MathFunctionWPF.Controllers
             }
         }
 
-        private FunctionInputView _functionInputView;
+        private object _functionInputView;
         private FunctionInputData _functionInputModel;
         private IFunctionOutputView _functionOutputView;
         private GraphPlotter _graphPlotter;
@@ -50,6 +52,7 @@ namespace MathFunctionWPF.Controllers
         }
 
         MathFunctionViewModel _mathFunctionViewModel;
+
         private void Init()
         {
             MathFunctionViewModel? model = _view.DataContext as MathFunctionViewModel;
@@ -58,26 +61,11 @@ namespace MathFunctionWPF.Controllers
                 _mathFunctionViewModel = model;
 
                 // Окошко входных данных
-                var inputView = model.SourceDataView as FunctionInputView;
-
-                if (inputView != null)
-                {
-                    _functionInputView = inputView;
-                }
-                else
-                {
-                    _functionInputView = new FunctionInputView();
-                    model.SourceDataView = _functionInputView;
-                }
-
-                _functionInputModel = (FunctionInputData)_functionInputView.DataContext;
-                _functionInputView.AddFunctionStringChangedListener(this.TextFunctionChange);
-                _functionInputView.AddArgXStartChangedListener(this.UpdateXStartArg);
-                _functionInputView.AddArgXEndChangedListener(this.UpdateXEndArg);
-                _functionInputView.AddAverageChangedListener(this.UpdateAccuracyArg);
+                var inputView = InitFunctionInputView();
                 _functionInputModel.UpdateWithData();
+                // Обновляем формулу
                 _functionInputModel.Formula = "";
-                TextFunctionChange(_functionInputView.FunctionString);
+                TextFunctionChange(inputView.FunctionString);
 
                 // Окошко графика
                 if (model.GraphPlotterView != null)
@@ -122,11 +110,204 @@ namespace MathFunctionWPF.Controllers
                         InitTest();
                         break;
                     }
+                case TypeMathMethod.Integration:
+                    {
+                        InitIntegration();
+                        break;
+                    }
+                case TypeMathMethod.Newton:
+                    {
+                        InitNewtonMethod();
+                        break;
+                    }
+            }
+        }
+
+        private FunctionInputView InitFunctionInputView()
+        {
+            FunctionInputView inputView;
+            if (_functionInputView is null)
+            {
+                inputView = null;
+            }
+            else
+            {
+                inputView = _mathFunctionViewModel.SourceDataView as FunctionInputView;
+
+            }
+
+            if (inputView != null)
+            {
+                _functionInputView = inputView;
+            }
+            else
+            {
+                inputView = new FunctionInputView();
+                _mathFunctionViewModel.SourceDataView = inputView;
+
+                if (_functionInputModel == null)
+                {
+                    _functionInputModel = (FunctionInputData)inputView.DataContext;
+                }
+                else
+                {
+                    inputView.DataContext = _functionInputModel;
+                }
+
+                inputView.AddFunctionStringChangedListener(this.TextFunctionChange);
+                inputView.AddArgXStartChangedListener(this.UpdateXStartArg);
+                inputView.AddArgXEndChangedListener(this.UpdateXEndArg);
+                inputView.AddAverageChangedListener(this.UpdateAccuracyArg);
+            }
+
+
+            //_functionInputModel.UpdateWithData();
+            return inputView;
+
+        }
+
+        private FunctionInputIntegralView InitFunctionIntegrationInputView()
+        {
+            FunctionInputIntegralView inputView;
+            if (_functionInputView is null)
+            {
+                inputView = null;
+            }
+            else
+            {
+                inputView = _mathFunctionViewModel.SourceDataView as FunctionInputIntegralView;
+
+            }
+
+            if (inputView != null)
+            {
+                _functionInputView = inputView;
+            }
+            else
+            {
+                inputView = new FunctionInputIntegralView();
+                _mathFunctionViewModel.SourceDataView = inputView;
+
+                if (_functionInputModel == null)
+                {
+                    _functionInputModel = (FunctionInputData)inputView.DataContext;
+                }
+                else
+                {
+                    inputView.DataContext = _functionInputModel;
+                }
+
+                inputView.AddFunctionStringChangedListener(this.TextFunctionChange);
+                inputView.AddArgXStartChangedListener(this.UpdateXStartArg);
+                inputView.AddArgXEndChangedListener(this.UpdateXEndArg);
+                inputView.AddAverageChangedListener(this.UpdateAccuracyArg);
+                inputView.AddCountStepsChangedListener(this.UpdateCountStepsArg);
+            }
+
+
+            //_functionInputModel.UpdateWithData();
+            return inputView;
+
+        }
+
+        private void InitIntegration()
+        {
+            InitFunctionIntegrationInputView();
+
+            _mathFunctionViewModel.TypeMethod = TypeMathMethod.Integration;
+
+            _mathFunctionViewModel.DescriptionView = null;
+
+            if (_mathFunctionViewModel.CalculationView != null && _mathFunctionViewModel.CalculationView is FunctionOutputIntegration)
+            {
+
+                _functionOutputView = (FunctionOutputIntegration)_mathFunctionViewModel.CalculationView;
+            }
+            else
+            {
+                _functionOutputView = new FunctionOutputIntegration();
+                _mathFunctionViewModel.CalculationView = _functionOutputView;
+            }
+
+            _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterView);
+
+            if (_functionOutputView is IFunctionIntegrationOutputView)
+            {
+                var view = _functionOutputView as IFunctionIntegrationOutputView;
+                view.AddListenerCalcCount(UpdateFunctionView);
+                view.AddListenerRectangelIntegral(UpdateRectangelIntegration);
+                view.AddListenerTrapecialIntegral(UpdateTrapecialIntegration);
+                view.AddListenerSimpsonIntegral(UpdateSimpsonIntegration);
+            }
+        }
+
+        private void UpdateRectangelIntegration()
+        {
+            var outputView = _functionOutputView as IFunctionIntegrationOutputView;
+            double integralValue = NumericalIntegration.RectangleMethod(_calculation.Calculate, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.CountSteps);
+
+            double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+            string result;
+
+            if (incrementRate < 0)
+            {
+                result = integralValue.ToString($"F{-1 * incrementRate}");
+            }
+            else
+            {
+                result = integralValue.ToString();
+            }
+
+            outputView.SetResult(TypeMathResult.IntegralRectangelValue, result);
+        }
+
+        private void UpdateTrapecialIntegration()
+        {
+            var outputView = _functionOutputView as IFunctionIntegrationOutputView;
+            double integralValue = NumericalIntegration.TrapezoidMethod(_calculation.Calculate, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.CountSteps);
+
+            double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+            string result;
+            if (incrementRate < 0)
+            {
+                result = integralValue.ToString($"F{-1 * incrementRate}");
+            }
+            else
+            {
+                result = integralValue.ToString();
+            }
+            outputView.SetResult(TypeMathResult.IntegralTrapezeValue, result);
+        }
+
+        private void UpdateSimpsonIntegration()
+        {
+            try
+            {
+                var outputView = _functionOutputView as IFunctionIntegrationOutputView;
+                double integralValue = NumericalIntegration.SimpsonMethod(_calculation.Calculate, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.CountSteps);
+
+                double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+                string result;
+                if (incrementRate < 0)
+                {
+                    result = integralValue.ToString($"F{-1 * incrementRate}");
+                }
+                else
+                {
+                    result = integralValue.ToString();
+                }
+                outputView.SetResult(TypeMathResult.IntegralSimpsonValue, result);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
         private void InitBisectionMethod()
         {
+            InitFunctionInputView();
+
             _mathFunctionViewModel.TypeMethod = TypeMathMethod.Bisection;
 
             // Иницилизируем окно описания
@@ -148,6 +329,8 @@ namespace MathFunctionWPF.Controllers
 
         private void InitGoldenSearch()
         {
+            InitFunctionInputView();
+
             _mathFunctionViewModel.TypeMethod = TypeMathMethod.GoldenSearch;
 
             _mathFunctionViewModel.DescriptionView = new GoldemSectionDescription();
@@ -167,8 +350,33 @@ namespace MathFunctionWPF.Controllers
             _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterView);
         }
 
+        private void InitNewtonMethod()
+        {
+            InitFunctionIntegrationInputView();
+
+            _mathFunctionViewModel.TypeMethod = TypeMathMethod.Newton;
+
+            _mathFunctionViewModel.DescriptionView = new NewtonMethodDescription();
+
+            if (_mathFunctionViewModel.CalculationView != null && _mathFunctionViewModel.CalculationView is FunctionOutputViewIntersection)
+            {
+
+                _functionOutputView = (FunctionOutputViewIntersection)_mathFunctionViewModel.CalculationView;
+            }
+            else
+            {
+                _functionOutputView = new FunctionOutputViewIntersection();
+                _mathFunctionViewModel.CalculationView = _functionOutputView;
+            }
+
+            _functionOutputView.AddListenerUpdateFunction(UpdateFunctionView);
+            _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterView);
+        }
+
         private void InitTest()
         {
+            InitFunctionInputView();
+
             _mathFunctionViewModel.TypeMethod = TypeMathMethod.Test;
 
             _mathFunctionViewModel.DescriptionView = null;
@@ -214,7 +422,7 @@ namespace MathFunctionWPF.Controllers
                     if (result == MessageBoxResult.Yes)
                     {
                         _functionInputModel.Formula = oldName;
-                        _functionInputView.ReturnedFocus = textBox;
+                        (_functionInputView as FunctionInputView).ReturnedFocus = textBox;
                     }
                     else
                     {
@@ -240,6 +448,15 @@ namespace MathFunctionWPF.Controllers
             if (NumberFunctionHandler(textBox, _functionInputModel.XEnd, ref newValue))
             {
                 _functionInputModel.XEnd = newValue;
+            }
+        }
+
+        private void UpdateCountStepsArg(TextBox textBox)
+        {
+            double newValue = 0;
+            if (NumberFunctionHandler(textBox, _functionInputModel.XEnd, ref newValue))
+            {
+                _functionInputModel.CountSteps = newValue;
             }
         }
 
@@ -286,7 +503,9 @@ namespace MathFunctionWPF.Controllers
                 // Обработка результата
                 if (result == MessageBoxResult.Yes)
                 {
-                    _functionInputView.ReturnedFocus = textBox;
+                    //_functionInputView as F.ReturnedFocus = textBox;
+                    (_functionInputView as FunctionInputView).ReturnedFocus = textBox;
+
                 }
                 else
                 {
@@ -375,6 +594,7 @@ namespace MathFunctionWPF.Controllers
                             double result = _calculation.Calculate(_functionInputModel.XStart);
                             double der1 = _calculation.CalculateDer1(_functionInputModel.XStart);
                             double der2 = _calculation.CalculateDer2(_functionInputModel.XStart);
+
                             _functionOutputView.SetResult(TypeMathResult.Derevative1, der1.ToString());
                             _functionOutputView.SetResult(TypeMathResult.Derevative2, der2.ToString());
                             _functionOutputView.SetResult(TypeMathResult.MinimumValue, result.ToString());
@@ -394,6 +614,44 @@ namespace MathFunctionWPF.Controllers
                             MessageBox.Show(stringBuilder.ToString());
                             break;
                         }
+
+                    case TypeMathMethod.Integration:
+                        {
+                            double countIterations = NumericalIntegration.CalculateCountIterations(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
+                            MessageBox.Show($"Необходимо количество итераций {countIterations}");
+                            break;
+                        }
+
+                    case TypeMathMethod.Newton:
+                        {
+                            try
+                            {
+                                double value = NewtonMethod.Calc(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
+                                string argValue, funcValue;
+
+                                double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+                                double valueFunc = _calculation.Calculate(value);
+
+                                if (incrementRate < 0)
+                                {
+                                    argValue = value.ToString($"F{-1 * incrementRate}");
+                                    funcValue = valueFunc.ToString($"F{-1 * incrementRate}");
+                                }
+                                else
+                                {
+                                    argValue = value.ToString("F0");
+                                    funcValue = valueFunc.ToString("F0");
+                                }
+
+                                _functionOutputView.SetResult(TypeMathResult.IntespectionArgument, argValue);
+                                _functionOutputView.SetResult(TypeMathResult.IntespectionValue, funcValue);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
+                            break;
+                        }
                 }
             }
             catch (Exception exception)
@@ -406,6 +664,7 @@ namespace MathFunctionWPF.Controllers
         {
             if (_calculation != null)
             {
+
                 Func<double, double> func = _calculation.Calculate;
                 var pm = new PlotModel
                 {
@@ -416,10 +675,47 @@ namespace MathFunctionWPF.Controllers
                 };
                 double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
 
-                //pm.Series.Add(new FunctionSeries(val => { return 0; }, _functionInputModel.XStart, _functionInputModel.XEnd, Math.Pow(10, incrementRate), "F(x)=0"));
-                //pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, Math.Pow(10, incrementRate), _calculation.Formula));
-                pm.Series.Add(new FunctionSeries(val => { return 0; }, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, "F(x)=0"));
-                pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, _calculation.Formula));
+                pm.Axes.Add(new LinearAxis
+                {
+                    Position = AxisPosition.Bottom,
+                    Title = "Ось X",
+                    Minimum = _functionInputModel.XStart, // Минимальное значение по оси X
+                    Maximum = _functionInputModel.XEnd // Максимальное значение по оси X
+                });
+
+                // Добавление оси Y
+                pm.Axes.Add(new LinearAxis
+                {
+                    Position = AxisPosition.Left,
+                    Title = "ОсьY",
+                    Minimum = -10, // Минимальное значение по оси Y
+                    Maximum = 10 // Максимальное значение по оси Y
+                });
+
+                if (_mathFunctionViewModel.TypeMethod == TypeMathMethod.Test)
+                {
+                    var list = _calculation.FindDiscontinuities(_functionInputModel.XStart, _functionInputModel.XEnd);
+
+                    if (list.Count > 0)
+                    {
+                        pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, list[0], 0.1, _calculation.Formula));
+                        for (int i = 1,end = list.Count -1; i < end; i += 2)
+                        {
+                            pm.Series.Add(new FunctionSeries(func, list[i], list[i+1], 0.1, _calculation.Formula));
+                        }
+
+                        pm.Series.Add(new FunctionSeries(func, list[list.Count-1], _functionInputModel.XEnd, 0.1, _calculation.Formula));
+
+                    }
+                    else
+                    {
+                        pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, _calculation.Formula));
+                    }
+                }
+                else
+                {
+                    pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, _calculation.Formula));
+                }
 
                 if (_mathFunctionViewModel.TypeMethod == TypeMathMethod.Test)
                 {
