@@ -119,6 +119,11 @@ namespace MathFunctionWPF.Controllers
                     {
                         InitNewtonMethod();
                         break;
+                    }                
+                case TypeMathMethod.CoordinateDesent:
+                    {
+                        InitCoordinateDesent();
+                        break;
                     }
             }
         }
@@ -350,6 +355,29 @@ namespace MathFunctionWPF.Controllers
             _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterView);
         }
 
+        private void InitCoordinateDesent()
+        {
+            InitFunctionIntegrationInputView();
+
+            _mathFunctionViewModel.TypeMethod = TypeMathMethod.CoordinateDesent;
+
+            _mathFunctionViewModel.DescriptionView = new CoordinateDescentDescription();
+
+            if (_mathFunctionViewModel.CalculationView != null && _mathFunctionViewModel.CalculationView is FunctionOutputMinMaxView)
+            {
+
+                _functionOutputView = (FunctionOutputMinMaxView)_mathFunctionViewModel.CalculationView;
+            }
+            else
+            {
+                _functionOutputView = new FunctionOutputMinMaxView();
+                _mathFunctionViewModel.CalculationView = _functionOutputView;
+            }
+
+            _functionOutputView.AddListenerUpdateFunction(UpdateFunctionView);
+            _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterView);
+        }
+
         private void InitNewtonMethod()
         {
             InitFunctionIntegrationInputView();
@@ -559,6 +587,42 @@ namespace MathFunctionWPF.Controllers
                             double value = GoldenSectionSearch.Calc(func, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
                             _calculation.IsInverse = true;
                             double value2 = GoldenSectionSearch.Calc(func, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
+                            _calculation.IsInverse = false;
+                            string minimalValue, maximalValue;
+
+                            double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+
+                            string minimalVuncValue, maximalFuncValue;
+                            if (incrementRate < 0)
+                            {
+                                minimalValue = value.ToString($"F{-1 * incrementRate}");
+                                maximalValue = value2.ToString($"F{-1 * incrementRate}");
+
+                                minimalVuncValue = func(value).ToString($"F{-1 * incrementRate}");
+                                maximalFuncValue = func(value2).ToString($"F{-1 * incrementRate}");
+                            }
+                            else
+                            {
+                                minimalValue = value.ToString();
+                                maximalValue = value2.ToString();
+                                minimalVuncValue = func(value).ToString("F0");
+                                maximalFuncValue = func(value2).ToString("F0");
+                            }
+
+                            _functionOutputView.SetResult(TypeMathResult.MinimumArgument, minimalValue);
+                            _functionOutputView.SetResult(TypeMathResult.MaximumArgument, maximalValue);
+
+                            _functionOutputView.SetResult(TypeMathResult.MinimumValue, minimalVuncValue);
+                            _functionOutputView.SetResult(TypeMathResult.MaximumValue, maximalFuncValue);
+                            break;
+                        }
+
+                    case TypeMathMethod.CoordinateDesent:
+                        {
+                            //double value = Dihtomia.Calc(func,_functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
+                            double value = CoordinateDescent.Calc(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy, (int) _functionInputModel.CountSteps);
+                            _calculation.IsInverse = true;
+                            double value2 = CoordinateDescent.Calc(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy, (int) _functionInputModel.CountSteps);
                             _calculation.IsInverse = false;
                             string minimalValue, maximalValue;
 
