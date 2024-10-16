@@ -20,11 +20,12 @@ namespace MathFunctionWPF.Models
         //= "F(x)=sin(x)";
         //= "F(x)=x^4+2*x^2+3*x^3+10-x";
         //= "F(x)=2*x^4-3*x^2+5*x^3+10";
-        = "F(x)=tg(x)";
+        //= "F(x)=sin(x)+x";
+        = "F(x)=(x+2)^2+2";
         
 
-        public double XStart { get; set; } = 2;
-        public double XEnd { get; set; } = 4;
+        public double XStart { get; set; } = -5;
+        public double XEnd { get; set; } = 10;
         public double Accuracy { get; set; } = 0.1;
 
         public double CalcIncrementRate()

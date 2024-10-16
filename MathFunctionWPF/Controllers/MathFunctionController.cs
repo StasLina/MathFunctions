@@ -86,7 +86,7 @@ namespace MathFunctionWPF.Controllers
                 model.ListMethods = methodListControl;
                 methodListControl.MethodChanged += MethodChanged;
 
-                MethodChanged(TypeMathMethod.Test);
+                MethodChanged(TypeMathMethod.Newton);
                 //MethodChanged(TypeMathMethod.Bisection);
             }
         }
@@ -361,11 +361,11 @@ namespace MathFunctionWPF.Controllers
             if (_mathFunctionViewModel.CalculationView != null && _mathFunctionViewModel.CalculationView is FunctionOutputViewIntersection)
             {
 
-                _functionOutputView = (FunctionOutputViewIntersection)_mathFunctionViewModel.CalculationView;
+                _functionOutputView = (FunctionOutputMinMaxIntersectView)_mathFunctionViewModel.CalculationView;
             }
             else
             {
-                _functionOutputView = new FunctionOutputViewIntersection();
+                _functionOutputView = new FunctionOutputMinMaxIntersectView();
                 _mathFunctionViewModel.CalculationView = _functionOutputView;
             }
 
@@ -626,25 +626,61 @@ namespace MathFunctionWPF.Controllers
                         {
                             try
                             {
-                                double value = NewtonMethod.Calc(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
-                                string argValue, funcValue;
+                                double maxValue = NewtonMethod.CalcMax(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
+                                double minValue = NewtonMethod.CalcMin(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
+                                //MessageBox.Show($"Максимум: {maxValue.ToString()}");
+                                //MessageBox.Show($"Максимум: {minValue.ToString()}");
+                                string argValue, funcValue, argMinValue, funcMinValue, argMaxValue, funMaxValue;
 
                                 double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
-                                double valueFunc = _calculation.Calculate(value);
+                                double valueFuncMax = _calculation.Calculate(maxValue);
+                                double valueFuncMin = _calculation.Calculate(minValue);
 
                                 if (incrementRate < 0)
                                 {
-                                    argValue = value.ToString($"F{-1 * incrementRate}");
-                                    funcValue = valueFunc.ToString($"F{-1 * incrementRate}");
+                                    argMinValue = minValue.ToString($"F{-1 * incrementRate}");
+                                    funcMinValue = valueFuncMin.ToString($"F{-1 * incrementRate}");
+                                    argMaxValue = maxValue.ToString($"F{-1 * incrementRate}");
+                                    funMaxValue = valueFuncMax.ToString($"F{-1 * incrementRate}");
                                 }
                                 else
                                 {
-                                    argValue = value.ToString("F0");
-                                    funcValue = valueFunc.ToString("F0");
+                                    argMinValue = minValue.ToString("F0");
+                                    funcMinValue = valueFuncMin.ToString("F0");
+                                    argMaxValue = maxValue.ToString("F0");
+                                    funMaxValue = valueFuncMax.ToString("F0");
                                 }
 
-                                _functionOutputView.SetResult(TypeMathResult.IntespectionArgument, argValue);
-                                _functionOutputView.SetResult(TypeMathResult.IntespectionValue, funcValue);
+
+                                _functionOutputView.SetResult(TypeMathResult.MinimumArgument, argMinValue);
+                                _functionOutputView.SetResult(TypeMathResult.MinimumValue, funcMinValue);
+                                _functionOutputView.SetResult(TypeMathResult.MaximumArgument, argMaxValue);
+                                _functionOutputView.SetResult(TypeMathResult.MaximumValue, funMaxValue);
+
+                                try
+                                {
+                                    double value = NewtonMethod.Calc(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
+                                    double valueFunc = _calculation.Calculate(value);
+
+                                    if (incrementRate < 0)
+                                    {
+                                        argValue = value.ToString($"F{-1 * incrementRate}");
+                                        funcValue = valueFunc.ToString($"F{-1 * incrementRate}");
+                                    }
+                                    else
+                                    {
+                                        argValue = value.ToString("F0");
+                                        funcValue = valueFunc.ToString("F0");
+                                    }
+
+                                    _functionOutputView.SetResult(TypeMathResult.IntespectionArgument, argValue);
+                                    _functionOutputView.SetResult(TypeMathResult.IntespectionValue, funcValue);
+                                }
+                                catch (Exception ex)
+                                {
+                                    _functionOutputView.SetResult(TypeMathResult.IntespectionArgument, ex.Message);
+                                    _functionOutputView.SetResult(TypeMathResult.IntespectionValue, ex.Message);
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -683,14 +719,14 @@ namespace MathFunctionWPF.Controllers
                     Maximum = _functionInputModel.XEnd // Максимальное значение по оси X
                 });
 
-                // Добавление оси Y
-                pm.Axes.Add(new LinearAxis
-                {
-                    Position = AxisPosition.Left,
-                    Title = "ОсьY",
-                    Minimum = -10, // Минимальное значение по оси Y
-                    Maximum = 10 // Максимальное значение по оси Y
-                });
+                //// Добавление оси Y
+                //pm.Axes.Add(new LinearAxis
+                //{
+                //    Position = AxisPosition.Left,
+                //    Title = "ОсьY",
+                //    Minimum = -10, // Минимальное значение по оси Y
+                //    Maximum = 10 // Максимальное значение по оси Y
+                //});
 
                 if (_mathFunctionViewModel.TypeMethod == TypeMathMethod.Test)
                 {
@@ -715,6 +751,7 @@ namespace MathFunctionWPF.Controllers
                 else
                 {
                     pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, _calculation.Formula));
+                    pm.Series.Add(new FunctionSeries() { Points = { new DataPoint(_functionInputModel.XStart, 0), new DataPoint(_functionInputModel.XEnd, 0) } });
                 }
 
                 if (_mathFunctionViewModel.TypeMethod == TypeMathMethod.Test)
