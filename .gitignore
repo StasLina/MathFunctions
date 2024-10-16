@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/MathFunctionWPF/bin/Release/net8.0-windows7.0/MathFunctionWPF.dll
+/MathFunctionWPF/bin/Release/net8.0-windows7.0/MathFunctionWPF.exe
