@@ -86,8 +86,8 @@ namespace MathFunctionWPF.Controllers
                 model.ListMethods = methodListControl;
                 methodListControl.MethodChanged += MethodChanged;
 
-                MethodChanged(TypeMathMethod.Newton);
-                //MethodChanged(TypeMathMethod.Bisection);
+                //MethodChanged(TypeMathMethod.Newton);
+                MethodChanged(TypeMathMethod.Bisection);
             }
         }
 
@@ -149,6 +149,7 @@ namespace MathFunctionWPF.Controllers
             {
                 inputView = new FunctionInputView();
                 _mathFunctionViewModel.SourceDataView = inputView;
+                _functionInputView = inputView;
 
                 if (_functionInputModel == null)
                 {
@@ -192,6 +193,7 @@ namespace MathFunctionWPF.Controllers
             {
                 inputView = new FunctionInputIntegralView();
                 _mathFunctionViewModel.SourceDataView = inputView;
+                _functionInputView = inputView;
 
                 if (_functionInputModel == null)
                 {
@@ -450,7 +452,7 @@ namespace MathFunctionWPF.Controllers
                     if (result == MessageBoxResult.Yes)
                     {
                         _functionInputModel.Formula = oldName;
-                        (_functionInputView as FunctionInputView).ReturnedFocus = textBox;
+                        ReturnFocus(_functionInputView, textBox);
                     }
                     else
                     {
@@ -458,6 +460,18 @@ namespace MathFunctionWPF.Controllers
                         textBox.Text = oldName;
                     }
                 }
+            }
+        }
+
+        void ReturnFocus(object view, TextBox box)
+        {
+            if (view is FunctionInputView)
+            {
+                (view as FunctionInputView).ReturnedFocus = box;
+            }
+            else if (view is FunctionInputIntegralView)
+            {
+                (view as FunctionInputIntegralView).ReturnedFocus = box;
             }
         }
 
@@ -532,8 +546,14 @@ namespace MathFunctionWPF.Controllers
                 if (result == MessageBoxResult.Yes)
                 {
                     //_functionInputView as F.ReturnedFocus = textBox;
-                    (_functionInputView as FunctionInputView).ReturnedFocus = textBox;
-
+                    //if(_functionInputView is FunctionInputView)
+                    //{
+                    //    (_functionInputView as FunctionInputView).ReturnedFocus = textBox;
+                    //}else if (_functionInputView is FunctionInputIntegralView)
+                    //{
+                    //    (_functionInputView as FunctionInputIntegralView).ReturnedFocus = textBox;
+                    //}
+                    ReturnFocus(_functionInputView, textBox);
                 }
                 else
                 {
@@ -731,7 +751,6 @@ namespace MathFunctionWPF.Controllers
                                     argMaxValue = maxValue.ToString("F0");
                                     funMaxValue = valueFuncMax.ToString("F0");
                                 }
-
 
                                 _functionOutputView.SetResult(TypeMathResult.MinimumArgument, argMinValue);
                                 _functionOutputView.SetResult(TypeMathResult.MinimumValue, funcMinValue);

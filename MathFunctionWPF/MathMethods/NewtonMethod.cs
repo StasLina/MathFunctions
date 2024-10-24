@@ -174,7 +174,6 @@ namespace MathFunctionWPF.MathMethods
                 iteration++; // Увеличиваем счётчик итераций
             }
             return x;
-            //throw new Exception("Превышено количество итераций, решение не найдено.");
         }
 
 
@@ -190,10 +189,6 @@ namespace MathFunctionWPF.MathMethods
 
                 if (ddfx == 0)
                 {
-                    //if (dfx < 0) dfx *= -1;
-                    //double newX = x - function.Calculate(x) / dfx;
-                    //x = newX;
-
                     if (dfx < 0)
                     {
                         return xEnd;
@@ -205,8 +200,6 @@ namespace MathFunctionWPF.MathMethods
                 }
                 else
                 {
-                    //if (dfx < 0 && ddfx > 0) ddfx *= -1;
-
                     double newX = x - dfx / ddfx;
 
                     // Проверяем, достигли ли мы заданной точности
@@ -214,7 +207,6 @@ namespace MathFunctionWPF.MathMethods
                     {
                         return x; // Возвращаем найденный корень
                     }
-
 
                     // Проверяем, что производная не слишком мала
                     if (Math.Abs(dfx) < 1e-10)

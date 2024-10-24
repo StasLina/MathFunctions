@@ -87,6 +87,7 @@ namespace MathFunctionWPF.Views
         private bool _handleEvent = false;
 
         Control _returnedFocus;
+
         public Control ReturnedFocus
         {
             get

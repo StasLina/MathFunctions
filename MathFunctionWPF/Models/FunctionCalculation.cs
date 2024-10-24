@@ -245,7 +245,8 @@ namespace MathFunctionWPF.Models
 
         public List<double> FindDiscontinuitiesNew(double start, double end)
         {
-            double step = 0.00001;
+            const double defaultStep = 0.00001;
+            double step = defaultStep;
             List<double> discontinuities = new List<double>();
             const double minStep = 0.002;
             const double maxStep = 0.05;
@@ -275,6 +276,7 @@ namespace MathFunctionWPF.Models
                     discontinuities.Add(x - step);
                     discontinuities.Add(x + step);
                     x += step;
+                    step = defaultStep;
                     continue;
                 }
                 double dfx_next = CalculateDer1(x + step);
@@ -290,6 +292,7 @@ namespace MathFunctionWPF.Models
                     discontinuities.Add(x);
                     discontinuities.Add(x + step);
                     x += step;
+                    step = defaultStep;
                     continue;
                 }
                 else
@@ -394,6 +397,7 @@ namespace MathFunctionWPF.Models
             {
                 return true;
             }
+
             double dfx = CalculateDer1(x1);
             double dfx_next = CalculateDer1(x2);
 
