@@ -690,8 +690,25 @@ namespace MathFunctionWPF.Controllers
                         {
                             try
                             {
-                                double maxValue = NewtonMethod.CalcMax(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
+                                //double maxValue = NewtonMethod.CalcMax(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
+                                double maxValue = 0;
                                 double minValue = NewtonMethod.CalcMin(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
+                                if(_calculation.CalculateDer2(minValue) > 0)
+                                {
+                                    // Минимум
+                                    _calculation.IsInverse = true;
+                                    maxValue = NewtonMethod.CalcMin(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
+                                    _calculation.IsInverse = false;
+                                }
+                                else
+                                {
+                                    // Максимум
+                                    maxValue = minValue;
+                                    _calculation.IsInverse = true;
+                                    minValue = NewtonMethod.CalcMin(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
+                                    _calculation.IsInverse = false;
+                                }
+                                
                                 //MessageBox.Show($"Максимум: {maxValue.ToString()}");
                                 //MessageBox.Show($"Максимум: {minValue.ToString()}");
                                 string argValue, funcValue, argMinValue, funcMinValue, argMaxValue, funMaxValue;

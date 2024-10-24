@@ -13,17 +13,16 @@
         <Button Content="Вычислить значение" HorizontalAlignment="Left" Margin="238,21,0,0" VerticalAlignment="Top" Width="135" Click="Button_Click_1"/>
 
         <!-- Метка и поле для минимального значения -->
-        <TextBlock TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="58,92,0,0" Width="76" Text="МинимумX:"/>
+        <TextBlock TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="58,92,0,0" Width="76"><Run Text="Минимум:"></Run></TextBlock>
         <TextBox x:Name="MinArg" HorizontalAlignment="Left" Margin="145,0,0,0" VerticalAlignment="Center" Width="80"/>
 
         <!-- Метка и поле для максимального значения -->
-        <TextBlock TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="64,117,0,0" Width="70"><Run Text="МаксимумX"/><Run Text=":"/></TextBlock>
+        <TextBlock TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="64,117,0,0" Width="70"><Run Text="Максимум"/><Run Text=":"/></TextBlock>
         <TextBox x:Name="MinValue" HorizontalAlignment="Left" Margin="254,0,0,0" VerticalAlignment="Center" Width="80"/>
         <TextBox x:Name="MaxArg" HorizontalAlignment="Left" Margin="145,115,0,0" VerticalAlignment="Top" Width="80"/>
         <TextBox x:Name="MaxValue" HorizontalAlignment="Left" Margin="254,115,0,0" VerticalAlignment="Top" Width="80"/>
         <TextBlock TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="254,71,0,0" Width="76"><Run Language="ru-ru" Text="Значение"/></TextBlock>
         <TextBlock TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="145,71,0,0" Width="76" Height="16" Text="Аргумент"/>
-        <TextBlock TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="64,117,0,0" Width="70"><Run Text="МаксимумX"/><Run Text=":"/></TextBlock>
         <TextBox x:Name="IntersrctArg" HorizontalAlignment="Left" Margin="145,141,0,0" VerticalAlignment="Top" Width="80"/>
         <TextBox x:Name="IntersrctValue" HorizontalAlignment="Left" Margin="254,141,0,0" VerticalAlignment="Top" Width="80"/>
         <TextBlock TextAlignment="Right" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="41,142,0,0" Width="93"><Run Text="Пересечение"/><Run Language="ru-ru" Text=":"/></TextBlock>

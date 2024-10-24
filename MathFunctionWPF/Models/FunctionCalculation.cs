@@ -47,19 +47,19 @@ namespace MathFunctionWPF.Models
         public double CalculateDer2(double argX)
         {
             _der2Exp.setArgumentValue(_argName, argX);
-            return _der2Exp.calculate();
+            return _multiplier * _der2Exp.calculate();
         }
 
         public double CalculateDer3(double argX)
         {
             _der3Exp.setArgumentValue(_argName, argX);
-            return _der3Exp.calculate();
+            return _multiplier * _der3Exp.calculate();
         }
 
         public double CalculateDer4(double argX)
         {
             _der4Exp.setArgumentValue(_argName, argX);
-            return _der4Exp.calculate();
+            return _multiplier * _der4Exp.calculate();
         }
 
         public double CalculateDer1(double argX)
