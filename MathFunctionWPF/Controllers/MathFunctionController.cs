@@ -403,6 +403,145 @@ namespace MathFunctionWPF.Controllers
             _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterView);
         }
 
+        public class MainViewModel
+        {
+            public PlotModel PlotModel { get; private set; }
+            double x0 =-10, x1 = 10, y0 = -10, y1 = 10;
+            public MainViewModel()
+            {
+                PlotModel = new PlotModel { Title = "Depth Map of 3D Function" };
+
+                // Настройка осей X и Y
+                PlotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = "X" });
+                PlotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Title = "Y" });
+
+                // Создаем цветную карту глубины
+                var heatMapSeries = new HeatMapSeries
+                {
+                    X0 = x0,
+                    X1 = x1,
+                    Y0 = y0,
+                    Y1 = y1,
+                    Interpolate = true,
+                    RenderMethod = HeatMapRenderMethod.Bitmap,
+                    Data = GenerateDepthData(-10, 10, -10, 10, 100, 100)
+                };
+
+                // Добавляем HeatMapSeries в модель графика
+                PlotModel.Series.Add(heatMapSeries);
+
+                // Настраиваем ось цвета
+                var colorAxis = new LinearColorAxis
+                {
+                    Position = AxisPosition.Right,
+                    Palette = OxyPalettes.Jet(200),
+                    Title = "Depth (z)"
+                };
+                PlotModel.Axes.Add(colorAxis);
+            }
+
+            private double[,] GenerateDepthData(double x0, double x1, double y0, double y1, int xSteps, int ySteps)
+            {
+                double[,] data = new double[xSteps, ySteps];
+                double dx = (x1 - x0) / (xSteps - 1);
+                double dy = (y1 - y0) / (ySteps - 1);
+
+                for (int i = 0; i < xSteps; i++)
+                {
+                    for (int j = 0; j < ySteps; j++)
+                    {
+                        double x = x0 + i * dx;
+                        double y = y0 + j * dy;
+                        data[i, j] = CalculateDepthFunction(x, y);
+                    }
+                }
+                return data;
+            }
+            public delegate double Calculcate(double x, double y);
+            public Calculcate CalculateDepthFunction { get; set; } = CalculateDepthFunc;
+
+            private static double CalculateDepthFunc(double x, double y)
+            {
+                // Пример функции: z = sin(sqrt(x^2 + y^2))
+                return Math.Sin(Math.Sqrt(x * x + y * y));
+            }
+        }
+        private void UpdatePlotterViewCustom()
+        {
+            if(_calculation.CountArgs() == 2)
+            {
+                MainViewModel v = new MainViewModel();
+                CalculateDepthFunction = 
+                _graphPlotter.SetPlotterModel(v.PlotModel);
+
+            }
+            return;
+            if (_calculation != null)
+            {
+
+                Func<double, double> func = _calculation.Calculate;
+                var pm = new PlotModel
+                {
+                    Title = _calculation.Formula,
+                    Subtitle = "",
+                    PlotType = PlotType.Cartesian,
+                    Background = OxyColors.White
+                };
+                double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+
+                pm.Axes.Add(new LinearAxis
+                {
+                    Position = AxisPosition.Bottom,
+                    Title = "Ось X",
+                    Minimum = _functionInputModel.XStart, // Минимальное значение по оси X
+                    Maximum = _functionInputModel.XEnd // Максимальное значение по оси X
+                });
+
+                //// Добавление оси Y
+                //pm.Axes.Add(new LinearAxis
+                //{
+                //    Position = AxisPosition.Left,
+                //    Title = "ОсьY",
+                //    Minimum = -10, // Минимальное значение по оси Y
+                //    Maximum = 10 // Максимальное значение по оси Y
+                //});
+
+                if (_mathFunctionViewModel.TypeMethod == TypeMathMethod.Test)
+                {
+                    var list = _calculation.FindDiscontinuities(_functionInputModel.XStart, _functionInputModel.XEnd);
+
+                    if (list.Count > 0)
+                    {
+                        pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, list[0], 0.1, _calculation.Formula));
+                        for (int i = 1, end = list.Count - 1; i < end; i += 2)
+                        {
+                            pm.Series.Add(new FunctionSeries(func, list[i], list[i + 1], 0.1, _calculation.Formula));
+                        }
+
+                        pm.Series.Add(new FunctionSeries(func, list[list.Count - 1], _functionInputModel.XEnd, 0.1, _calculation.Formula));
+
+                    }
+                    else
+                    {
+                        pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, _calculation.Formula));
+                    }
+                }
+                else
+                {
+                    pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, _calculation.Formula));
+                    pm.Series.Add(new FunctionSeries() { Points = { new DataPoint(_functionInputModel.XStart, 0), new DataPoint(_functionInputModel.XEnd, 0) } });
+                }
+
+                if (_mathFunctionViewModel.TypeMethod == TypeMathMethod.Test)
+                {
+                    //pm.Series.Add(new FunctionSeries(_calculation.CalculateDer1, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, "Производная1"));
+                    //pm.Series.Add(new FunctionSeries(_calculation.CalculateDer2, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, "Производная2"));
+                }
+                _graphPlotter.SetPlotterModel(pm);
+            }
+        
+        }
+
         private void InitTest()
         {
             InitFunctionInputView();
@@ -423,7 +562,7 @@ namespace MathFunctionWPF.Controllers
             }
 
             _functionOutputView.AddListenerUpdateFunction(UpdateFunctionView);
-            _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterView);
+            _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterViewCustom);
         }
 
         private void TextFunctionChange(TextBox textBox)

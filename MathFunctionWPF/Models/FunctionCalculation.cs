@@ -74,7 +74,10 @@ namespace MathFunctionWPF.Models
             _sourceData = data;
             UpdateFunction();
         }
-
+        public int CountArgs()
+        {
+            return _function.getArgumentsNumber();
+        }
         void UpdateFunction()
         {
             var function = new Function(_sourceData.Formula);
@@ -107,8 +110,6 @@ namespace MathFunctionWPF.Models
                 throw new Exception(_sourceData.Formula + " не является формулой");
             }
         }
-
-
 
         public string Formula
         {
