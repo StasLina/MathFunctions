@@ -44,6 +44,17 @@ namespace MathFunctionWPF.Models
             return _multiplier * _function.calculate(argX);
         }
 
+        public double Calculate2Arg(double argX, double argY)
+        {
+
+            if (this.CountArgs() != 2)
+            {
+                return double.NaN;
+            }
+
+            return _multiplier * _function.calculate(new double[] {argX,argY} );
+        }
+
         public double CalculateDer2(double argX)
         {
             _der2Exp.setArgumentValue(_argName, argX);

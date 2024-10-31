@@ -1,4 +1,5 @@
 ﻿using MathFunctionWPF.Models;
+using System.Threading.Tasks.Dataflow;
 
 namespace MathFunctionWPF.MathMethods
 {
@@ -7,7 +8,7 @@ namespace MathFunctionWPF.MathMethods
         // Целевая функция для минимизации
 
         // Метод координатного спуска
-        public static double Calc(FunctionCalculation calculation, double minX, double maxX, double learningRate, int iterations)
+        public static double Calc1Arg(FunctionCalculation calculation, double minX, double maxX, double learningRate, int iterations)
         {
             double currentPoint = minX; // Текущая точка
 
@@ -31,7 +32,7 @@ namespace MathFunctionWPF.MathMethods
                     currentPoint = pointMinus;
                 }
 
-                if(currentPoint < minX)
+                if (currentPoint < minX)
                 {
                     return minX;
                 }
@@ -44,5 +45,50 @@ namespace MathFunctionWPF.MathMethods
 
             return currentPoint;
         }
+        public static double Calc2Arg(FunctionCalculation calculation, double x, double y, double learningRate, int iterations)
+        {
+            for (int iter = 0; iter < iterations; iter++)
+            {
+                double[,] matrix = new double[4, 3];
+
+                const int countArgs = 2;
+                var countValues = Convert.ToInt32(Math.Pow(2, countArgs));
+
+                for (int i = 0, iEnd = matrix.GetLength(0); i < iEnd; ++i)
+                {
+                    matrix[i, 0] = x;
+                    matrix[i, 1] = y;
+                    for (int j = 0, jEnd = matrix.GetLength(1) - 1; j < jEnd; ++j)
+                    {
+                        // Проходим по столбцам
+                        if ( (i/(Math.Pow(2, countArgs - j) %2)) == 1)
+                        {
+                            matrix[i, j] -= learningRate;
+                        }
+                        else
+                        {
+                            matrix[i, j] += learningRate;
+                        }
+                    }
+                }
+
+                int minFuncIdx = 0;
+                double minFuncVal = double.MaxValue;
+                for (int i = 0, iEnd = matrix.GetLength(0); i < iEnd; ++i)
+                {
+                    int jEnd = matrix.GetLength(1) - 1;
+                    matrix[i, jEnd] = calculation.Calculate2Arg(matrix[i,0], matrix[i, 1]);
+
+                    if()
+                }
+
+
+
+            }
+
+            return currentPoint;
+        }
+
+
     }
 }
