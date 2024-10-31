@@ -45,7 +45,7 @@ namespace MathFunctionWPF.MathMethods
 
             return currentPoint;
         }
-        public static double Calc2Arg(FunctionCalculation calculation, double x, double y, double learningRate, int iterations)
+        public static double[] Calc2Arg(FunctionCalculation calculation, double x, double y, double learningRate, int iterations)
         {
             for (int iter = 0; iter < iterations; iter++)
             {
@@ -61,7 +61,7 @@ namespace MathFunctionWPF.MathMethods
                     for (int j = 0, jEnd = matrix.GetLength(1) - 1; j < jEnd; ++j)
                     {
                         // Проходим по столбцам
-                        if ( (i/(Math.Pow(2, countArgs - j) %2)) == 1)
+                        if ((i / (Math.Pow(2, countArgs - j) % 2)) == 1)
                         {
                             matrix[i, j] -= learningRate;
                         }
@@ -72,21 +72,32 @@ namespace MathFunctionWPF.MathMethods
                     }
                 }
 
-                int minFuncIdx = 0;
-                double minFuncVal = double.MaxValue;
+                int minFuncIdx = -1;
+                double minFuncVal = calculation.Calculate2Arg(x, y);
+
                 for (int i = 0, iEnd = matrix.GetLength(0); i < iEnd; ++i)
                 {
                     int jEnd = matrix.GetLength(1) - 1;
-                    matrix[i, jEnd] = calculation.Calculate2Arg(matrix[i,0], matrix[i, 1]);
+                    matrix[i, jEnd] = calculation.Calculate2Arg(matrix[i, 0], matrix[i, 1]);
 
-                    if()
+                    if (matrix[i, jEnd] < minFuncIdx)
+                    {
+                        minFuncIdx = i;
+                    }
                 }
 
-
-
+                if(minFuncIdx == -1)
+                {
+                    return new double[2] { x, y };
+                }
+                else
+                {
+                    x = matrix[minFuncIdx, 0];
+                    y = matrix[minFuncIdx, 1];
+                }
             }
 
-            return currentPoint;
+            return new double[2] { x, y };
         }
 
 
