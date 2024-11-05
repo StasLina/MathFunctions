@@ -81,7 +81,7 @@ namespace MathFunctionWPF.MathMethods
             //    derivative4Max = calculation.CalculateDer4(b);
             //}
 
-            if (derivative4Max != 0)
+            if (derivative4Max > epsilon/2)
             {
                 //double derivative4Temp = calculation.CalculateDer4((b - a) / 2);
 
@@ -102,6 +102,11 @@ namespace MathFunctionWPF.MathMethods
                 count = Math.Pow(b - a, 5) * derivative4Max / 180 / epsilon;
                 count = Math.Pow(count, 0.25);
                 count = Math.Ceiling(count);
+                
+                if (count % 2 != 0)
+                {
+                    ++count;
+                }
             }
             else
             {

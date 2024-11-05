@@ -388,7 +388,7 @@ namespace MathFunctionWPF.Controllers
 
             _mathFunctionViewModel.DescriptionView = new NewtonMethodDescription();
 
-            if (_mathFunctionViewModel.CalculationView != null && _mathFunctionViewModel.CalculationView is FunctionOutputViewIntersection)
+            if (_mathFunctionViewModel.CalculationView != null && _mathFunctionViewModel.CalculationView is FunctionOutputMinMaxIntersectView)
             {
 
                 _functionOutputView = (FunctionOutputMinMaxIntersectView)_mathFunctionViewModel.CalculationView;
@@ -443,12 +443,12 @@ namespace MathFunctionWPF.Controllers
 
             public PlotModel2Arg(FunctionCalculation functionCalculation)
             {
-                Init();
+                PlotModel = new PlotModel { Title = functionCalculation.Formula };
+                Init(functionCalculation);
             }
 
-            private void Init()
+            private void Init(FunctionCalculation functionCalculation)
             {
-                PlotModel = new PlotModel { Title = functionCalculation.Formula };
                 CalculateDepthFunction = functionCalculation.Calculate2Arg;
                 // Настройка осей X и Y
                 PlotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = "X" });
@@ -464,8 +464,8 @@ namespace MathFunctionWPF.Controllers
                     Interpolate = true,
                     RenderMethod = HeatMapRenderMethod.Bitmap,
                     Data = GenerateDepthData(x0, x1, y0, y1, xStep, yStep)
-                };
 
+                };
                 // Добавляем HeatMapSeries в модель графика
                 PlotModel.Series.Add(heatMapSeries);
 
@@ -505,8 +505,10 @@ namespace MathFunctionWPF.Controllers
                 return Math.Sin(Math.Sqrt(x * x + y * y));
             }
 
-            PlotModel2Arg(FunctionCalculation functionCalculation, double x1, double x2, double y1, double y2, double width, double height)
+            public PlotModel2Arg(FunctionCalculation functionCalculation, double x1, double x2, double y1, double y2, double width, double height)
             {
+                PlotModel = new PlotModel { Title = functionCalculation.Formula };
+
                 // Пример координат
                 //double x1 = 2.0, y1 = 3.0; // Начальная точка
                 //double x2 = 8.0, y2 = 6.0; // Конечная точка
@@ -535,8 +537,8 @@ namespace MathFunctionWPF.Controllers
                 double adjustedRangeX = adjustedMaxX - adjustedMinX;
                 double adjustedRangeY = adjustedMaxY - adjustedMinY;
 
-                int stepsX = Convert.ToInt32(Math.Ceiling(adjustedRangeX / width));
-                int stepsY = Convert.ToInt32(Math.Ceiling(adjustedRangeY / height));
+                int stepsX = Convert.ToInt32(width);
+                int stepsY = Convert.ToInt32(height);
 
                 this.x0 = adjustedMinX;
                 this.x1 = adjustedMaxX;
@@ -545,22 +547,25 @@ namespace MathFunctionWPF.Controllers
                 this.xStep = stepsX;
                 this.yStep = stepsY;
 
-                Init();
 
+
+
+
+                Init(functionCalculation);
 
                 var scatterSeries = new ScatterSeries
                 {
                     MarkerType = MarkerType.Circle,
                     MarkerSize = 10,
-                    MarkerFill = OxyColor.FromArgb(255, 255, 0, 0)
+                    MarkerFill = OxyColor.FromRgb(255, 0, 0)
                 };
-
                 // Добавление одной точки
                 scatterSeries.Points.Add(new ScatterPoint(x1, y1));
                 scatterSeries.Points.Add(new ScatterPoint(x2, y2));
-
+                //this.PlotModel = new PlotModel();
                 // Добавление серии на график
-                plotModel.Series.Add(scatterSeries);
+                PlotModel.Series.Add(scatterSeries);
+
             }
 
 
@@ -757,6 +762,23 @@ namespace MathFunctionWPF.Controllers
                 }
                 Func<double, double> func = _calculation.Calculate;
 
+                //Проверка на количество аргументов
+                switch (_mathFunctionViewModel.TypeMethod)
+                {
+                    case TypeMathMethod.CoordinateDesent:
+                        if (_calculation.CountArgs() == 1)
+                        {
+
+                        }
+                        break;
+                    default:
+                        if (_calculation.CountArgs() != 1)
+                        {
+                            MessageBox.Show("");
+                        }
+                        break;
+                }
+
                 switch (_mathFunctionViewModel.TypeMethod)
                 {
                     case TypeMathMethod.Bisection:
@@ -861,46 +883,51 @@ namespace MathFunctionWPF.Controllers
                                         break;
                                     }
                                 case 2:
-
-                                    double x = _functionInputModel.XStart;
-                                    double y = _functionInputModel.XEnd;
-                                    double[] minimum = CoordinateDescent.Calc2Arg(_calculation, x, y, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
-                                    _calculation.IsInverse = true;
-                                    double[] maximum = CoordinateDescent.Calc2Arg(_calculation, x, y, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
-
-                                    _calculation.IsInverse = false;
-                                    string minimalValue, maximalValue;
-
-                                    double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
-
-                                    string minimalVuncValue, maximalFuncValue;
-                                    if (incrementRate < 0)
                                     {
-                                        minimalValue = $"{{{minimum[0].ToString($"F{-1 * incrementRate}")}; {minimum[1].ToString($"F{-1 * incrementRate}")}}} ";
-                                        maximalValue = $"{{{maximum[0].ToString($"F{-1 * incrementRate}")}; {maximum[1].ToString($"F{-1 * incrementRate}")}}} ";
+                                        double x = _functionInputModel.XStart;
+                                        double y = _functionInputModel.XEnd;
+                                        double[] minimum = CoordinateDescent.Calc2Arg(_calculation, x, y, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
+                                        _calculation.IsInverse = true;
+                                        double[] maximum = CoordinateDescent.Calc2Arg(_calculation, x, y, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
 
-                                        minimalVuncValue = _calculation.Calculate2Arg(minimum[0], minimum[1]).ToString($"F{-1 * incrementRate}");
-                                        maximalFuncValue = _calculation.Calculate2Arg(maximum[0], maximum[1]).ToString($"F{-1 * incrementRate}");
+                                        _calculation.IsInverse = false;
+                                        string minimalValue, maximalValue;
+
+                                        double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+
+                                        string minimalVuncValue, maximalFuncValue;
+                                        if (incrementRate < 0)
+                                        {
+                                            minimalValue = $"{{{minimum[0].ToString($"F{-1 * incrementRate}")}; {minimum[1].ToString($"F{-1 * incrementRate}")}}} ";
+                                            maximalValue = $"{{{maximum[0].ToString($"F{-1 * incrementRate}")}; {maximum[1].ToString($"F{-1 * incrementRate}")}}} ";
+
+                                            minimalVuncValue = _calculation.Calculate2Arg(minimum[0], minimum[1]).ToString($"F{-1 * incrementRate}");
+                                            maximalFuncValue = _calculation.Calculate2Arg(maximum[0], maximum[1]).ToString($"F{-1 * incrementRate}");
+                                        }
+                                        else
+                                        {
+                                            minimalValue = $"{{{minimum[0].ToString()}; {minimum[1].ToString()}}} ";
+                                            maximalValue = $"{{{maximum[0].ToString()}; {maximum[1].ToString()}}} ";
+
+                                            minimalVuncValue = _calculation.Calculate2Arg(minimum[0], minimum[1]).ToString($"F0");
+                                            maximalFuncValue = _calculation.Calculate2Arg(maximum[0], maximum[1]).ToString($"F0");
+                                        }
+
+                                        _functionOutputView.SetResult(TypeMathResult.MinimumArgument, minimalValue);
+                                        _functionOutputView.SetResult(TypeMathResult.MaximumArgument, maximalValue);
+
+                                        _functionOutputView.SetResult(TypeMathResult.MinimumValue, minimalVuncValue);
+                                        _functionOutputView.SetResult(TypeMathResult.MaximumValue, maximalFuncValue);
+
+                                        double width = _graphPlotter.ActualWidth;
+                                        double height = _graphPlotter.ActualHeight;
+                                        PlotModel2Arg arg = new PlotModel2Arg(_calculation, minimum[0], minimum[1], maximum[0], maximum[1], width, height);
+
+                                        _graphPlotter.SetPlotterModel(arg.PlotModel);
+
+
+                                        break;
                                     }
-                                    else
-                                    {
-                                        minimalValue = $"{{{minimum[0].ToString()}; {minimum[1].ToString()}}} ";
-                                        maximalValue = $"{{{maximum[0].ToString()}; {maximum[1].ToString()}}} ";
-
-                                        minimalVuncValue = _calculation.Calculate2Arg(minimum[0], minimum[1]).ToString($"F0");
-                                        maximalFuncValue = _calculation.Calculate2Arg(maximum[0], maximum[1]).ToString($"F0");
-                                    }
-
-                                    _functionOutputView.SetResult(TypeMathResult.MinimumArgument, minimalValue);
-                                    _functionOutputView.SetResult(TypeMathResult.MaximumArgument, maximalValue);
-
-                                    _functionOutputView.SetResult(TypeMathResult.MinimumValue, minimalVuncValue);
-                                    _functionOutputView.SetResult(TypeMathResult.MaximumValue, maximalFuncValue);
-
-
-
-
-                                    break;
                             }
                             break;
                         }

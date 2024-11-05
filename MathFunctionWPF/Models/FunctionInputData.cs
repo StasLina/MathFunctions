@@ -22,7 +22,8 @@ namespace MathFunctionWPF.Models
         //= "F(x)=2*x^4-3*x^2+5*x^3+10";
         //= "F(x)=sin(x)+x";
         = "F(x)=(x+2)^2+2";
-        
+        //= "F(x,y)=(x+2)^2+2+y";
+
 
         public double XStart { get; set; } = -5;
         public double XEnd { get; set; } = 10;
