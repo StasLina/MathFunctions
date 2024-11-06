@@ -22,7 +22,7 @@
               TextWrapping="Wrap" 
               Text="{Binding X1EndText, UpdateSourceTrigger=PropertyChanged}" 
               VerticalAlignment="Top" Width="74" LostFocus="XEnd_LostFocus"/>
-        <Label Content="{Binding X1Label, UpdateSourceTrigger=PropertyChanged, FallbackValue='X1', TargetNullValue='X!'}" 
+        <Label Content="{Binding X1Label, UpdateSourceTrigger=PropertyChanged, FallbackValue='X1', TargetNullValue='X1'}" 
             HorizontalAlignment="Right"
             Margin="0,62,247,0"
             VerticalAlignment="Top"/>
