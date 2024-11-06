@@ -14,7 +14,7 @@
                  TextWrapping="Wrap" 
                  Text="{Binding XStartText, UpdateSourceTrigger=PropertyChanged}"
                  VerticalAlignment="Top" Width="74" LostFocus="XStart_LostFocus"/>
-        <Label Content="X0" 
+        <Label Content="{Binding X0Label, UpdateSourceTrigger=PropertyChanged, FallbackValue='X0', TargetNullValue='X0'}" 
                HorizontalAlignment="Right" 
                Margin="0,36,247,0" VerticalAlignment="Top"/>
         <TextBox x:Name="XEnd" 
@@ -23,7 +23,7 @@
                  TextWrapping="Wrap" 
                  Text="{Binding X1EndText, UpdateSourceTrigger=PropertyChanged}" 
                  VerticalAlignment="Top" Width="74" LostFocus="XEnd_LostFocus"/>
-        <Label Content="X1" 
+        <Label Content="{Binding X1Label, UpdateSourceTrigger=PropertyChanged, FallbackValue='X1', TargetNullValue='X1'}" 
                HorizontalAlignment="Right"
                Margin="0,62,247,0"
                VerticalAlignment="Top"/>
@@ -33,7 +33,7 @@
                  TextWrapping="Wrap" 
                  Text="{Binding AccuracyText, UpdateSourceTrigger=PropertyChanged}"
                  VerticalAlignment="Top" Width="74" LostFocus="accuracy_LostFocus"/>
-        <Label Content="Точность" 
+        <Label Content="{Binding AccuracyLabel, UpdateSourceTrigger=PropertyChanged, FallbackValue='Точность', TargetNullValue='Точность' }" 
                HorizontalAlignment="Right" 
                Margin="0,88,247,0" 
                VerticalAlignment="Top"/>
@@ -43,7 +43,7 @@
                  TextWrapping="Wrap" 
                  Text="{Binding PrecisionValue, UpdateSourceTrigger=PropertyChanged}"
                  VerticalAlignment="Top" Width="75" LostFocus="Precision_LostFocus"/>
-        <Label Content="Кол-во знаков" 
+        <Label Content="{Binding PrecisionLabel, UpdateSourceTrigger=PropertyChanged, FallbackValue='Кол-во знаков', TargetNullValue='Кол-во знаков'}" 
                Margin="0,115,247,0" 
                VerticalAlignment="Top" HorizontalAlignment="Right"/>
         <TextBox x:Name="FunctionString" 

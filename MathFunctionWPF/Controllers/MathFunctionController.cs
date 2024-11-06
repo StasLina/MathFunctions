@@ -9,6 +9,7 @@ using MathFunctionWPF.MathMethods;
 using System.Text;
 using MathFunctionWPF.Views.Descriptions;
 using OxyPlot.Axes;
+using System.Reflection.Emit;
 
 namespace MathFunctionWPF.Controllers
 {
@@ -93,6 +94,7 @@ namespace MathFunctionWPF.Controllers
 
         private void MethodChanged(TypeMathMethod typeMethod)
         {
+            _functionInputModel.ResetLabels();
             switch (typeMethod)
             {
                 case TypeMathMethod.Bisection:
@@ -124,6 +126,33 @@ namespace MathFunctionWPF.Controllers
                     {
                         InitCoordinateDesent();
                         break;
+                    }
+            }
+        }
+
+        public static readonly int[] OneArg = new int[] { 1 };
+        public static readonly int[] TwoArg = new int[] { 1, 2 };
+
+        public int[] GetCountArgsForMethod(TypeMathMethod typeMethod)
+        {
+            _functionInputModel.ResetLabels();
+            switch (typeMethod)
+            {
+                case TypeMathMethod.Bisection:
+                case TypeMathMethod.GoldenSearch:
+                case TypeMathMethod.Test:
+                case TypeMathMethod.Integration:
+                case TypeMathMethod.Newton:
+                    {
+                        return OneArg;
+                    }
+                case TypeMathMethod.CoordinateDesent:
+                    {
+                        return TwoArg;
+                    }
+                default:
+                    {
+                        return OneArg;
                     }
             }
         }
@@ -357,6 +386,25 @@ namespace MathFunctionWPF.Controllers
             _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterView);
         }
 
+        private void InitCoordinateDesentLabels()
+        {
+            _functionInputModel.CountStepsLabel = "Количество итераций";
+
+            if (_calculation != null)
+            {
+                if (_calculation.CountArgs() == 2)
+                {
+                    _functionInputModel.X1Label = "Y";
+                    _functionInputModel.X0Label = "X";
+                }
+                else if (_calculation.CountArgs() == 1)
+                {
+                    _functionInputModel.X1Label = "X1";
+                    _functionInputModel.X0Label = "X0";
+                }
+
+            }
+        }
         private void InitCoordinateDesent()
         {
             InitFunctionIntegrationInputView();
@@ -375,6 +423,9 @@ namespace MathFunctionWPF.Controllers
                 _functionOutputView = new FunctionOutputMinMaxView();
                 _mathFunctionViewModel.CalculationView = _functionOutputView;
             }
+
+            InitCoordinateDesentLabels();
+
 
             _functionOutputView.AddListenerUpdateFunction(UpdateFunctionView);
             _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterViewCustom);
@@ -614,6 +665,23 @@ namespace MathFunctionWPF.Controllers
             _functionOutputView.AddListenerUpdatePlotter(UpdatePlotterViewCustom);
         }
 
+        static string FormatArgumentsExcpetion(int[] args)
+        {
+            string result = "Неверное количество аргументов. Возможное количество аргументов: ";
+            for (int i = 0; i < args.Length; i++)
+            {
+                result += args[i].ToString();
+                if (i < args.Length - 1)
+                {
+                    result += ", ";
+                }
+                else
+                {
+                    result += ".";
+                }
+            }
+            throw new Exception(result);
+        }
         private void TextFunctionChange(TextBox textBox)
         {
             if (_functionInputModel.Formula != textBox.Text)
@@ -625,6 +693,15 @@ namespace MathFunctionWPF.Controllers
                 {
                     _functionInputModel.Formula = textBox.Text;
                     calculation = new FunctionCalculation(_functionInputModel);
+
+
+                    int[] possibleCountArgsArr = GetCountArgsForMethod(_mathFunctionViewModel.TypeMethod);
+
+                    if (possibleCountArgsArr.Contains(calculation.CountArgs()) == false)
+                    {
+                        // Если не содержит
+                        FormatArgumentsExcpetion(possibleCountArgsArr);
+                    }
                     _calculation = calculation;
                 }
                 catch (Exception ex)
@@ -647,6 +724,14 @@ namespace MathFunctionWPF.Controllers
                         _functionInputModel.Formula = oldName;
                         textBox.Text = oldName;
                     }
+                }
+
+                // Формула поменялась
+                switch (_mathFunctionViewModel.TypeMethod)
+                {
+                    case TypeMathMethod.CoordinateDesent:
+                        InitCoordinateDesentLabels();
+                        break;
                 }
             }
         }
@@ -763,20 +848,13 @@ namespace MathFunctionWPF.Controllers
                 Func<double, double> func = _calculation.Calculate;
 
                 //Проверка на количество аргументов
-                switch (_mathFunctionViewModel.TypeMethod)
-                {
-                    case TypeMathMethod.CoordinateDesent:
-                        if (_calculation.CountArgs() == 1)
-                        {
 
-                        }
-                        break;
-                    default:
-                        if (_calculation.CountArgs() != 1)
-                        {
-                            MessageBox.Show("");
-                        }
-                        break;
+                int[] possibleCountArgsArr = GetCountArgsForMethod(_mathFunctionViewModel.TypeMethod);
+
+                if (possibleCountArgsArr.Contains(_calculation.CountArgs()) == false)
+                {
+                    // Если не содержит
+                    FormatArgumentsExcpetion(possibleCountArgsArr);
                 }
 
                 switch (_mathFunctionViewModel.TypeMethod)
@@ -1059,67 +1137,81 @@ namespace MathFunctionWPF.Controllers
         {
             if (_calculation != null)
             {
-
-                Func<double, double> func = _calculation.Calculate;
-                var pm = new PlotModel
+                try
                 {
-                    Title = _calculation.Formula,
-                    Subtitle = "",
-                    PlotType = PlotType.Cartesian,
-                    Background = OxyColors.White
-                };
-                double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+                    int[] possibleCountArgsArr = GetCountArgsForMethod(_mathFunctionViewModel.TypeMethod);
 
-                pm.Axes.Add(new LinearAxis
-                {
-                    Position = AxisPosition.Bottom,
-                    Title = "Ось X",
-                    Minimum = _functionInputModel.XStart, // Минимальное значение по оси X
-                    Maximum = _functionInputModel.XEnd // Максимальное значение по оси X
-                });
-
-                //// Добавление оси Y
-                //pm.Axes.Add(new LinearAxis
-                //{
-                //    Position = AxisPosition.Left,
-                //    Title = "ОсьY",
-                //    Minimum = -10, // Минимальное значение по оси Y
-                //    Maximum = 10 // Максимальное значение по оси Y
-                //});
-
-                if (_mathFunctionViewModel.TypeMethod == TypeMathMethod.Test)
-                {
-                    var list = _calculation.FindDiscontinuities(_functionInputModel.XStart, _functionInputModel.XEnd);
-
-                    if (list.Count > 0)
+                    if (possibleCountArgsArr.Contains(_calculation.CountArgs()) == false)
                     {
-                        pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, list[0], 0.1, _calculation.Formula));
-                        for (int i = 1, end = list.Count - 1; i < end; i += 2)
+                        // Если не содержит
+                        FormatArgumentsExcpetion(possibleCountArgsArr);
+                    }
+
+                    Func<double, double> func = _calculation.Calculate;
+                    var pm = new PlotModel
+                    {
+                        Title = _calculation.Formula,
+                        Subtitle = "",
+                        PlotType = PlotType.Cartesian,
+                        Background = OxyColors.White
+                    };
+                    double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+
+                    pm.Axes.Add(new LinearAxis
+                    {
+                        Position = AxisPosition.Bottom,
+                        Title = "Ось X",
+                        Minimum = _functionInputModel.XStart, // Минимальное значение по оси X
+                        Maximum = _functionInputModel.XEnd // Максимальное значение по оси X
+                    });
+
+                    //// Добавление оси Y
+                    //pm.Axes.Add(new LinearAxis
+                    //{
+                    //    Position = AxisPosition.Left,
+                    //    Title = "ОсьY",
+                    //    Minimum = -10, // Минимальное значение по оси Y
+                    //    Maximum = 10 // Максимальное значение по оси Y
+                    //});
+
+                    if (_mathFunctionViewModel.TypeMethod == TypeMathMethod.Test)
+                    {
+                        var list = _calculation.FindDiscontinuities(_functionInputModel.XStart, _functionInputModel.XEnd);
+
+                        if (list.Count > 0)
                         {
-                            pm.Series.Add(new FunctionSeries(func, list[i], list[i + 1], 0.1, _calculation.Formula));
+                            pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, list[0], 0.1, _calculation.Formula));
+                            for (int i = 1, end = list.Count - 1; i < end; i += 2)
+                            {
+                                pm.Series.Add(new FunctionSeries(func, list[i], list[i + 1], 0.1, _calculation.Formula));
+                            }
+
+                            pm.Series.Add(new FunctionSeries(func, list[list.Count - 1], _functionInputModel.XEnd, 0.1, _calculation.Formula));
+
                         }
-
-                        pm.Series.Add(new FunctionSeries(func, list[list.Count - 1], _functionInputModel.XEnd, 0.1, _calculation.Formula));
-
+                        else
+                        {
+                            pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, _calculation.Formula));
+                        }
                     }
                     else
                     {
                         pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, _calculation.Formula));
+                        pm.Series.Add(new FunctionSeries() { Points = { new DataPoint(_functionInputModel.XStart, 0), new DataPoint(_functionInputModel.XEnd, 0) } });
                     }
-                }
-                else
-                {
-                    pm.Series.Add(new FunctionSeries(func, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, _calculation.Formula));
-                    pm.Series.Add(new FunctionSeries() { Points = { new DataPoint(_functionInputModel.XStart, 0), new DataPoint(_functionInputModel.XEnd, 0) } });
-                }
 
-                if (_mathFunctionViewModel.TypeMethod == TypeMathMethod.Test)
-                {
-                    //pm.Series.Add(new FunctionSeries(_calculation.CalculateDer1, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, "Производная1"));
-                    //pm.Series.Add(new FunctionSeries(_calculation.CalculateDer2, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, "Производная2"));
-                }
+                    if (_mathFunctionViewModel.TypeMethod == TypeMathMethod.Test)
+                    {
+                        //pm.Series.Add(new FunctionSeries(_calculation.CalculateDer1, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, "Производная1"));
+                        //pm.Series.Add(new FunctionSeries(_calculation.CalculateDer2, _functionInputModel.XStart, _functionInputModel.XEnd, 0.1, "Производная2"));
+                    }
 
-                _graphPlotter.SetPlotterModel(pm);
+                    _graphPlotter.SetPlotterModel(pm);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
     }

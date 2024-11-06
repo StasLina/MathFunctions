@@ -139,18 +139,79 @@ namespace MathFunctionWPF.Models
 
         public void UpdateWithData()
         {
-            this.FunctionText = Formula;
-            this.XStartText = XStart.ToString();
-            this.X1EndText = XEnd.ToString();
-            this.AccuracyText = Accuracy.ToString();
-            this.PrecisionValue = CalcIncrementRate().ToString();
-            this.CountStepsText = CountSteps.ToString();
+            FunctionText = Formula;
+            XStartText = XStart.ToString();
+            X1EndText = XEnd.ToString();
+            AccuracyText = Accuracy.ToString();
+            PrecisionValue = CalcIncrementRate().ToString();
+            CountStepsText = CountSteps.ToString();
         }
+
+        public string? CountStepsLabel {
+            get => _countStepsLabel;
+            set
+            {
+                _countStepsLabel = value;
+                OnPropertyChanged();
+            } 
+        }
+
+        string? _countStepsLabel = null;
+
+        public string? PrecisionLabel {
+            get => _precisionLabel;
+            set
+            {
+                _precisionLabel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        string? _precisionLabel = null;
+        public string? AccuracyLabel { 
+            get => _accuracyLabel; 
+            set
+            {
+                _accuracyLabel = value;
+                OnPropertyChanged();
+            }
+        }
+
+        string? _accuracyLabel = null;
+        
+        public string X1Label { 
+            get => _X1Label; 
+            set
+            {
+                _X1Label = value;
+                OnPropertyChanged();
+            } 
+        }
+        string _X1Label = null;
+        
+        public string? X0Label { 
+            get=>_X0Label ;
+            set {
+                _X0Label = value;
+                OnPropertyChanged();
+            } 
+        } 
+        string? _X0Label = null;
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+
+        public void ResetLabels()
+        {
+            X1Label = null;
+            X0Label = null;
+            AccuracyLabel = null;
+            PrecisionLabel = null;
+            CountStepsLabel = null;
         }
     }
 
