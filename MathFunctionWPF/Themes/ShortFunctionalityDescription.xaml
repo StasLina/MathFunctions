@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="MathFunctionWPF.Themes.ShortFunctionalityDescription"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MathFunctionWPF.Themes"
+             mc:Ignorable="d" 
+             >
+    <!-- d:DesignHeight="450" d:DesignWidth="800"-->
+    <Grid>
+    <!-- Первая сетка с двумя столбцами -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+         <!-- Первый столбец с изображением -->
+        <Image 
+            Width="128" Height="128"
+            VerticalAlignment="Top" 
+            HorizontalAlignment="Left"
+            Margin="10"/>
+
+        <!-- Второй столбец с вложенной сеткой из двух строк -->
+        <Grid Grid.Column="1" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок метода -->
+            <TextBlock Text="Название метода"
+                            FontSize="18" FontWeight="Bold"
+                            Grid.Row="0"
+                            Margin="0,0,0,5"/>
+
+            <!-- Описание метода -->
+            <TextBlock Text="Описание метода: краткое и информативное объяснение, которое может занимать несколько строк текста."
+                            FontSize="14"
+                            TextWrapping="Wrap"
+                            Grid.Row="1"/>
+        </Grid>
+    </Grid>
+</UserControl>

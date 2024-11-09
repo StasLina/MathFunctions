@@ -29,14 +29,14 @@ namespace MathFunctionWPF.Models
             }
         }
 
-        public object ListMethods
-        {
-            get { return _listMethods; }
-            set
-            {
-                _listMethods = value; OnPropertyChanged();
-            }
-        }
+        //public object ListMethods
+        //{
+        //    get { return _listMethods; }
+        //    set
+        //    {
+        //        _listMethods = value; OnPropertyChanged();
+        //    }
+        //}
 
         public object GraphPlotterView
         {

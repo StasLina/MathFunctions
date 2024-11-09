@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MathFunctionWPF.Views"
-             mc:Ignorable="d" 
-             Width="50">
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
+             mc:Ignorable="d">
+
+    <!-- Контент вашего UserControl здесь -->
+    <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
         <StackPanel x:Name="ButtonPanel" Orientation="Vertical">
             <!-- Кнопки будут добавлены программно -->
         </StackPanel>

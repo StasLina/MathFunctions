@@ -7,7 +7,7 @@
             xmlns:views="clr-namespace:MathFunctionWPF.Views"
             xmlns:models="clr-namespace:MathFunctionWPF.Models"
              mc:Ignorable="d" 
-             d:DesignHeight="768" d:DesignWidth="1366" >
+             d:DesignHeight="768" Width="1286" >
 
     <UserControl.Resources>
         <!-- DataTemplate для FirstView -->
@@ -17,10 +17,9 @@
     </UserControl.Resources>
 
     <Grid>
-        <ContentControl Content="{Binding DescriptionView}" HorizontalAlignment="Left" Margin="75,60,0,0" VerticalAlignment="Top" Height="176" Width="1245"/>
-        <ContentControl Content="{Binding SourceDataView}" HorizontalAlignment="Left" Margin="75,263,0,0" VerticalAlignment="Top" Height="175" Width="413" RenderTransformOrigin="0.21,3.694"/>
-        <ContentControl Content="{Binding GraphPlotterView}" HorizontalAlignment="Left" Margin="515,263,0,0" VerticalAlignment="Top" Height="413" Width="805"/>
-        <ContentControl Content="{Binding CalculationView}" HorizontalAlignment="Left" Margin="75,472,0,0" VerticalAlignment="Top" Height="204" Width="413" RenderTransformOrigin="0.21,3.694"/>
-        <ContentControl Content="{Binding ListMethods}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" RenderTransformOrigin="0.024,3.133" Height="648" Margin="10,0,0,0"/>
+        <ContentControl Content="{Binding DescriptionView}" HorizontalAlignment="Left" Margin="22,60,0,0" VerticalAlignment="Top" Height="176" Width="1244"/>
+        <ContentControl Content="{Binding SourceDataView}" HorizontalAlignment="Left" Margin="18,263,0,0" VerticalAlignment="Top" Height="175" Width="413" RenderTransformOrigin="0.21,3.694"/>
+        <ContentControl Content="{Binding GraphPlotterView}" HorizontalAlignment="Left" Margin="458,263,0,0" VerticalAlignment="Top" Height="413" Width="805"/>
+        <ContentControl Content="{Binding CalculationView}" HorizontalAlignment="Left" Margin="18,472,0,0" VerticalAlignment="Top" Height="204" Width="413" RenderTransformOrigin="0.21,3.694"/>
     </Grid>
 </UserControl>

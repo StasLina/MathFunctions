@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="1.60.0" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="2.88.9" />
+    <PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\oxyplot\Source\OxyPlot.Wpf.Shared\OxyPlot.Wpf.Shared.csproj" />
     <ProjectReference Include="..\..\oxyplot\Source\OxyPlot.Wpf\OxyPlot.Wpf.csproj" />
     <ProjectReference Include="..\MathParser.org-mXparser\CURRENT\c-sharp\1-Current-Dev.csproj" />
@@ -18,9 +24,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Resources\Resource1.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
     <Compile Update="Views\Output\FunctionOutputMinMaxIntersect.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

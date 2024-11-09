@@ -13,7 +13,7 @@ using System.Reflection.Emit;
 
 namespace MathFunctionWPF.Controllers
 {
-    class MathFunctionController
+    class MathFunctionController : IBaseController
     {
         public MathFunctionController(MathFunctionView view)
         {
@@ -82,17 +82,12 @@ namespace MathFunctionWPF.Controllers
                     model.GraphPlotterView = _graphPlotter;
                 }
 
-                // Окно смены 
-                MethodListControl methodListControl = new MethodListControl();
-                model.ListMethods = methodListControl;
-                methodListControl.MethodChanged += MethodChanged;
-
                 //MethodChanged(TypeMathMethod.Newton);
                 MethodChanged(TypeMathMethod.Bisection);
             }
         }
 
-        private void MethodChanged(TypeMathMethod typeMethod)
+        public void  MethodChanged(TypeMathMethod typeMethod)
         {
             _functionInputModel.ResetLabels();
             switch (typeMethod)

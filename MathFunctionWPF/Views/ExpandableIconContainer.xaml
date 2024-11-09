@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="MathFunctionWPF.Views.ExpandableIconContainer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" Background="#0C000000">
+
+    <UserControl.Resources>
+        <!-- Storyboard for expanding and collapsing the container -->
+        <Storyboard x:Key="ExpandAnimation">
+            <DoubleAnimation
+                Storyboard.TargetName="IconContainer"
+                Storyboard.TargetProperty="Height"
+                From="0" 
+                To="150"
+                Duration="0:0:0.3"/>
+        </Storyboard>
+        <Storyboard x:Key="CollapseAnimation">
+            <DoubleAnimation
+                Storyboard.TargetName="IconContainer"
+                Storyboard.TargetProperty="Height"
+                From="150"
+                To="0" Duration="0:0:0.3"/>
+        </Storyboard>
+    </UserControl.Resources>
+
+    <Grid>
+        <StackPanel>
+            <!-- ToggleButton for expanding and collapsing the container -->
+            <ToggleButton x:Name="ExpandButton" Content=""
+                          Width="50" Height="50"
+                          Background="LightGray" FontSize="16"
+                          Click="ExpandButton_Click"/>
+
+            <!-- Container for icons that will be hidden or shown -->
+            <StackPanel x:Name="IconContainer" Orientation="Vertical" Height="0" Visibility="Collapsed" Background="#19000000">
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>
+

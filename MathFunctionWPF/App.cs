@@ -29,7 +29,15 @@ namespace MathFunctionWPF
         {
             // (Optional) Load your application resources file (which has a "Page" build action, not "ApplicationDefinition",
             // and a root node of type "ResourceDictionary", not "Application")
+
+
             //Resources = (ResourceDictionary)Application.LoadComponent(new Uri("/MyAssemblyName;component/Resources.xaml", UriKind.Relative));
+            Uri resourceUri = new Uri("/MathFunctionWPF;component/Resources.xaml", UriKind.Relative);
+            ResourceDictionary resourceDictionary = (ResourceDictionary)Application.LoadComponent(resourceUri);
+
+            // Add the loaded resource dictionary to the application's resources
+            this.Resources.MergedDictionaries.Add(resourceDictionary);
+            //this.Resources.FindName("fsd") as Resourc;
         }
     }
 }

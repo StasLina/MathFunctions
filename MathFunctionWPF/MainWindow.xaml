@@ -9,14 +9,17 @@
         xmlns:views="clr-namespace:MathFunctionWPF.Views"
         xmlns:models="clr-namespace:MathFunctionWPF.Models"
         
-        Title="Математические методы" Height="768" Width="1336">
+        Title="Математические методы" 
+        Height="659" Width="1220"
+        >
+    <!--Height="768" Width="1336" -->
     <Window.Resources>
         <!-- DataTemplate для FirstView -->
         <DataTemplate DataType="{x:Type models:MathFunctionViewModel}">
             <views:MathFunctionView/>
         </DataTemplate>
     </Window.Resources>
-    
+
     <Grid>
         <ContentControl Content="{Binding CurrentView}"
                         Margin="10" />
