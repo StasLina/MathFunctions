@@ -13,22 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MathFunctionWPF.Themes
+namespace MathFunctionWPF.Views
 {
     /// <summary>
-    /// Логика взаимодействия для ShortFunctionalityDescription.xaml
+    /// Логика взаимодействия для BubleSortView.xaml
     /// </summary>
-    public partial class ShortFunctionalityDescription : UserControl
+    public partial class BubleSortView : UserControl
     {
-        delegate void FilterResultsHandler(string text);
-        public ShortFunctionalityDescription()
+        public BubleSortView()
         {
             InitializeComponent();
-            //this.
-            
-            //BSearch.Click;
         }
-
-        //void B_Clcik()
     }
 }

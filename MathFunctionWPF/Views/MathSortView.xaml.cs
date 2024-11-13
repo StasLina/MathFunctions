@@ -13,22 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MathFunctionWPF.Themes
+namespace MathFunctionWPF.Views
 {
     /// <summary>
-    /// Логика взаимодействия для ShortFunctionalityDescription.xaml
+    /// Логика взаимодействия для MathSortView.xaml
     /// </summary>
-    public partial class ShortFunctionalityDescription : UserControl
+    public partial class MathSortView : UserControl
     {
-        delegate void FilterResultsHandler(string text);
-        public ShortFunctionalityDescription()
+        public MathSortView()
         {
             InitializeComponent();
-            //this.
-            
-            //BSearch.Click;
         }
-
-        //void B_Clcik()
     }
 }

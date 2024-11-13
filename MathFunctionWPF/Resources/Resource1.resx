@@ -121,22 +121,103 @@
   <data name="alg_sortirovki" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>alg_sortirovki.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="a_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\a-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="bubble_chart_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>bubble-chart-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="b_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\b-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="chisl_methods" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>chisl_methods.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="c_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\c-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="d_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\d-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="e_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\e-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="f_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\f-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="g_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\g-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="house_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>house-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="h_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\h-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="i_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\i-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="j_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\j-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="k_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\k-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="l_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\l-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="m_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\m-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="naim_kvadrat" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>naim_kvadrat.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="n_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\n-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="opred_integral" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>opred_integral.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="o_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\o-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="p_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\p-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="q_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\q-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="r_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\r-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="search_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>search-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="SLAU" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>SLAU.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="s_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\s-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="t_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\t-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="u_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\u-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="v_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\v-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="w_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\w-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="x_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\x-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="y_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\y-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="z_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\z-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

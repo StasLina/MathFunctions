@@ -4,7 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MathFunctionWPF.Views"
-             mc:Ignorable="d" Height="361" Width="739">
+             xmlns:views="clr-namespace:MathFunctionWPF.Views"
+             xmlns:models="clr-namespace:MathFunctionWPF.Models"
+             mc:Ignorable="d">
+
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -21,25 +24,33 @@
             </Grid.ColumnDefinitions>
 
             <!-- TextBox для ввода текста, растягивающийся до кнопки -->
-            <TextBox Text="Поиск..."
-             FontSize="18"
-             Margin="0"
-             MinWidth="120" MaxWidth="600"
-             HorizontalAlignment="Stretch"
-             VerticalContentAlignment="Center"
-             Grid.Column="0" />
+            <TextBox 
+         x:Name="TextInput"
+         Text="Поиск..."
+         FontSize="18"
+         Margin="0"
+         MinWidth="120" MaxWidth="600"
+         HorizontalAlignment="Stretch"
+         VerticalContentAlignment="Center"
+         Grid.Column="0" />
 
             <!-- Кнопка примыкает к TextBox -->
-            <Button Width="40" 
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center"
-            Grid.Column="1" 
-            Content="🔍" />
+            <Button x:Name="BSearch"
+        Width="40" 
+        HorizontalAlignment="Right"
+        VerticalAlignment="Center"
+        Grid.Column="1" 
+        Content="🔍" />
         </Grid>
 
         <!-- Описание метода -->
-        <StackPanel>
 
-        </StackPanel>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel  x:Name="ListItems">
+
+            </StackPanel>
+        </ScrollViewer>
+
     </Grid>
+    
 </UserControl>

@@ -46,19 +46,19 @@ namespace MathFunctionWPF.Views
 
             ExpandableIconContainer chislMethods = AddExtandableButton(LoaderIcon.LoadPngImage(MathFunctionWPF.Resources.Resource1.chisl_methods));
 
-            chislMethods.Panel.Children.Add(AddButton("D", TypeMathMethod.Bisection));
-            chislMethods.Panel.Children.Add(AddButton("N", TypeMathMethod.Newton));
-            chislMethods.Panel.Children.Add(AddButton("S", TypeMathMethod.GoldenSearch));
-            chislMethods.Panel.Children.Add(AddButton("C", TypeMathMethod.CoordinateDesent));
+            chislMethods.Panel.Children.Add(AddButtonIconSVG(MathFunctionWPF.Resources.Resource1.d_svgrepo_com, TypeMathMethod.Bisection));
+            chislMethods.Panel.Children.Add(AddButtonIconSVG(MathFunctionWPF.Resources.Resource1.n_svgrepo_com, TypeMathMethod.Newton));
+            chislMethods.Panel.Children.Add(AddButtonIconSVG(MathFunctionWPF.Resources.Resource1.s_svgrepo_com, TypeMathMethod.GoldenSearch));
+            chislMethods.Panel.Children.Add(AddButtonIconSVG(MathFunctionWPF.Resources.Resource1.c_svgrepo_com, TypeMathMethod.CoordinateDesent));
             
             listItems.Add(chislMethods);
 
 
-            //ExpandableIconContainer sortMethod = AddExtandableButton(LoaderIcon.LoadPngImage(MathFunctionWPF.Resources.Resource1.chisl_methods));
-            listItems.Add(AddButtonIconRastr(MathFunctionWPF.Resources.Resource1.alg_sortirovki, TypeMathMethod.GoldenSearch));
-
-            listItems.Add(AddButton("T", TypeMathMethod.Test));
-            listItems.Add(AddButton("I", TypeMathMethod.Integration));
+            ExpandableIconContainer sortMethod = AddExtandableButton(LoaderIcon.LoadPngImage(MathFunctionWPF.Resources.Resource1.alg_sortirovki));
+            sortMethod.Panel.Children.Add(AddButtonIconSVG(MathFunctionWPF.Resources.Resource1.bubble_chart_svgrepo_com, TypeMathMethod.BubbleSort));
+            listItems.Add(sortMethod);
+            //listItems.Add(AddButton("T", TypeMathMethod.Test));
+            //listItems.Add(AddButton("I", TypeMathMethod.Integration));
 
 
         }
@@ -105,9 +105,7 @@ namespace MathFunctionWPF.Views
             using (MemoryStream svgStream = new MemoryStream(svgData))
             {
                 bitMap= Controllers.Drawing.LoaderIcon.LoadSvgIcon(svgStream, 200, 200);
-
             }
-            //Application.GetResourceStream()
 
             Image icon = new Image
             {
@@ -116,8 +114,8 @@ namespace MathFunctionWPF.Views
                 //Source = new BitmapImage(new Uri("pack://application:,,,/MathFunctionWPF;component/Icons/SearchIcon.svg")), // Путь к вашему SVG или PNG изображению
                 
                 Source = Controllers.Drawing.LoaderIcon.ConvertToBitmapImage(bitMap), 
-                Width = ItemWidth, // Ширина иконки
-                Height = ItemHeight // Высота иконки
+                Width = ItemWidth-10, // Ширина иконки
+                Height = ItemHeight-10 // Высота иконки
             };
             
             // Устанавливаем изображение как содержимое кнопки
@@ -224,7 +222,7 @@ namespace MathFunctionWPF.Views
 
     public enum TypeMathMethod
     {
-        Bisection, GoldenSearch, Test, Integration, Newton, CoordinateDesent, MainMenu, Search
+        Bisection, GoldenSearch, Test, Integration, Newton, CoordinateDesent, MainMenu, Search, BubbleSort
     };
 
 

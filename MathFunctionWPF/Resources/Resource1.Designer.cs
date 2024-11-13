@@ -63,9 +63,49 @@ namespace MathFunctionWPF.Resources {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
+        internal static byte[] a_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("a_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
         internal static byte[] alg_sortirovki {
             get {
                 object obj = ResourceManager.GetObject("alg_sortirovki", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] b_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("b_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] bubble_chart_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("bubble_chart_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] c_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("c_svgrepo_com", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -83,9 +123,119 @@ namespace MathFunctionWPF.Resources {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
+        internal static byte[] d_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("d_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] e_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("e_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] f_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("f_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] g_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("g_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] h_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("h_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
         internal static byte[] house_svgrepo_com {
             get {
                 object obj = ResourceManager.GetObject("house_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] i_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("i_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] j_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("j_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] k_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("k_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] l_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("l_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] m_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("m_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] n_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("n_svgrepo_com", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -103,9 +253,59 @@ namespace MathFunctionWPF.Resources {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
+        internal static byte[] o_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("o_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
         internal static byte[] opred_integral {
             get {
                 object obj = ResourceManager.GetObject("opred_integral", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] p_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("p_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] q_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("q_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] r_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("r_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] s_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("s_svgrepo_com", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -126,6 +326,76 @@ namespace MathFunctionWPF.Resources {
         internal static byte[] SLAU {
             get {
                 object obj = ResourceManager.GetObject("SLAU", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] t_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("t_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] u_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("u_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] v_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("v_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] w_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("w_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] x_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("x_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] y_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("y_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] z_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("z_svgrepo_com", resourceCulture);
                 return ((byte[])(obj));
             }
         }

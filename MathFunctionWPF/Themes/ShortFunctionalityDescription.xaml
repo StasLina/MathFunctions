@@ -15,11 +15,16 @@
         </Grid.ColumnDefinitions>
 
          <!-- Первый столбец с изображением -->
-        <Image 
-            Width="128" Height="128"
+        
+
+        <ContentControl 
+            x:Name="MethodImage" 
+            Width="128" 
+            Height="128"
             VerticalAlignment="Top" 
             HorizontalAlignment="Left"
             Margin="10"/>
+            
 
         <!-- Второй столбец с вложенной сеткой из двух строк -->
         <Grid Grid.Column="1" Margin="10">
@@ -29,13 +34,13 @@
             </Grid.RowDefinitions>
 
             <!-- Заголовок метода -->
-            <TextBlock Text="Название метода"
+            <TextBlock x:Name="MethodName"  Text="Название метода"
                             FontSize="18" FontWeight="Bold"
                             Grid.Row="0"
                             Margin="0,0,0,5"/>
 
             <!-- Описание метода -->
-            <TextBlock Text="Описание метода: краткое и информативное объяснение, которое может занимать несколько строк текста."
+            <TextBlock x:Name="MethodDescription" Text="Описание метода: краткое и информативное объяснение, которое может занимать несколько строк текста."
                             FontSize="14"
                             TextWrapping="Wrap"
                             Grid.Row="1"/>

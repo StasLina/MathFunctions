@@ -62,6 +62,14 @@ namespace MathFunctionWPF.Controllers.Drawing
             }
         }
 
+        public static BitmapImage GetImageSVG(byte[] arrImages, int width = 256, int height = 256) {
+            SKBitmap svgBitMap;
+            using (var memoryStream = new MemoryStream(arrImages)) {
+                svgBitMap = LoadSvgIcon(memoryStream, width, height);
+            }
+            return ConvertToBitmapImage(svgBitMap);
+        }
+
         public static BitmapImage LoadPngImage(byte[] imageBytes)
         {
             // Создаем новый BitmapImage

@@ -20,9 +20,25 @@ namespace MathFunctionWPF.Views
     /// </summary>
     public partial class MathFunctionSearchView : UserControl
     {
+        public delegate void RouteFilterElementHandlers(string searchingString);
+
+        RouteFilterElementHandlers ?handler;
         public MathFunctionSearchView()
         {
             InitializeComponent();
+            this.BSearch.Click += SearchEventHandler;
         }
+
+        void SearchEventHandler(object sender, RoutedEventArgs e)
+        {
+            handler.Invoke(TextInput.Text);
+        }
+
+        public void AddHandler(RouteFilterElementHandlers e)
+        {
+            handler += e;
+        }
+
+
     }
 }
