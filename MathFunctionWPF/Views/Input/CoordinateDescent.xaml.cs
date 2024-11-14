@@ -14,18 +14,17 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MathFunctionWPF.Views
+namespace MathFunctionWPF.Views.Input
 {
     /// <summary>
-    /// Логика взаимодействия для FunctionInputInegral.xaml
+    /// Логика взаимодействия для CoordinateDescent.xaml
     /// </summary>
-
-
-    public partial class FunctionInputIntegralView : UserControl
+    public partial class CoordinateDescent : UserControl
     {
-        public FunctionInputIntegralView()
+        public CoordinateDescent()
         {
             InitializeComponent();
+
             var model = new FunctionInputData();
             DataContext = model;
 
@@ -157,7 +156,7 @@ namespace MathFunctionWPF.Views
 
         private void Precision_LostFocus(object sender, RoutedEventArgs e)
         {
- 
+
         }
 
         private void CountStep_LostFocus(object sender, RoutedEventArgs e)
@@ -169,3 +168,4 @@ namespace MathFunctionWPF.Views
         }
     }
 }
+

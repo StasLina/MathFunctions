@@ -30,8 +30,8 @@
             <CheckBox Content="Bogo" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </WrapPanel>
         <ContentControl Content="{Binding DrawableView}" HorizontalAlignment="Left" Margin="368,73,0,0" VerticalAlignment="Top" Height="290" Width="398"/>
-        <CheckBox Content="По возрастанию" HorizontalAlignment="Left" Margin="196,99,0,0" VerticalAlignment="Top"/>
-        <Label Content="Сортировка" HorizontalAlignment="Left" Margin="187,73,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <CheckBox Content="По возрастанию" HorizontalAlignment="Left" Margin="187,112,0,0" VerticalAlignment="Top"/>
+        <Label Content="Сортировка" HorizontalAlignment="Left" Margin="178,86,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
 
     </Grid>
 </UserControl>

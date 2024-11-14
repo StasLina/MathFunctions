@@ -87,7 +87,7 @@ namespace MathFunctionWPF.Controllers
             }
         }
 
-        public void  MethodChanged(TypeMathMethod typeMethod)
+        public void MethodChanged(TypeMathMethod typeMethod)
         {
             _functionInputModel.ResetLabels();
             switch (typeMethod)
@@ -216,6 +216,51 @@ namespace MathFunctionWPF.Controllers
             else
             {
                 inputView = new FunctionInputIntegralView();
+                _mathFunctionViewModel.SourceDataView = inputView;
+                _functionInputView = inputView;
+
+                if (_functionInputModel == null)
+                {
+                    _functionInputModel = (FunctionInputData)inputView.DataContext;
+                }
+                else
+                {
+                    inputView.DataContext = _functionInputModel;
+                }
+
+                inputView.AddFunctionStringChangedListener(this.TextFunctionChange);
+                inputView.AddArgXStartChangedListener(this.UpdateXStartArg);
+                inputView.AddArgXEndChangedListener(this.UpdateXEndArg);
+                inputView.AddAverageChangedListener(this.UpdateAccuracyArg);
+                inputView.AddCountStepsChangedListener(this.UpdateCountStepsArg);
+            }
+
+
+            //_functionInputModel.UpdateWithData();
+            return inputView;
+
+        }
+
+        private Views.Input.CoordinateDescent InitFunctionCoordinateutView()
+        {
+            Views.Input.CoordinateDescent inputView;
+            if (_functionInputView is null)
+            {
+                inputView = null;
+            }
+            else
+            {
+                inputView = _mathFunctionViewModel.SourceDataView as Views.Input.CoordinateDescent;
+
+            }
+
+            if (inputView != null)
+            {
+                _functionInputView = inputView;
+            }
+            else
+            {
+                inputView = new Views.Input.CoordinateDescent();
                 _mathFunctionViewModel.SourceDataView = inputView;
                 _functionInputView = inputView;
 
@@ -391,18 +436,28 @@ namespace MathFunctionWPF.Controllers
                 {
                     _functionInputModel.X1Label = "Y";
                     _functionInputModel.X0Label = "X";
+
+                    var view = _functionInputView as Views.Input.CoordinateDescent;
+                    view.XBegining.Visibility = Visibility.Hidden;
+                    view.XBeginingLabel.Visibility = Visibility.Hidden;
                 }
                 else if (_calculation.CountArgs() == 1)
                 {
                     _functionInputModel.X1Label = "X1";
                     _functionInputModel.X0Label = "X0";
+
+                    var view = _functionInputView as Views.Input.CoordinateDescent;
+                    //view.
+                    view.XBegining.Visibility = Visibility.Visible;
+                    view.XBeginingLabel.Visibility = Visibility.Visible;
                 }
 
             }
         }
         private void InitCoordinateDesent()
         {
-            InitFunctionIntegrationInputView();
+            //InitFunctionIntegrationInputView();
+            InitFunctionCoordinateutView();
 
             _mathFunctionViewModel.TypeMethod = TypeMathMethod.CoordinateDesent;
 
@@ -410,7 +465,6 @@ namespace MathFunctionWPF.Controllers
 
             if (_mathFunctionViewModel.CalculationView != null && _mathFunctionViewModel.CalculationView is FunctionOutputMinMaxView)
             {
-
                 _functionOutputView = (FunctionOutputMinMaxView)_mathFunctionViewModel.CalculationView;
             }
             else
@@ -419,6 +473,10 @@ namespace MathFunctionWPF.Controllers
                 _mathFunctionViewModel.CalculationView = _functionOutputView;
             }
 
+            _functionInputModel.XStartText1 = _functionInputModel.XStartText;
+            _functionInputModel.X1EndText1 = _functionInputModel.X1EndText;
+
+            //_
             InitCoordinateDesentLabels();
 
 
@@ -923,9 +981,17 @@ namespace MathFunctionWPF.Controllers
 
                                 case 1:
                                     {
-                                        double value = CoordinateDescent.Calc1Arg(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
+                                        double xStartText1 = double.Parse(_functionInputModel.XStartText1);
+
+                                        if (xStartText1 < _functionInputModel.XStart || xStartText1 > _functionInputModel.XEnd)
+                                        {
+                                            MessageBox.Show("Начальние приближение X` не в диапазоне");
+                                            return;
+                                        }
+
+                                        double value = CoordinateDescent.Calc1Arg(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, xStartText1, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
                                         _calculation.IsInverse = true;
-                                        double value2 = CoordinateDescent.Calc1Arg(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
+                                        double value2 = CoordinateDescent.Calc1Arg(_calculation, _functionInputModel.XStart, _functionInputModel.XEnd, xStartText1, _functionInputModel.Accuracy, (int)_functionInputModel.CountSteps);
                                         _calculation.IsInverse = false;
                                         string minimalValue, maximalValue;
 

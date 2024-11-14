@@ -96,8 +96,11 @@ namespace MathFunctionWPF.Controllers
                         return controller.View;
                     }
                 case TypeMathMethod.BubbleSort:
-                    isNewWindow = true;
-                    //return _contrllerSelectionView;
+                    {
+                        isNewWindow = true;
+                        MathSortingController controller = new MathSortingController(new MathSortView());
+                        return controller.View;
+                    }
                     break;
                 case TypeMathMethod.MainMenu:
                 default:

@@ -1,4 +1,5 @@
 ﻿using MathFunctionWPF.Models;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks.Dataflow;
 
 namespace MathFunctionWPF.MathMethods
@@ -8,16 +9,16 @@ namespace MathFunctionWPF.MathMethods
         // Целевая функция для минимизации
 
         // Метод координатного спуска
-        public static double Calc1Arg(FunctionCalculation calculation, double minX, double maxX, double learningRate, int iterations)
+        public static double Calc1Arg(FunctionCalculation calculation, double minX, double maxX, double xBegin, double learningRate, int iterations)
         {
-            double currentPoint = minX; // Текущая точка
+            double currentPoint = xBegin; // Текущая точка
 
             for (int iter = 0; iter < iterations; iter++)
             {
                 // Пробуем увеличить текущий аргумент
                 double pointPlus = currentPoint + learningRate;
                 double costPlus = calculation.Calculate(pointPlus);
-
+                
                 // Пробуем уменьшить текущий аргумент
                 double pointMinus = currentPoint - learningRate;
                 double costMinus = calculation.Calculate(pointMinus);

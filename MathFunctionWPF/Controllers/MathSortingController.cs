@@ -15,16 +15,22 @@ namespace MathFunctionWPF.Controllers
             switch (newMethod)
             {
                 case TypeMathMethod.BubbleSort:
-
+                    //_view.SortView.
                     break;
             }
         }
 
         MathSortView _view;
+
+        public MathSortView View
+        {
+            get { return _view; }
+        }
         public MathSortingController(MathSortView sortView)
         {
             _view = sortView;
         }
+
 
     }
 }

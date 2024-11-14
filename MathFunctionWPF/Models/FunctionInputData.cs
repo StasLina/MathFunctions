@@ -27,6 +27,7 @@ namespace MathFunctionWPF.Models
 
         public double XStart { get; set; } = -5;
         public double XEnd { get; set; } = 10;
+
         public double Accuracy { get; set; } = 0.1;
 
         public double CalcIncrementRate()
@@ -98,6 +99,32 @@ namespace MathFunctionWPF.Models
         }
 
         public string X1EndText
+        {
+            get
+            {
+                return _x1EndText;
+            }
+            set
+            {
+                _x1EndText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string XStartText1
+        {
+            get
+            {
+                return _xStartText;
+            }
+            set
+            {
+                _xStartText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string X1EndText1
         {
             get
             {

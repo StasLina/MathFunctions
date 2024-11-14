@@ -19,8 +19,7 @@
     <Grid>
         <ContentControl Content="{Binding DescriptionView}" HorizontalAlignment="Left" Margin="22,60,0,0" VerticalAlignment="Top" Height="176" Width="1244"/>
         <ContentControl Content="{Binding SourceDataView}" HorizontalAlignment="Left" Margin="18,263,0,0" VerticalAlignment="Top" Height="175" Width="413" RenderTransformOrigin="0.21,3.694"/>
-        <ContentControl HorizontalAlignment="Left" Margin="458,263,0,0" VerticalAlignment="Top" Height="413" Width="805">
-        </ContentControl>
+        <ContentControl Content="{Binding GraphPlotterView}" HorizontalAlignment="Left" Margin="458,263,0,0" VerticalAlignment="Top" Height="413" Width="805"/>
         <ContentControl Content="{Binding CalculationView}" HorizontalAlignment="Left" Margin="18,472,0,0" VerticalAlignment="Top" Height="204" Width="413" RenderTransformOrigin="0.21,3.694"/>
     </Grid>
 </UserControl>
