@@ -6,6 +6,6 @@
              xmlns:local="clr-namespace:MathFunctionWPF.Views"
              mc:Ignorable="d" >
     <Grid>
-        <local:BubleSortView  x:Name="SortView"/>
+        <local:BubleSortView  x:Name="SortView" Loaded="SortView_Loaded"/>
     </Grid>
 </UserControl>

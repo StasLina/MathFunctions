@@ -6,32 +6,62 @@
              xmlns:local="clr-namespace:MathFunctionWPF.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <!-- Объявляем конвертер для использования в XAML -->
+        <local:ResultsVisibilityConverter x:Key="ResultsVisibilityConverter"/>
+    </UserControl.Resources>
+    
     <Grid>
-        <WrapPanel HorizontalAlignment="Left" Height="161" Margin="36,225,0,0" VerticalAlignment="Top" Width="262" RenderTransformOrigin="0.458,0.389">
-            <DataGrid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <WrapPanel HorizontalAlignment="Left" Height="161" Margin="10,289,0,0" VerticalAlignment="Top" Width="327" RenderTransformOrigin="0.458,0.389">
+            <DataGrid 
+                x:Name="DataGrid" 
+                AutoGenerateColumns="False" HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch"
+                IsReadOnly="True"
+                >
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Сортировка"/>
-                    <DataGridTextColumn Header="Время выполнения"/>
-                    <DataGridCheckBoxColumn Header="Выгрузить"/>
+                    <DataGridTextColumn Header="Тип" Binding="{Binding Tile}" />
+                    <DataGridTextColumn Header="Время (мс)" Binding="{Binding Time}" />
+                    <DataGridTextColumn Header="Кол-во итераций" Binding="{Binding Iteration}" />
+
+                    <!-- Колонка с кнопкой, которая отображается, когда Results не пустой -->
+                    <DataGridTemplateColumn Header="Результат">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Посмотреть результат" 
+                                    Visibility="{Binding Results, Converter={StaticResource ResultsVisibilityConverter}}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
-                <DataGrid.ColumnHeaderStyle>
-                    <Style/>
-                </DataGrid.ColumnHeaderStyle>
             </DataGrid>
+            <ProgressBar Height="10" Width="100"/>
         </WrapPanel>
 
         <WrapPanel HorizontalAlignment="Left" Margin="36,48,0,0" Orientation="Vertical" VerticalAlignment="Top">
             <Label Content="Сортировки" HorizontalAlignment="Left" VerticalAlignment="Center" RenderTransformOrigin="-0.068,-0.103" FontWeight="Bold"/>
 
-            <CheckBox Content="Пузырьковая" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <CheckBox Content="Быстрая" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <CheckBox Content="Вставками" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <CheckBox Content="Шэйкерная" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <CheckBox Content="Bogo" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <CheckBox Content="Пузырьковая" IsChecked="{Binding IsBuble}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <CheckBox Content="Быстрая" IsChecked="{Binding IsFaster}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <CheckBox Content="Вставками" IsChecked="{Binding IsInserter}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <CheckBox Content="Шэйкерная" IsChecked="{Binding IsSheikernay}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <CheckBox Content="Bogo" IsChecked="{Binding IsBogo}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </WrapPanel>
-        <ContentControl Content="{Binding DrawableView}" HorizontalAlignment="Left" Margin="368,73,0,0" VerticalAlignment="Top" Height="290" Width="398"/>
-        <CheckBox Content="По возрастанию" HorizontalAlignment="Left" Margin="187,112,0,0" VerticalAlignment="Top"/>
-        <Label Content="Сортировка" HorizontalAlignment="Left" Margin="178,86,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <ContentControl HorizontalAlignment="Left" Margin="368,73,0,0" VerticalAlignment="Top" Height="290" Width="398"/>
+        <CheckBox x:Name="CBOrder" Content="{Binding OrderLabel}" IsChecked="{Binding OrderChecked}" HorizontalAlignment="Left" Margin="187,75,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.966,-1.077"/>
+        <Label Content="Сортировка" HorizontalAlignment="Left" Margin="187,48,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <WrapPanel  Height="28" Margin="38,218,0,0" HorizontalAlignment="Left" Width="189" VerticalAlignment="Top">
+            <Button x:Name="BManualInput" Content="Ввести"/>
+            <Button x:Name="BFileIput" Content="Загрузить"/>
+            <Button x:Name="BExcelInput" Content="Excel"/>
+            <Button x:Name="BRandInput" Content="Случайно"/>
+
+        </WrapPanel>
+        <Label Content="Данные" HorizontalAlignment="Left" Margin="36,164,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.092,0.154" FontWeight="Bold"/>
+        <Label x:Name="LIsDataSet" Content="Данные не установлены" HorizontalAlignment="Left" Margin="38,187,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.092,0.154"/>
+        <Button x:Name="BSortData" Content="Сортировать" HorizontalAlignment="Left" Margin="55,251,0,0" VerticalAlignment="Top" Width="95"/>
+        
 
     </Grid>
 </UserControl>

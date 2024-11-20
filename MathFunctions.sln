@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OxyPlot.Wpf", "..\oxyplot\S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OxyPlot.Wpf.Shared", "..\oxyplot\Source\OxyPlot.Wpf.Shared\OxyPlot.Wpf.Shared.csproj", "{C68B9480-0BE8-4B77-AAC1-17FB1B37BCCB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp1", "WpfApp1\WpfApp1.csproj", "{530831D7-DABF-48B1-8236-7A24D9019BB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,18 @@ Global
 		{C68B9480-0BE8-4B77-AAC1-17FB1B37BCCB}.Release|x64.Build.0 = Release|Any CPU
 		{C68B9480-0BE8-4B77-AAC1-17FB1B37BCCB}.Release|x86.ActiveCfg = Release|Any CPU
 		{C68B9480-0BE8-4B77-AAC1-17FB1B37BCCB}.Release|x86.Build.0 = Release|Any CPU
+		{530831D7-DABF-48B1-8236-7A24D9019BB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{530831D7-DABF-48B1-8236-7A24D9019BB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{530831D7-DABF-48B1-8236-7A24D9019BB6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{530831D7-DABF-48B1-8236-7A24D9019BB6}.Debug|x64.Build.0 = Debug|Any CPU
+		{530831D7-DABF-48B1-8236-7A24D9019BB6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{530831D7-DABF-48B1-8236-7A24D9019BB6}.Debug|x86.Build.0 = Debug|Any CPU
+		{530831D7-DABF-48B1-8236-7A24D9019BB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{530831D7-DABF-48B1-8236-7A24D9019BB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{530831D7-DABF-48B1-8236-7A24D9019BB6}.Release|x64.ActiveCfg = Release|Any CPU
+		{530831D7-DABF-48B1-8236-7A24D9019BB6}.Release|x64.Build.0 = Release|Any CPU
+		{530831D7-DABF-48B1-8236-7A24D9019BB6}.Release|x86.ActiveCfg = Release|Any CPU
+		{530831D7-DABF-48B1-8236-7A24D9019BB6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
