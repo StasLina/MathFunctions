@@ -4,14 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MathFunctionWPF.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             mc:Ignorable="d" Height="525" Width="929">
 
     <UserControl.Resources>
         <!-- Объявляем конвертер для использования в XAML -->
         <local:ResultsVisibilityConverter x:Key="ResultsVisibilityConverter"/>
     </UserControl.Resources>
-    
+
     <Grid>
         <WrapPanel HorizontalAlignment="Left" Height="161" Margin="10,289,0,0" VerticalAlignment="Top" Width="327" RenderTransformOrigin="0.458,0.389">
             <DataGrid 
@@ -30,7 +29,7 @@
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Content="Посмотреть результат" 
-                                    Visibility="{Binding Results, Converter={StaticResource ResultsVisibilityConverter}}" />
+                                    Visibility="{Binding Results, Converter={StaticResource ResultsVisibilityConverter}}" Click="Button_Click" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -48,7 +47,7 @@
             <CheckBox Content="Шэйкерная" IsChecked="{Binding IsSheikernay}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <CheckBox Content="Bogo" IsChecked="{Binding IsBogo}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </WrapPanel>
-        <ContentControl HorizontalAlignment="Left" Margin="368,73,0,0" VerticalAlignment="Top" Height="290" Width="398"/>
+        <ContentControl x:Name="Drawing" HorizontalAlignment="Left" Margin="342,116,0,0" VerticalAlignment="Top" Height="388" Width="567"/>
         <CheckBox x:Name="CBOrder" Content="{Binding OrderLabel}" IsChecked="{Binding OrderChecked}" HorizontalAlignment="Left" Margin="187,75,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.966,-1.077"/>
         <Label Content="Сортировка" HorizontalAlignment="Left" Margin="187,48,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
         <WrapPanel  Height="28" Margin="38,218,0,0" HorizontalAlignment="Left" Width="189" VerticalAlignment="Top">
@@ -61,7 +60,9 @@
         <Label Content="Данные" HorizontalAlignment="Left" Margin="36,164,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.092,0.154" FontWeight="Bold"/>
         <Label x:Name="LIsDataSet" Content="Данные не установлены" HorizontalAlignment="Left" Margin="38,187,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.092,0.154"/>
         <Button x:Name="BSortData" Content="Сортировать" HorizontalAlignment="Left" Margin="55,251,0,0" VerticalAlignment="Top" Width="95"/>
-        
+        <Button x:Name="BUpdateTable" Content="R" HorizontalAlignment="Left" Margin="163,251,0,0" VerticalAlignment="Top" Width="19"/>
+        <ComboBox x:Name="CBViewResults"  HorizontalAlignment="Left" Margin="342,52,0,0" VerticalAlignment="Top" Width="120"/>
+
 
     </Grid>
 </UserControl>

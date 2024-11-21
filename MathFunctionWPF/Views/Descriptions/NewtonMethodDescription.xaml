@@ -1,26 +1,17 @@
-﻿<UserControl x:Class="MathFunctionWPF.Views.Descriptions.NewtonMethodDescription"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MathFunctionWPF.Views.Descriptions"
+             xmlns:Views="clr-namespace:MathFunctionWPF.Views" x:Class="MathFunctionWPF.Views.Descriptions.NewtonMethodDescription"
              mc:Ignorable="d" 
              d:DesignHeight="176" d:DesignWidth="1245">
     <Grid>
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" Text="Метод Ньютона"/>
 
         <!-- Описание метода Ньютона -->
-        <TextBlock HorizontalAlignment="Center" Margin="0,27,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="1225" FontSize="14" Height="155">
-            <Run Text="Метод Ньютона — это численный метод нахождения корня уравнения, основанный на использовании производной функции. "/>
-            <Run Text="Суть метода заключается в том, что начиная с начального приближения, на каждом шаге происходит " />
-            <Run Text="аппроксимация корня с использованием касательной к графику функции. "/>
-            <LineBreak/>
-            <Run Text="Алгоритм начинается с выбора начального приближения x₀, после чего вычисляется значение функции f(x) и её производной f'(x) в этой точке. "/>
-            <Run Text="Затем обновляется приближение по формуле: x₁ = x₀ - f(x₀) / f'(x₀). "/>
-            <Run Text="Этот процесс повторяется до тех пор, пока не будет достигнута заданная точность или не будет превышено максимальное количество итераций."/>
-            <LineBreak/>
-            <Run Text="Метод Ньютона отличается высокой скоростью сходимости, особенно когда начальное приближение близко к истинному корню. "/>
-            <Run Text="Однако он требует, чтобы производная функции была известна и не равнялась нулю в области поиска корня, что может ограничить его применение."/>
-        </TextBlock>
+        <TextBlock HorizontalAlignment="Center" Margin="0,27,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="1225" FontSize="14" Height="155"><Run Text="Метод Ньютона — это численный метод нахождения корня уравнения, основанный на использовании производной функции. "/><Run Text=" "/><Run Text="Суть метода заключается в том, что начиная с начального приближения, на каждом шаге происходит " /><Run Text=" "/><Run Text="аппроксимация корня с использованием касательной к графику функции. "/><LineBreak/><Run Text="Алгоритм начинается с выбора начального приближения x₀, после чего вычисляется значение функции f(x) и её производной f'(x) в этой точке. "/><Run Text=" "/><Run Text="Затем обновляется приближение по формуле: x₁ = x₀ - f(x₀) / f'(x₀). "/><Run Text=" "/><Run Text="Этот процесс повторяется до тех пор, пока не будет достигнута заданная точность или не будет превышено максимальное количество итераций."/><LineBreak/><Run Text="Метод Ньютона отличается высокой скоростью сходимости, особенно когда начальное приближение близко к истинному корню. "/><Run Text=" "/><Run Text="Однако он требует, чтобы производная функции была известна и не равнялась нулю в области поиска корня, что может ограничить его применение."/></TextBlock>
+        <Views:MethodListControl/>
     </Grid>
 </UserControl>
