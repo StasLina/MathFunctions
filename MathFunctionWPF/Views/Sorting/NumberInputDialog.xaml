@@ -3,17 +3,40 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MathFunctionWPF.Views.Sorting"
+        Title="Параметры рандомизации"
         mc:Ignorable="d"
-        Title="Введите число" Height="200" Width="300">
-    <Grid>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,20,0,0" FontSize="14" Text="Пожалуйста, введите число:"/>
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Height="250" Width="400">
 
-        <TextBox Name="inputTextBox" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" PreviewKeyDown="NumberInput_PreviewKeyDown"/>
+    <Window.Resources>
+        <!-- Шаблон для отображения одного поля ввода -->
+        <DataTemplate x:Key="InputFieldTemplate">
+            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                <TextBlock Text="{Binding Label}" FontWeight="Bold" Width="150" />
+                <TextBox 
+                    Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" 
+                    Width="150" 
+                    PreviewTextInput="InputField_PreviewTextInput" 
+                    />
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,20">
-            <Button Name="okButton" Content="ОК" Width="80" Click="OkButton_Click" Margin="5"/>
-            <Button Name="cancelButton" Content="Отмена" Width="80" Click="CancelButton_Click" Margin="5"/>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Генерация полей -->
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding InputFields}" 
+                      ItemTemplate="{StaticResource InputFieldTemplate}" />
+
+        <!-- Кнопки -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0" Height="40">
+            <Button Name="okButton" Content="ОК" Width="80"  Click="OkButton_Click" Margin="5" />
+            <Button Name="cancelButton" Content="Отмена" Width="80" Click="CancelButton_Click" Margin="5" />
         </StackPanel>
     </Grid>
 </Window>

@@ -27,6 +27,9 @@ namespace MathFunctionWPF.Views
             DataContext = new BubbleModel();
         }
 
+        public delegate void SaveClickEvent(List<double> e);
+        public SaveClickEvent eventSaveClick { get; set; }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             // Получаем кнопку, которая была нажата
@@ -44,8 +47,16 @@ namespace MathFunctionWPF.Views
 
                 // Доступ к данным, привязанным к строке
                 //MessageBox.Show($"Результат для {rowData.Tile}: {rowData.Results}");
-                WInputNumbers wInputNumbers = new WInputNumbers((List<double>)rowData.Results);
+
+                List<double> results = (List<double>)rowData.Results;
+                WInputNumbers wInputNumbers = new WInputNumbers(results);
+
+                wInputNumbers.ClickButton.Click += (object sender, RoutedEventArgs e) =>
+                {
+                    eventSaveClick?.Invoke(results);
+                };
                 wInputNumbers.ShowDialog();
+
             }
         }
 

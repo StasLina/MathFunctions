@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MathFunctionWPF.Views"
+             xmlns:local1="clr-namespace:MathFunctionWPF.Views.Sorting"
              mc:Ignorable="d" Height="525" Width="929">
 
     <UserControl.Resources>
@@ -48,8 +49,7 @@
             <CheckBox Content="Bogo" IsChecked="{Binding IsBogo}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </WrapPanel>
         <ContentControl x:Name="Drawing" HorizontalAlignment="Left" Margin="342,116,0,0" VerticalAlignment="Top" Height="388" Width="567"/>
-        <CheckBox x:Name="CBOrder" Content="{Binding OrderLabel}" IsChecked="{Binding OrderChecked}" HorizontalAlignment="Left" Margin="187,75,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.966,-1.077"/>
-        <Label Content="Сортировка" HorizontalAlignment="Left" Margin="187,48,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        
         <WrapPanel  Height="28" Margin="38,218,0,0" HorizontalAlignment="Left" Width="189" VerticalAlignment="Top">
             <Button x:Name="BManualInput" Content="Ввести"/>
             <Button x:Name="BFileIput" Content="Загрузить"/>
@@ -62,7 +62,8 @@
         <Button x:Name="BSortData" Content="Сортировать" HorizontalAlignment="Left" Margin="55,251,0,0" VerticalAlignment="Top" Width="95"/>
         <Button x:Name="BUpdateTable" Content="R" HorizontalAlignment="Left" Margin="163,251,0,0" VerticalAlignment="Top" Width="19"/>
         <ComboBox x:Name="CBViewResults"  HorizontalAlignment="Left" Margin="342,52,0,0" VerticalAlignment="Top" Width="120"/>
+        <local1:OrderSort  x:Name="OrderSort" HorizontalAlignment="Left" Margin="185,48,0,0" VerticalAlignment="Top"/>
 
-
+    
     </Grid>
 </UserControl>

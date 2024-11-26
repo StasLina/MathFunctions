@@ -19,14 +19,17 @@ namespace MathFunctionWPF.Views
     /// </summary>
     public partial class WInputNumbers : Window
     {
+
+        public Button ClickButton { get; set; }
         public WInputNumbers(List<double> items)
         {
             InitializeComponent();
-
             UserControl1 userControl1 = new UserControl1(items);
             Content = userControl1;
             //Show();
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            ClickButton = userControl1.BSave;
 
             SizeToContent = SizeToContent.WidthAndHeight;
             ResizeMode = ResizeMode.NoResize;

@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="MathFunctionWPF.Views.Sorting.OrderSort"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MathFunctionWPF.Views.Sorting"
+             mc:Ignorable="d" >
+    <Grid>
+        
+        <StackPanel>
+            <Label Content="Сортировка" HorizontalAlignment="Center"  VerticalAlignment="Top" FontWeight="Bold"/>
+            <CheckBox x:Name="CBSortAsc" Content="по возврастанию" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="CBSortAsc_Checked"/>
+            <CheckBox x:Name="CBSortDesc" Content="по убыванию" HorizontalAlignment="Left" VerticalAlignment="Top" Checked="CBSortDesc_Checked" />
+        </StackPanel>
+        
+    </Grid>
+</UserControl>

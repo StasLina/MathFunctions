@@ -24,6 +24,8 @@ using OxyPlot.Series;
 using OxyPlot.Axes;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace MathFunctionWPF.Views
 {
@@ -71,6 +73,12 @@ namespace MathFunctionWPF.Controllers
                         _view.SortView.BUpdateTable.Click += BUpdateTable_Click;
                         _view.SortView.CBViewResults.SelectionChanged += CBViewResults_SelectionChanged; ;
                         draw = new Draw(_view.SortView.Drawing);
+
+                        _view.SortView.eventSaveClick += (List<double> listValues) =>
+                        {
+                            Save(listValues);
+                        };
+                        //BubleSortView
                     }
                     break;
             }
@@ -80,16 +88,25 @@ namespace MathFunctionWPF.Controllers
         private void BRandInput_Click(object sender, RoutedEventArgs e)
         {
             NumberInputDialog numberInputDialog = new NumberInputDialog();
-            numberInputDialog.EventInputNumber += (double value) =>
+            numberInputDialog.EventInputNumber += (NumberInputDialog window) =>
             {
-                int count = (int)double.Ceiling(value);
+                var viewModel = window.DataContext as Models.NumberInputDialogViewModel;
+
+                int count = int.Parse(viewModel.InputFields[0].Value);
+                double min = double.Parse(viewModel.InputFields[1].Value);
+                double max = double.Parse(viewModel.InputFields[2].Value);
 
                 List<double> newValues = new List<double>();
                 Random rnd = new Random();
 
+                if (max < min)
+                {
+                    throw new Exception("Конец диапазона меньша чем начало");
+                }
+                double diap = max - min;
                 for (int idx = 0; idx < count; ++idx)
                 {
-                    newValues.Add(rnd.Next());
+                    newValues.Add(rnd.NextDouble() * diap + min);
                 }
 
                 _data.ArrValues = newValues;
@@ -153,7 +170,7 @@ namespace MathFunctionWPF.Controllers
 
         SortOder GetSortOder()
         {
-            return _view.SortView.CBOrder.IsChecked == true ? SortOder.Asc : SortOder.Desc;
+            return _view.SortView.OrderSort.Sorting == false ? SortOder.Asc : SortOder.Desc;
         }
 
         [Serializable]
@@ -182,19 +199,26 @@ namespace MathFunctionWPF.Controllers
 
 
 
-        void Save()
+
+        void Save(List<double>? listValues = null)
         {
+            if (listValues == null)
+            {
+                listValues = _data.ArrValues;
+            }
+
             var saveFileDialog = new SaveFileDialog()
             {
                 Filter = "JSON Files (*.json)|*.json",//|All Files (*.*)|*.*", // Фильтр для файлов JSON
                 Title = "Сохранить файл как JSON",
                 DefaultExt = "json", // Расширение по умолчанию
                 FileName = "data" // Имя файла по умолчанию
+
             };
 
             if (saveFileDialog.ShowDialog() == true)
             {
-                string json = JsonConvert.SerializeObject(_data, Formatting.Indented);
+                string json = JsonConvert.SerializeObject(listValues, Formatting.Indented);
 
                 try
                 {
@@ -205,9 +229,7 @@ namespace MathFunctionWPF.Controllers
                     // Обработка ошибок
                     MessageBox.Show($"Ошибка при сохранении файла: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-
             }
-
         }
 
         void LoadFile()
@@ -227,11 +249,16 @@ namespace MathFunctionWPF.Controllers
                 {
                     // Чтение всего содержимого файла
                     string content = reader.ReadToEnd();
-                    CompanionData? data = JsonConvert.DeserializeObject<CompanionData>(content);
-
+                    //CompanionData? data = JsonConvert.DeserializeObject<CompanionData>(content);
+                    List<double> data = JsonConvert.DeserializeObject<List<double>>(content);
                     if (data != null)
                     {
-                        _data = data;
+                        if (_data == null)
+                        {
+                            _data = new CompanionData();
+                        }
+
+                        _data.ArrValues = data;
                     }
                 }
             }
@@ -320,7 +347,7 @@ namespace MathFunctionWPF.Controllers
 
                 foreach (var text in columnData)
                 {
-                    if (double.TryParse(text, out double value) == false)
+                    if (double.TryParse(text, out double value) == true)
                     {
                         doubles.Add(value);
                     }
@@ -330,7 +357,6 @@ namespace MathFunctionWPF.Controllers
                     }
                 }
                 _data.ArrValues = doubles;
-
             }
 
         }
@@ -412,7 +438,6 @@ namespace MathFunctionWPF.Controllers
                 List<double> newList = _data.ArrValues.ToList();
                 rows.Add(newList);
 
-
                 Task a = Task.Run(
                     () =>
                     {
@@ -426,11 +451,30 @@ namespace MathFunctionWPF.Controllers
                 tasks.Add(a);
             }
 
-            // Ожидаем завершения всех задач
+            bool isCycleUpdate = true;
+
+
+            //            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            //{
+            //    // Код, который будет выполнен в главном потоке
+            //    // например, обновление UI
+            //}));
+
+
+            //Task taskWait = Task.Run(async () =>
+            //{
+
+            //    isCycleUpdate = false;
+            //});
+
+
             foreach (var a in tasks)
             {
                 await a;
             }
+            // Ожидаем завершения всех задач
+
+            isCycleUpdate = false;
 
             // Обновляем результаты
 
@@ -448,11 +492,11 @@ namespace MathFunctionWPF.Controllers
         {
             updatingCBViewResults = true;
             _view.SortView.CBViewResults.Items.Clear();
-            
+
 
             if (_records == null)
             {
-                
+
             }
             else
             {
@@ -467,7 +511,7 @@ namespace MathFunctionWPF.Controllers
 
         void UpdateResults(int index = 0)
         {
-            draw.DrawModel((List<double>) _records[index].Results);
+            draw.DrawModel((List<double>)_records[index].Results);
         }
 
         private void CBViewResults_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -521,8 +565,9 @@ namespace MathFunctionWPF.Controllers
                 var itemsSource = new List<BarItem>();
 
                 double min = double.MaxValue, max = -double.MaxValue;
-                foreach(var item in data) {
-                    itemsSource.Add(new BarItem() { Value = item});
+                foreach (var item in data)
+                {
+                    itemsSource.Add(new BarItem() { Value = item });
                     min = double.Min(min, item);
                     max = double.Max(min, item);
                 }
@@ -537,8 +582,8 @@ namespace MathFunctionWPF.Controllers
                     Position = AxisPosition.Bottom,  // Устанавливаем ось значений по горизонтали (снизу)
                     Title = "Значение",
                     Minimum = 0,
-                    Maximum = max+5,
-                   // StringFormat = "0" // Формат отображения чисел (без научной нотации)
+                    Maximum = max + 5,
+                    // StringFormat = "0" // Формат отображения чисел (без научной нотации)
                 };
 
                 plotModel.Axes.Add(linearAxis);
@@ -668,15 +713,69 @@ namespace MathFunctionWPF.Controllers
 }
 
 
-public class RecordSortResults
+//public class RecordSortResults
+//{
+//    public CancellationTokenSource cts = new CancellationTokenSource();
+//    public object _lock = new object();
+//    public bool isPaused = false;
+//    public string Tile { get; set; } = ""; // Тип
+//    public long Time { get; set; } = 0; // Время мс
+//    public int Iteration { get; set; } = 0; // Кол-во итераций
+//    public object Results { get; set; } // Результаты на List<double>
+//}
+public class RecordSortResults : INotifyPropertyChanged
 {
     public CancellationTokenSource cts = new CancellationTokenSource();
     public object _lock = new object();
     public bool isPaused = false;
-    public string Tile { get; set; } = ""; // Тип
-    public long Time { get; set; } = 0; // Время мс
-    public int Iteration { get; set; } = 0; // Кол-во итераций
-    public object Results { get; set; } // Результаты на List<double>
+    private string tile = "";
+    private long time = 0;
+    private int iteration = 0;
+    private object results = null;
+
+    public string Tile
+    {
+        get => tile;
+        set
+        {
+            tile = value;
+            OnPropertyChanged();
+        }
+    }
+    public long Time
+    {
+        get => time;
+        set
+        {
+            time = value;
+            OnPropertyChanged();
+        }
+    }
+    public int Iteration
+    {
+        get => iteration;
+        set
+        {
+            iteration = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public object Results
+    {
+        get => results;
+        set
+        {
+            results = value;
+            OnPropertyChanged();
+        } // Результаты на List<double>
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+    protected void OnPropertyChanged([CallerMemberName] string name = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
 }
 
 public abstract class SortBase
@@ -1107,7 +1206,13 @@ public class Bogosort : SortBase
         {
             Shuffle(data, rand);  // Перемешиваем элементы
             IncrementInstructionCount();  // Увеличиваем счетчик инструкций за перемешивание
+            if (InstructionCount > 5000)
+            {
+                MessageBox.Show("Количество итераций больше 5000 сортировка завершено досрочна");
+                break;
+            }
         }
+
     }
 
     // Метод для выполнения сортировки
@@ -1117,10 +1222,16 @@ public class Bogosort : SortBase
         InstructionCount = 0;  // Сбрасываем счетчик перед началом сортировки
 
         // Продолжаем случайно перемешивать элементы, пока они не окажутся отсортированными
-        while (!IsSorted(data))
+        while (!IsSorted(data, isAscending))
         {
             Shuffle(data, rand);  // Перемешиваем элементы
             IncrementInstructionCount();  // Увеличиваем счетчик инструкций за перемешивание
+
+            if (InstructionCount > 5000)
+            {
+                MessageBox.Show("Количество итераций больше 5000 сортировка завершено досрочна");
+                break;
+            }
         }
     }
 

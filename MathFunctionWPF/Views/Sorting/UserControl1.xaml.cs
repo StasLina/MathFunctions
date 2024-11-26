@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -84,65 +85,21 @@ namespace MathFunctionWPF.Views
 
         private void DataGrid_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
+            e.Handled = true;
             // Проверяем, что вводимый символ является числом или допустимым разделителем десятичной точки
-            var regex = new Regex(@$"[^0-9\{_comma}\+\-]+");
-            //e.Handled = regex.IsMatch(e.Text);
-            if (regex.IsMatch(e.Text))
-            {
-                e.Handled = true; 
-                return;
-            }
-
             DataGrid? dataGrid = sender as DataGrid;
 
+            DataGridCellInfo currentCell = dataGrid.CurrentCell;
+
+            if (currentCell.Column.GetCellContent(currentCell.Item) is TextBox textBox)
             {
-                DataGridCellInfo currentCell = dataGrid.CurrentCell;
+                string currentText = textBox.Text;
 
-                if (currentCell.Column.GetCellContent(currentCell.Item) is TextBox textBox)
+                if (Common.IsDouble(e.Text, textBox.CaretIndex,currentText,_comma))
                 {
-                    string currentText = textBox.Text;
-
-                    // Example check for valid input
-                    if ((e.Text == "+" || e.Text == "-") && textBox.CaretIndex != 0)
-                    {
-                        e.Handled = true;
-                        return;
-                    }
-
-                    if (e.Text == _comma && currentText.Contains(_comma))
-                    {
-                        e.Handled = true;
-                        return;
-                    }
+                    e.Handled = false;
                 }
             }
-
-            //DataGridCell? cell = sender as DataGridCell;
-            //if (cell != null)
-            //{
-            //    // Попробуем получить TextBox внутри ячейки
-            //    var textBox = cell.Content as TextBox;
-
-            //    if (textBox != null)
-            //    {
-            //        string currentText = textBox.Text;
-
-            //        // Если символ "+" или "-", проверяем, является ли он первым
-            //        if ((e.Text == "+" || e.Text == "-") && textBox.CaretIndex != 0)
-            //        {
-            //            e.Handled = true; // Запрещаем ввод "+" или "-" не в начале текста
-            //            return;
-            //        }
-
-            //        // Разрешаем ввод десятичной точки только один раз
-            //        if (e.Text == _comma && currentText.Contains(_comma))
-            //        {
-            //            e.Handled = true; // Запрещаем ввод второй десятичной точки
-            //            return;
-            //        }
-            //    }
-            //}
-
         }
 
         private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
@@ -152,6 +109,8 @@ namespace MathFunctionWPF.Views
             {
                 _isDataChange = true;
 
+
+                
                 // Проверяем, является ли введенное значение числом
                 //if (!double.TryParse(cell.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out var result))
                 //{
@@ -162,7 +121,7 @@ namespace MathFunctionWPF.Views
                 //{
                 //    // Присваиваем значение обратно в модель, если оно валидно
                 //    var myData = e.Row.Item as MyData;
-                    
+
                 //    if (myData != null)
                 //    {
                 //        myData.Value = result;
@@ -196,5 +155,75 @@ namespace MathFunctionWPF.Views
 
         
 
+    }
+}
+
+
+namespace MathFunctionWPF
+{
+    public static class Common
+    {
+
+        public static bool IsDouble(string inputCharacter, int CaretIndex, string allText, string comma = ".")
+        {
+            // Провяем что входной тект число
+            var regex = new Regex(@$"[^0-9\{comma}\+\-]+");
+            //e.Handled = regex.IsMatch(e.Text);
+            if (regex.IsMatch(inputCharacter))
+            {
+                return false;
+            }
+
+            {
+                // Ввели +\-
+                if ((inputCharacter == "+" || inputCharacter == "-") && CaretIndex != 0)
+                {
+                    return false;
+                }
+
+                // Уже есть запятая?
+                if (inputCharacter == comma && allText.Contains(comma))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+
+        public static bool IsNumber(string inputCharacter, int CaretIndex)
+        {
+            // Провяем что входной тект число
+            var regex = new Regex(@$"[^0-9\+\-]+");
+            //e.Handled = regex.IsMatch(e.Text);
+            if (regex.IsMatch(inputCharacter))
+            {
+                return false;
+            }
+
+            {
+                // Ввели +\-
+                if ((inputCharacter == "+" || inputCharacter == "-") && CaretIndex != 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static bool IsNumberPositive(string inputCharacter)
+        {
+            // Провяем что входной тект число
+            var regex = new Regex(@$"[^0-9]+");
+            //e.Handled = regex.IsMatch(e.Text);
+            if (regex.IsMatch(inputCharacter))
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
