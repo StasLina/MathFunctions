@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.Windows.Themes;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,6 +15,30 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
+namespace MathFunctionWPF.Models{
+    class ListNumbers : INotifyPropertyChanged
+    {
+        List<double> _items;
+
+        public object Items
+        {
+            get { return _items; }
+            set
+            {
+                _items = value as List<double>;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+    }
+}
+
 namespace MathFunctionWPF.Views
 {
     /// <summary>
@@ -21,7 +48,7 @@ namespace MathFunctionWPF.Views
     {
 
         public Button ClickButton { get; set; }
-        public WInputNumbers(List<double> items)
+        public WInputNumbers(List<double> items)//Models.CompanionData data
         {
             InitializeComponent();
             UserControl1 userControl1 = new UserControl1(items);

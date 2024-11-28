@@ -46,9 +46,8 @@ namespace MathFunctionWPF.Views
                 var rowData = (RecordSortResults)row.Item;
 
                 // Доступ к данным, привязанным к строке
-                //MessageBox.Show($"Результат для {rowData.Tile}: {rowData.Results}");
-
                 List<double> results = (List<double>)rowData.Results;
+                
                 WInputNumbers wInputNumbers = new WInputNumbers(results);
 
                 wInputNumbers.ClickButton.Click += (object sender, RoutedEventArgs e) =>
@@ -56,7 +55,6 @@ namespace MathFunctionWPF.Views
                     eventSaveClick?.Invoke(results);
                 };
                 wInputNumbers.ShowDialog();
-
             }
         }
 
@@ -74,6 +72,19 @@ namespace MathFunctionWPF.Views
 
             // Иначе рекурсивно ищем дальше
             return GetParent<T>(parent);
+        }
+
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Drawing.Width = e.NewSize.Width;
+            Drawing.Height = e.NewSize.Height;
+
+            // Если нужно оповестить OxyPlot о перерисовке
+            if (Drawing.Model != null)
+            {
+                Drawing.Model.InvalidatePlot(true);
+            }
+
         }
     }
 

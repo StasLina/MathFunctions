@@ -2,17 +2,10 @@
 using MathFunctionWPF.Views;
 using MathFunctionWPF.Views.Sorting;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 using Newtonsoft.Json;
-using System.Text.Json.Serialization;
 using System.Runtime.InteropServices;
-using Microsoft.Office;
 using Microsoft.Office.Interop.Excel;
 using System.IO;
 using System.Globalization;
@@ -26,6 +19,53 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+
+
+namespace MathFunctionWPF.Models
+{
+    [Serializable]
+    public class CompanionData : INotifyPropertyChanged
+    {
+        public delegate void DataCahangeEvent();
+        DataCahangeEvent? _eventDataChanged;
+        private List<double> arrValues = new List<double>();
+
+        public void AddHandlerDataChanged(DataCahangeEvent e)
+        {
+            _eventDataChanged = e;
+        }
+
+        public List<double> ArrValues
+        {
+            get => arrValues;
+            set
+            {
+                arrValues = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        public CompanionData()
+        {
+            PropertyChanged += PropertyChangedEventHandler;
+        }
+
+        private static void PropertyChangedEventHandler(object? sender, PropertyChangedEventArgs e)
+        {
+            CompanionData? data = sender as CompanionData;
+            if (e.PropertyName == "ArrValues")
+            {
+                data?._eventDataChanged?.Invoke();
+            }
+        }
+    }
+}
 
 namespace MathFunctionWPF.Views
 {
@@ -64,15 +104,17 @@ namespace MathFunctionWPF.Controllers
                 case TypeMathMethod.BubbleSort:
                     {
                         _method = TypeMathMethod.BubbleSort;
-
                         _view.SortView.BManualInput.Click += BManualInput_Click;
                         _view.SortView.BFileIput.Click += BFileIput_Click;
                         _view.SortView.BExcelInput.Click += BExcelInput_Click;
                         _view.SortView.BSortData.Click += BSortData_Click;
                         _view.SortView.BRandInput.Click += BRandInput_Click;
-                        _view.SortView.BUpdateTable.Click += BUpdateTable_Click;
+                        //_view.SortView.BUpdateTable.Click += BUpdateTable_Click;
                         _view.SortView.CBViewResults.SelectionChanged += CBViewResults_SelectionChanged; ;
                         draw = new Draw(_view.SortView.Drawing);
+
+                        _view.SortView.BSaveData.Click += BSaveData_Click;
+
 
                         _view.SortView.eventSaveClick += (List<double> listValues) =>
                         {
@@ -84,6 +126,10 @@ namespace MathFunctionWPF.Controllers
             }
         }
 
+        private void BSaveData_Click(object sender, RoutedEventArgs e)
+        {
+            Save();
+        }
 
         private void BRandInput_Click(object sender, RoutedEventArgs e)
         {
@@ -111,6 +157,7 @@ namespace MathFunctionWPF.Controllers
 
                 _data.ArrValues = newValues;
             };
+            numberInputDialog.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             numberInputDialog.ShowDialog();
         }
 
@@ -134,8 +181,10 @@ namespace MathFunctionWPF.Controllers
 
         private void BManualInput_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            MathFunctionWPF.Views.WInputNumbers wInputNumbers = new WInputNumbers(_data.ArrValues);
+            List<double> newValues = _data.ArrValues.ToList();
+            MathFunctionWPF.Views.WInputNumbers wInputNumbers = new WInputNumbers(newValues);
             wInputNumbers.ShowDialog();
+            _data.ArrValues = newValues;
         }
 
         MathSortView _view = null;
@@ -173,27 +222,6 @@ namespace MathFunctionWPF.Controllers
             return _view.SortView.OrderSort.Sorting == false ? SortOder.Asc : SortOder.Desc;
         }
 
-        [Serializable]
-        class CompanionData
-        {
-            public delegate void DataCahangeEvent();
-            DataCahangeEvent? _eventDataChanged;
-            private List<double> arrValues = new List<double>();
-
-            public void AddHandlerDataChanged(DataCahangeEvent e)
-            {
-                _eventDataChanged = e;
-            }
-            public List<double> ArrValues
-            {
-                get => arrValues;
-                set
-                {
-                    arrValues = value;
-                    _eventDataChanged?.Invoke();
-                }
-            }
-        }
 
         CompanionData _data = new CompanionData();
 
@@ -401,7 +429,7 @@ namespace MathFunctionWPF.Controllers
 
             if (model.IsBuble)
             {
-                var sort = new BubbleSort() { Results = new RecordSortResults { Tile = "Болотная", Time = 0, Iteration = 0, Results = null } };
+                var sort = new BubbleSort() { Results = new RecordSortResults { Tile = "Пузырьковая", Time = 0, Iteration = 0, Results = null } };
                 sortingBase.Add(sort);
                 _records.Add(sort.Results);
             }//Results = new List<double> { 1.2, 2.4, 3.6 } }
@@ -534,10 +562,10 @@ namespace MathFunctionWPF.Controllers
 
         class Draw
         {
-            ContentControl _drawing;
+            OxyPlot.Wpf.PlotView _drawing;
 
             // Конструктор класса Draw, инициализируем _drawing
-            public Draw(ContentControl drawing)
+            public Draw(OxyPlot.Wpf.PlotView drawing)
             {
                 _drawing = drawing;
             }
@@ -547,21 +575,15 @@ namespace MathFunctionWPF.Controllers
             {
 
                 double[] data = listValues.ToArray();
-                var plotView = new OxyPlot.Wpf.PlotView();
-                _drawing.Content = plotView;
+                var plotView = _drawing;
+
+
+
+                //plotView.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+                //plotView.HorizontalAlignment = System.Windows.VerticalAlignment.Stretch;
+
 
                 var plotModel = new PlotModel { Title = "Столбчатая диаграмма" };
-
-                //            var barSeries = new BarSeries
-                //            {
-                //                ItemsSource = new List<BarItem>
-                //{
-                //    new BarItem { Value = 10 },
-                //    new BarItem { Value = 20 },
-                //    new BarItem { Value = 30 }
-                //}
-                //            };
-
                 var itemsSource = new List<BarItem>();
 
                 double min = double.MaxValue, max = -double.MaxValue;
@@ -591,97 +613,8 @@ namespace MathFunctionWPF.Controllers
 
                 plotModel.Series.Add(barSeries);
 
-
-                //// Создаем ось категорий (по оси X)
-                //plotModel.Axes.Add(new CategoryAxis
-                //{
-                //    Position = AxisPosition.Bottom,
-                //    Key = "CategoryAxis",
-                //    //ItemsSource = new[] { "A", "B", "C", "D", "E" },  // Категории GetIndexes(data)
-                //});
-
-                //// Создаем ось значений (по оси Y)
-                //plotModel.Axes.Add(new LinearAxis
-                //{
-                //    Position = AxisPosition.Left,
-                //    Title = "Значения",
-                //    Minimum = 0,
-                //    Maximum = 10
-                //});
-
-
-
-                //// Создаем серию столбцов
-                //var barSeries = new BarSeries
-                //{
-
-                //    ItemsSource = new[]
-                //    {
-                //        new BarItem { Value = 5 },
-                //        new BarItem { Value = 3 },
-                //        new BarItem { Value = 8 },
-                //        new BarItem { Value = 6 },
-                //        new BarItem { Value = 4 }
-                //    },
-                //    LabelPlacement = LabelPlacement.Outside, // Размещение меток
-                //    LabelFormatString = "{0:0.00}" // Формат метки
-                //};
-
-                //barSeries.YAxisKey = "CategoryAxis";
-
-
-                //// Добавляем серию в модель
-                //plotModel.Series.Add(barSeries);
-
-                //// Привязываем модель к PlotView
                 plotView.Model = plotModel;
             }
-
-            //    try
-            //    {
-            //        double[] data = { 3.5, 7.2, 1.8, 4.6, 5.9 };
-
-            //        // Создаем модель графика
-            //        var plotModel = new PlotModel { Title = "Пример столбчатой диаграммы" };
-
-            //        // Создаем оси
-            //        plotModel.Axes.Add(new CategoryAxis
-            //        {
-            //            Position = AxisPosition.Bottom,
-            //            Key = "CategoryAxis",
-            //            ItemsSource = GetIndexes(data),  // Индексы массива в качестве категорий
-            //            LabelField = "Index",  // Названия категорий
-            //        });
-
-            //        plotModel.Axes.Add(new LinearAxis
-            //        {
-            //            Position = AxisPosition.Left,
-            //            Title = "Значение",
-            //            Minimum = 0,
-            //            Maximum = 10
-            //        });
-
-            //        // Добавляем столбчатую серию
-            //        var barSeries = new BarSeries
-            //        {
-            //            ItemsSource = GetBarItems(data), // Список столбцов
-            //            LabelPlacement = LabelPlacement.Outside, // Размещение меток
-            //            LabelFormatString = "{0:0.00}" // Формат метки
-            //        };
-
-            //        barSeries.YAxisKey = "CategoryAxis";
-
-            //        plotModel.Series.Add(barSeries);
-
-            //        // Привязка модели к графику
-            //        plotView.Model = plotModel;
-
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show(ex.Message);
-            //    }
-            //}
 
             // Метод для создания списка индексов (категорий)
             private List<KeyValuePair<string, double>> GetIndexes(double[] data)

@@ -5,65 +5,123 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MathFunctionWPF.Views"
              xmlns:local1="clr-namespace:MathFunctionWPF.Views.Sorting"
-             mc:Ignorable="d" Height="525" Width="929">
+             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+             mc:Ignorable="d">
 
     <UserControl.Resources>
         <!-- Объявляем конвертер для использования в XAML -->
         <local:ResultsVisibilityConverter x:Key="ResultsVisibilityConverter"/>
     </UserControl.Resources>
 
-    <Grid>
-        <WrapPanel HorizontalAlignment="Left" Height="161" Margin="10,289,0,0" VerticalAlignment="Top" Width="327" RenderTransformOrigin="0.458,0.389">
-            <DataGrid 
-                x:Name="DataGrid" 
-                AutoGenerateColumns="False" HorizontalAlignment="Stretch" 
-                VerticalAlignment="Stretch"
-                IsReadOnly="True"
-                >
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Тип" Binding="{Binding Tile}" />
-                    <DataGridTextColumn Header="Время (мс)" Binding="{Binding Time}" />
-                    <DataGridTextColumn Header="Кол-во итераций" Binding="{Binding Iteration}" />
+    <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="400" MaxWidth="400"></ColumnDefinition>
+            <ColumnDefinition MinWidth="400"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
 
-                    <!-- Колонка с кнопкой, которая отображается, когда Results не пустой -->
-                    <DataGridTemplateColumn Header="Результат">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Content="Посмотреть результат" 
-                                    Visibility="{Binding Results, Converter={StaticResource ResultsVisibilityConverter}}" Click="Button_Click" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-            <ProgressBar Height="10" Width="100"/>
-        </WrapPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
 
-        <WrapPanel HorizontalAlignment="Left" Margin="36,48,0,0" Orientation="Vertical" VerticalAlignment="Top">
-            <Label Content="Сортировки" HorizontalAlignment="Left" VerticalAlignment="Center" RenderTransformOrigin="-0.068,-0.103" FontWeight="Bold"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
 
-            <CheckBox Content="Пузырьковая" IsChecked="{Binding IsBuble}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <CheckBox Content="Быстрая" IsChecked="{Binding IsFaster}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <CheckBox Content="Вставками" IsChecked="{Binding IsInserter}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <CheckBox Content="Шэйкерная" IsChecked="{Binding IsSheikernay}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <CheckBox Content="Bogo" IsChecked="{Binding IsBogo}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        </WrapPanel>
-        <ContentControl x:Name="Drawing" HorizontalAlignment="Left" Margin="342,116,0,0" VerticalAlignment="Top" Height="388" Width="567"/>
-        
-        <WrapPanel  Height="28" Margin="38,218,0,0" HorizontalAlignment="Left" Width="189" VerticalAlignment="Top">
-            <Button x:Name="BManualInput" Content="Ввести"/>
-            <Button x:Name="BFileIput" Content="Загрузить"/>
-            <Button x:Name="BExcelInput" Content="Excel"/>
-            <Button x:Name="BRandInput" Content="Случайно"/>
+            <Grid.RowDefinitions>
+                <RowDefinition MinHeight="215" MaxHeight="215"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
 
-        </WrapPanel>
-        <Label Content="Данные" HorizontalAlignment="Left" Margin="36,164,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.092,0.154" FontWeight="Bold"/>
-        <Label x:Name="LIsDataSet" Content="Данные не установлены" HorizontalAlignment="Left" Margin="38,187,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.092,0.154"/>
-        <Button x:Name="BSortData" Content="Сортировать" HorizontalAlignment="Left" Margin="55,251,0,0" VerticalAlignment="Top" Width="95"/>
-        <Button x:Name="BUpdateTable" Content="R" HorizontalAlignment="Left" Margin="163,251,0,0" VerticalAlignment="Top" Width="19"/>
-        <ComboBox x:Name="CBViewResults"  HorizontalAlignment="Left" Margin="342,52,0,0" VerticalAlignment="Top" Width="120"/>
-        <local1:OrderSort  x:Name="OrderSort" HorizontalAlignment="Left" Margin="185,48,0,0" VerticalAlignment="Top"/>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MinWidth="140" MaxWidth="140"></ColumnDefinition>
+                    <ColumnDefinition MinWidth="150" MaxWidth="150"></ColumnDefinition>
+                    <ColumnDefinition ></ColumnDefinition>
+                </Grid.ColumnDefinitions>
 
-    
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <WrapPanel  Grid.Row ="0" HorizontalAlignment="Left"  Orientation="Vertical" VerticalAlignment="Top">
+                        <Label Content="Сортировки" HorizontalAlignment="Left" VerticalAlignment="Center" RenderTransformOrigin="-0.068,-0.103" FontWeight="Bold"/>
+
+                        <CheckBox Content="Пузырьковая" IsChecked="{Binding IsBuble}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <CheckBox Content="Быстрая" IsChecked="{Binding IsFaster}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <CheckBox Content="Вставками" IsChecked="{Binding IsInserter}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <CheckBox Content="Шэйкерная" IsChecked="{Binding IsSheikernay}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <CheckBox Content="Bogo" IsChecked="{Binding IsBogo}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    </WrapPanel>
+
+
+                    <local1:OrderSort Grid.Column="0" Grid.Row="1"  x:Name="OrderSort" HorizontalAlignment="Left"  VerticalAlignment="Top" RenderTransformOrigin="0.726,-0.214"/>
+
+
+                </Grid>
+
+                <StackPanel Grid.Row="0" Grid.Column="1"  Orientation="Vertical" MaxWidth="180">
+                    <Label Content="Данные" HorizontalAlignment="Center" RenderTransformOrigin="0.092,0.154" FontWeight="Bold"/>
+                    <Label x:Name="LIsDataSet" Content="Данные не установлены" HorizontalAlignment="Center" VerticalAlignment="Top" RenderTransformOrigin="0.092,0.154"/>
+
+                    <Button x:Name="BManualInput" Content="Ручной ввод"></Button>
+                    <Button x:Name="BRandInput" Content="Случайный ввод" Margin="0,5,0,0"/>
+                    <Button x:Name="BFileIput" Content="Загрузить из файла" Margin="0,5,0,0" />
+                    <Button x:Name="BExcelInput" Content="Загрузить из Excel" Margin="0,5,0,0" />
+                    <Button x:Name="BSaveData" Content="Сохранить" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Grid>
+
+            <WrapPanel Grid.Row="1" Grid.Column="0" 
+                       MinHeight="161"
+                       MinWidth="327" Orientation="Vertical">
+
+                <Button x:Name="BSortData" Content="Сортировать" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="95"/>
+
+                <DataGrid 
+   x:Name="DataGrid" 
+   AutoGenerateColumns="False" HorizontalAlignment="Stretch" 
+   VerticalAlignment="Stretch"
+   IsReadOnly="True"
+   >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Тип" Binding="{Binding Tile}" />
+                        <DataGridTextColumn Header="Время (мс)" Binding="{Binding Time}" />
+                        <DataGridTextColumn Header="Кол-во итераций" Binding="{Binding Iteration}" />
+
+                        <!-- Колонка с кнопкой, которая отображается, когда Results не пустой -->
+                        <DataGridTemplateColumn Header="Результат">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="Посмотреть результат" 
+                       Visibility="{Binding Results, Converter={StaticResource ResultsVisibilityConverter}}" Click="Button_Click" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </WrapPanel>
+
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.Column="1" SizeChanged="Grid_SizeChanged">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Для ComboBox -->
+                <RowDefinition Height="*"/>
+                <!-- Для ContentControl -->
+            </Grid.RowDefinitions>
+
+            <ComboBox x:Name="CBViewResults" Width="120" HorizontalAlignment="Left" Grid.Row="0"/>
+            <oxy:PlotView  x:Name="Drawing" Grid.Row="1" MinWidth="600" MinHeight="100" MaxHeight="10000" MaxWidth="10000" Margin="0,0,106,36" Width="600" Height="400"/>
+            <!-- Для <ContentControl x:Name="Drawing" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/> -->
+
+        </Grid>
     </Grid>
 </UserControl>

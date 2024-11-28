@@ -35,10 +35,11 @@ namespace MathFunctionWPF.Views
         List<double> _listElements;
 
         static readonly  string _comma =".";
-        public UserControl1(List<double> listElements)
+        Models.CompanionData _data;
+        public UserControl1(List<double> items)//Models.CompanionData data
         {
-
-            _listElements = listElements;
+            //_data = data;
+            _listElements = items;
             InitializeComponent();
 
             DataCollection =  new ObservableCollection<MyData>();
@@ -142,7 +143,6 @@ namespace MathFunctionWPF.Views
         public void Save()
         {
             _listElements.Clear();
-
             foreach (var item in DataCollection)
             {
                 _listElements.Add(item.Value);
