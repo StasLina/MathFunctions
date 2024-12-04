@@ -23,7 +23,7 @@ namespace MathFunctionWPF.Controllers
 
         MathFunctionView _view;
 
-        public MathFunctionView View
+        public Control View
         {
             get
             {
@@ -320,9 +320,9 @@ namespace MathFunctionWPF.Controllers
         private void UpdateRectangelIntegration()
         {
             var outputView = _functionOutputView as IFunctionIntegrationOutputView;
-            double integralValue = NumericalIntegration.RectangleMethod(_calculation.Calculate, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.CountSteps);
+            double integralValue = NumericalIntegration.RectangleMethodRight(_calculation.Calculate, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.CountSteps);
 
-            double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+            double incrementRate = double.Parse(_functionInputModel.PrecisionText);
             string result;
 
             if (incrementRate < 0)
@@ -342,7 +342,7 @@ namespace MathFunctionWPF.Controllers
             var outputView = _functionOutputView as IFunctionIntegrationOutputView;
             double integralValue = NumericalIntegration.TrapezoidMethod(_calculation.Calculate, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.CountSteps);
 
-            double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+            double incrementRate = double.Parse(_functionInputModel.PrecisionText);
             string result;
             if (incrementRate < 0)
             {
@@ -362,7 +362,7 @@ namespace MathFunctionWPF.Controllers
                 var outputView = _functionOutputView as IFunctionIntegrationOutputView;
                 double integralValue = NumericalIntegration.SimpsonMethod(_calculation.Calculate, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.CountSteps);
 
-                double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+                double incrementRate = double.Parse(_functionInputModel.PrecisionText);
                 string result;
                 if (incrementRate < 0)
                 {
@@ -432,7 +432,7 @@ namespace MathFunctionWPF.Controllers
 
             if (_calculation != null)
             {
-                if (_calculation.CountArgs() == 2)
+                if (_calculation.ArgsCount == 2)
                 {
                     _functionInputModel.X1Label = "Y";
                     _functionInputModel.X0Label = "X";
@@ -441,7 +441,7 @@ namespace MathFunctionWPF.Controllers
                     view.XBegining.Visibility = Visibility.Hidden;
                     view.XBeginingLabel.Visibility = Visibility.Hidden;
                 }
-                else if (_calculation.CountArgs() == 1)
+                else if (_calculation.ArgsCount == 1)
                 {
                     _functionInputModel.X1Label = "X1";
                     _functionInputModel.X0Label = "X0";
@@ -474,7 +474,7 @@ namespace MathFunctionWPF.Controllers
             }
 
             _functionInputModel.XStartText1 = _functionInputModel.XStartText;
-            _functionInputModel.X1EndText1 = _functionInputModel.X1EndText;
+            _functionInputModel.X1EndText1 = _functionInputModel.XEndText;
 
             //_
             InitCoordinateDesentLabels();
@@ -680,7 +680,7 @@ namespace MathFunctionWPF.Controllers
             if (_calculation != null)
             {
 
-                switch (_calculation.CountArgs())
+                switch (_calculation.ArgsCount)
                 {
                     case 1:
                         UpdatePlotterView();
@@ -750,7 +750,7 @@ namespace MathFunctionWPF.Controllers
 
                     int[] possibleCountArgsArr = GetCountArgsForMethod(_mathFunctionViewModel.TypeMethod);
 
-                    if (possibleCountArgsArr.Contains(calculation.CountArgs()) == false)
+                    if (possibleCountArgsArr.Contains(calculation.ArgsCount) == false)
                     {
                         // Если не содержит
                         FormatArgumentsExcpetion(possibleCountArgsArr);
@@ -834,7 +834,7 @@ namespace MathFunctionWPF.Controllers
             if (NumberFunctionHandler(textBox, _functionInputModel.Accuracy, ref newValue))
             {
                 _functionInputModel.Accuracy = newValue;
-                _functionInputModel.PrecisionValue = _functionInputModel.CalcIncrementRate().ToString();
+                _functionInputModel.PrecisionText = _functionInputModel.CalcIncrementRate().ToString();
                 //_functionInputView.Precision.Text = _functionInputModel.IncrementRate().ToString();
             }
         }
@@ -904,7 +904,7 @@ namespace MathFunctionWPF.Controllers
 
                 int[] possibleCountArgsArr = GetCountArgsForMethod(_mathFunctionViewModel.TypeMethod);
 
-                if (possibleCountArgsArr.Contains(_calculation.CountArgs()) == false)
+                if (possibleCountArgsArr.Contains(_calculation.ArgsCount) == false)
                 {
                     // Если не содержит
                     FormatArgumentsExcpetion(possibleCountArgsArr);
@@ -918,7 +918,7 @@ namespace MathFunctionWPF.Controllers
                             double value = BisectionMethod.Calc(func, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
                             string argValue, funcValue;
 
-                            double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+                            double incrementRate = double.Parse(_functionInputModel.PrecisionText);
                             double valueFunc = GoldenSectionSearch.Calc(func, _functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
 
                             if (incrementRate < 0)
@@ -946,7 +946,7 @@ namespace MathFunctionWPF.Controllers
                             _calculation.IsInverse = false;
                             string minimalValue, maximalValue;
 
-                            double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+                            double incrementRate = double.Parse(_functionInputModel.PrecisionText);
 
                             string minimalVuncValue, maximalFuncValue;
                             if (incrementRate < 0)
@@ -976,7 +976,7 @@ namespace MathFunctionWPF.Controllers
                     case TypeMathMethod.CoordinateDesent:
                         {
                             //double value = Dihtomia.Calc(func,_functionInputModel.XStart, _functionInputModel.XEnd, _functionInputModel.Accuracy);
-                            switch (_calculation.CountArgs())
+                            switch (_calculation.ArgsCount)
                             {
 
                                 case 1:
@@ -995,7 +995,7 @@ namespace MathFunctionWPF.Controllers
                                         _calculation.IsInverse = false;
                                         string minimalValue, maximalValue;
 
-                                        double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+                                        double incrementRate = double.Parse(_functionInputModel.PrecisionText);
 
                                         string minimalVuncValue, maximalFuncValue;
                                         if (incrementRate < 0)
@@ -1032,7 +1032,7 @@ namespace MathFunctionWPF.Controllers
                                         _calculation.IsInverse = false;
                                         string minimalValue, maximalValue;
 
-                                        double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+                                        double incrementRate = double.Parse(_functionInputModel.PrecisionText);
 
                                         string minimalVuncValue, maximalFuncValue;
                                         if (incrementRate < 0)
@@ -1131,7 +1131,7 @@ namespace MathFunctionWPF.Controllers
                                 //MessageBox.Show($"Максимум: {minValue.ToString()}");
                                 string argValue, funcValue, argMinValue, funcMinValue, argMaxValue, funMaxValue;
 
-                                double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+                                double incrementRate = double.Parse(_functionInputModel.PrecisionText);
                                 double valueFuncMax = _calculation.Calculate(maxValue);
                                 double valueFuncMin = _calculation.Calculate(minValue);
 
@@ -1202,7 +1202,7 @@ namespace MathFunctionWPF.Controllers
                 {
                     int[] possibleCountArgsArr = GetCountArgsForMethod(_mathFunctionViewModel.TypeMethod);
 
-                    if (possibleCountArgsArr.Contains(_calculation.CountArgs()) == false)
+                    if (possibleCountArgsArr.Contains(_calculation.ArgsCount) == false)
                     {
                         // Если не содержит
                         FormatArgumentsExcpetion(possibleCountArgsArr);
@@ -1216,7 +1216,7 @@ namespace MathFunctionWPF.Controllers
                         PlotType = PlotType.Cartesian,
                         Background = OxyColors.White
                     };
-                    double incrementRate = double.Parse(_functionInputModel.PrecisionValue);
+                    double incrementRate = double.Parse(_functionInputModel.PrecisionText);
 
                     pm.Axes.Add(new LinearAxis
                     {

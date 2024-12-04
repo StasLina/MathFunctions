@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MathFunctionWPF.Views;
+using System.Windows.Controls;
 
 namespace MathFunctionWPF.Controllers
 {
@@ -23,6 +24,6 @@ namespace MathFunctionWPF.Controllers
             //throw new NotImplementedException();
         }
 
-        public MathFunctionHomeView View { get { return _view; } }
+        public Control View { get { return _view; } }
     }
 }

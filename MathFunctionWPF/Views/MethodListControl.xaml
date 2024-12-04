@@ -7,9 +7,10 @@
              mc:Ignorable="d">
 
     <!-- Контент вашего UserControl здесь -->
-    <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel x:Name="ButtonPanel" Orientation="Vertical">
+    <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <StackPanel x:Name="ButtonPanel" Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Left">
             <!-- Кнопки будут добавлены программно -->
         </StackPanel>
     </ScrollViewer>
+
 </UserControl>

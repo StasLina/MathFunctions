@@ -21,8 +21,10 @@ namespace WpfApp1
         {
             InitializeComponent();
 
-            WInputNumbers inputNumbers = new WInputNumbers(listItems);
-            inputNumbers.Show();
+            //WInputNumbers inputNumbers = new WInputNumbers(listItems);
+            //inputNumbers.Show();
+
+            new AnimationsDemo.MainWindow().Show();
         }
 
     }

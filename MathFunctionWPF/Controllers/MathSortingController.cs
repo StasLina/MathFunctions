@@ -96,6 +96,8 @@ namespace MathFunctionWPF.Controllers
     class MathSortingController : IBaseController
     {
         TypeMathMethod _method;
+        MathSortView _view = null;
+
         public void MethodChanged(TypeMathMethod newMethod)
         {
             //throw new NotImplementedException();
@@ -187,9 +189,8 @@ namespace MathFunctionWPF.Controllers
             _data.ArrValues = newValues;
         }
 
-        MathSortView _view = null;
 
-        public MathSortView View
+        public Control View
         {
             get { return _view; }
         }
@@ -197,8 +198,8 @@ namespace MathFunctionWPF.Controllers
         {
             _view = sortView;
             _data.AddHandlerDataChanged(DataValuesChanged);
-
         }
+
         void DataValuesChanged()
         {
             if (_data.ArrValues.Count > 0)

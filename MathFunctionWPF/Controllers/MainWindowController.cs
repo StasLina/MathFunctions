@@ -113,6 +113,25 @@ namespace MathFunctionWPF.Controllers
       
                     }
                     break;
+
+                case TypeMathMethod.Integral:
+                    {
+                        if (_navNodel.SelectionView is Integral.Controls.IntegralControl)
+                        {
+                            isNewWindow = false;
+                            return _navNodel.SelectionView;
+                        }
+                        else
+                        {
+                            isNewWindow = true;
+                            IntegralController controller = new IntegralController(new Integral.Controls.IntegralControl());
+                            _contrllerSelectionView = controller;
+                            return controller.View;
+                        }
+
+
+                    }
+                    break;
                 case TypeMathMethod.MainMenu:
                 default:
 

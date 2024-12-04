@@ -17,17 +17,25 @@
             <ColumnDefinition Width="*" MinWidth="200" />
         </Grid.ColumnDefinitions>
 
-            <ContentControl Content="{Binding ListMethodsView}" 
-                    Grid.Column="0" 
-                    HorizontalAlignment="Stretch" 
-                    VerticalAlignment="Top" 
-                    Margin="0,0,0,0" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*">
+            </RowDefinition>
+        </Grid.RowDefinitions>
+
+        <ContentControl Content="{Binding ListMethodsView}" 
+                Grid.Column="0" 
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Stretch" 
+                Margin="0,0,0,0" 
+                 Height="Auto"
+                        
+                        />
 
         <!-- ContentControl для SelectionView -->
         <ContentControl Content="{Binding SelectionView}" 
                         Grid.Column="1" 
                         HorizontalAlignment="Stretch" 
-                        VerticalAlignment="Top" 
+                        VerticalAlignment="Stretch" 
                         Margin="10,0,0,0" />
     </Grid>
 </UserControl>

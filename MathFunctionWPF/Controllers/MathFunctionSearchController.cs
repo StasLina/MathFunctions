@@ -58,7 +58,7 @@ namespace MathFunctionWPF.Controllers
             //throw new NotImplementedException();
         }
 
-        public MathFunctionSearchView View { get => _view; }
+        public Control View { get => _view; }
 
         void StringFilterElements(string searchingString)
         {

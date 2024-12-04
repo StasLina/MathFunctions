@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MathFunctionsWPF.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -7,16 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
+
+
 namespace MathFunctionWPF.Models
 {
-    class FunctionInputData : INotifyPropertyChanged
+    class FunctionInputData : INotifyPropertyChanged, IFunctionCalculationData
     {
         public string Formula
         {
             get; set;
-        } 
-            //= "F(x)=x^2+2";
-            //= "F(x)=1/tg(x)";
+        }
+        //= "F(x)=x^2+2";
+        //= "F(x)=1/tg(x)";
         //= "F(x)=sin(x)";
         //= "F(x)=x^4+2*x^2+3*x^3+10-x";
         //= "F(x)=2*x^4-3*x^2+5*x^3+10";
@@ -30,32 +33,9 @@ namespace MathFunctionWPF.Models
 
         public double Accuracy { get; set; } = 0.1;
 
-        public double CalcIncrementRate()
-        {
-            double eN = 1;
-            if (Accuracy >= 1)
-            {
-                while (Math.Pow(10, eN) < Accuracy)
-                {
-                    ++eN;
-                }
-                --eN;
-                return eN;
-            }
-            else
-            {
-                while (Math.Pow(10, -eN) > Accuracy)
-                {
-                    ++eN;
-                }
-                ++eN;
-                return -eN;
-            }
-        }
-
         private string _precisionValue = "-5";
 
-        public string PrecisionValue
+        public string PrecisionText
         {
             get
             {
@@ -66,17 +46,18 @@ namespace MathFunctionWPF.Models
                 _precisionValue = value;
                 OnPropertyChanged();
             }
-            
+
         }
 
-        string 
-            _functionText = "", 
-            _xStartText = "", 
-            _x1EndText = "", 
+        string
+            _functionText = "",
+            _xStartText = "",
+            _x1EndText = "",
             _accuracyText = "";
         public string FunctionText
         {
-            get {
+            get
+            {
                 return _functionText;
             }
             set
@@ -88,7 +69,8 @@ namespace MathFunctionWPF.Models
 
         public string XStartText
         {
-            get {
+            get
+            {
                 return _xStartText;
             }
             set
@@ -98,7 +80,7 @@ namespace MathFunctionWPF.Models
             }
         }
 
-        public string X1EndText
+        public string XEndText
         {
             get
             {
@@ -139,7 +121,8 @@ namespace MathFunctionWPF.Models
 
         public string AccuracyText
         {
-            get {
+            get
+            {
                 return _accuracyText;
             }
             set
@@ -168,24 +151,27 @@ namespace MathFunctionWPF.Models
         {
             FunctionText = Formula;
             XStartText = XStart.ToString();
-            X1EndText = XEnd.ToString();
+            XEndText = XEnd.ToString();
             AccuracyText = Accuracy.ToString();
-            PrecisionValue = CalcIncrementRate().ToString();
+            ((IFormulaDimension)this).CalcIncrementRate();
+            PrecisionText = FormulaDimensionExtensions.CalcIncrementRate(this).ToString();
             CountStepsText = CountSteps.ToString();
         }
 
-        public string? CountStepsLabel {
+        public string? CountStepsLabel
+        {
             get => _countStepsLabel;
             set
             {
                 _countStepsLabel = value;
                 OnPropertyChanged();
-            } 
+            }
         }
 
         string? _countStepsLabel = null;
 
-        public string? PrecisionLabel {
+        public string? PrecisionLabel
+        {
             get => _precisionLabel;
             set
             {
@@ -195,8 +181,9 @@ namespace MathFunctionWPF.Models
         }
 
         string? _precisionLabel = null;
-        public string? AccuracyLabel { 
-            get => _accuracyLabel; 
+        public string? AccuracyLabel
+        {
+            get => _accuracyLabel;
             set
             {
                 _accuracyLabel = value;
@@ -205,24 +192,27 @@ namespace MathFunctionWPF.Models
         }
 
         string? _accuracyLabel = null;
-        
-        public string X1Label { 
-            get => _X1Label; 
+
+        public string X1Label
+        {
+            get => _X1Label;
             set
             {
                 _X1Label = value;
                 OnPropertyChanged();
-            } 
+            }
         }
         string _X1Label = null;
-        
-        public string? X0Label { 
-            get=>_X0Label ;
-            set {
+
+        public string? X0Label
+        {
+            get => _X0Label;
+            set
+            {
                 _X0Label = value;
                 OnPropertyChanged();
-            } 
-        } 
+            }
+        }
         string? _X0Label = null;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -239,6 +229,11 @@ namespace MathFunctionWPF.Models
             AccuracyLabel = null;
             PrecisionLabel = null;
             CountStepsLabel = null;
+        }
+
+        public double CalcIncrementRate()
+        {
+            return FormulaDimensionExtensions.CalcIncrementRate(this);
         }
     }
 

@@ -14,7 +14,7 @@ namespace MathFunctionWPF.MathMethods
     class NumericalIntegration
     {
         // Метод прямоугольников (левый)
-        public static double RectangleMethod(Func<double, double> func, double a, double b, double n)
+        public static double RectangleMethodLeft(Func<double, double> func, double a, double b, double n)
         {
             double h = (b - a) / n;  // Шаг
             double sum = 0.0;
@@ -22,6 +22,34 @@ namespace MathFunctionWPF.MathMethods
             for (int i = 0; i < n; i++)
             {
                 double x = a + i * h;
+                sum += func(x);  // Суммируем значения функции в левых точках отрезков
+            }
+
+            return sum * h;  // Умножаем на шаг для получения результата
+        }
+
+        public static double RectangleMethodRight(Func<double, double> func, double a, double b, double n)
+        {
+            double h = (b - a) / n;  // Шаг
+            double sum = 0.0;
+
+            for (int i = 0; i < n; i++)
+            {
+                double x = a + i * h + h;
+                sum += func(x);  // Суммируем значения функции в левых точках отрезков
+            }
+
+            return sum * h;  // Умножаем на шаг для получения результата
+        }
+
+        public static double RectangleMethodCenter(Func<double, double> func, double a, double b, double n)
+        {
+            double h = (b - a) / n;  // Шаг
+            double sum = 0.0;
+
+            for (int i = 0; i < n; i++)
+            {
+                double x = a + i * h + h/2;
                 sum += func(x);  // Суммируем значения функции в левых точках отрезков
             }
 

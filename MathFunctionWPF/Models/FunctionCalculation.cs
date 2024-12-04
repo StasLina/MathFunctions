@@ -1,11 +1,13 @@
 ﻿using MathFunctionWPF.MathMethods;
 using org.mariuszgromada.math.mxparser;
-
+using MathFunctionsWPF.Interfaces;
 namespace MathFunctionWPF.Models
 {
+
     internal class FunctionCalculation
     {
-        FunctionInputData _sourceData { get; set; }
+
+        IFunctionCalculationData _sourceData { get; set; }
         Function _function;
         string _functionExpression;
 
@@ -34,7 +36,7 @@ namespace MathFunctionWPF.Models
             }
         }
 
-        public FunctionCalculation(FunctionInputData sourceData)
+        public FunctionCalculation(IFunctionCalculationData sourceData)
         {
             SetFunctionSourceData(sourceData);
         }
@@ -47,7 +49,7 @@ namespace MathFunctionWPF.Models
         public double Calculate2Arg(double argX, double argY)
         {
 
-            if (this.CountArgs() != 2)
+            if (this.ArgsCount != 2)
             {
                 return double.NaN;
             }
@@ -80,15 +82,14 @@ namespace MathFunctionWPF.Models
             return _der1Exp.calculate();
         }
 
-        public void SetFunctionSourceData(FunctionInputData data)
+        public void SetFunctionSourceData(IFunctionCalculationData data)
         {
             _sourceData = data;
             UpdateFunction();
         }
-        public int CountArgs()
-        {
-            return _function.getArgumentsNumber();
-        }
+
+        public int ArgsCount => _function.getArgumentsNumber();
+        
         void UpdateFunction()
         {
             var function = new Function(_sourceData.Formula);

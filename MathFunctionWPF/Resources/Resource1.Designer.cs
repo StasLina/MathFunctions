@@ -193,6 +193,26 @@ namespace MathFunctionWPF.Resources {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
+        internal static byte[] i_svgrepo_com1 {
+            get {
+                object obj = ResourceManager.GetObject("i_svgrepo_com1", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] integral_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("integral_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
         internal static byte[] j_svgrepo_com {
             get {
                 object obj = ResourceManager.GetObject("j_svgrepo_com", resourceCulture);
@@ -216,6 +236,16 @@ namespace MathFunctionWPF.Resources {
         internal static byte[] l_svgrepo_com {
             get {
                 object obj = ResourceManager.GetObject("l_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
+        internal static byte[] l_svgrepo_com1 {
+            get {
+                object obj = ResourceManager.GetObject("l_svgrepo_com1", resourceCulture);
                 return ((byte[])(obj));
             }
         }

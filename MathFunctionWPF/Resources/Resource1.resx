@@ -154,7 +154,13 @@
   <data name="h_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Alpahit\h-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="integral_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>integral-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="i_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\i-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="i_svgrepo_com1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Alpahit\i-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="j_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -164,6 +170,9 @@
     <value>Alpahit\k-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="l_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Alpahit\l-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="l_svgrepo_com1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Alpahit\l-svgrepo-com.svg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="m_svgrepo_com" type="System.Resources.ResXFileRef, System.Windows.Forms">

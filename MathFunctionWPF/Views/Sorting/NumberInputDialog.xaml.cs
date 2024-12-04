@@ -1,6 +1,7 @@
 ﻿using MathFunctionWPF.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Xml;
+using MathFunctionWPF.Models;
 
 namespace MathFunctionWPF.Views.Sorting
 {
@@ -21,12 +23,29 @@ namespace MathFunctionWPF.Views.Sorting
     /// </summary>
     public partial class NumberInputDialog : Window
     {
+        NumberInputDialogViewModel _model = new NumberInputDialogViewModel();
+
+        //public ObservableCollection<InputField> InputFields { get; set; }
+
+
+
         public NumberInputDialog()
         {
             InitializeComponent();
-            DataContext = new NumberInputDialogViewModel();
+            DataContext = _model;  // Устанавливаем DataContext на ViewModel
+            //Items.ItemsSource = _model.InputFields;  // Привязываем ItemsSource к InputFields
+
+
+            //InputFields = new ObservableCollection<InputField>
+            //{
+            //    new InputField { Label = "Количество точек:", ValidationType = Models.ValidationType.PositiveNumber},
+            //    new InputField { Label = "От:" ,ValidationType = Models.ValidationType.Double},
+            //    new InputField { Label = "До:" ,ValidationType = Models.ValidationType.Double}
+            //};
+            //DataContext = _model;
         }
 
+        //public ObservableCollection<InputField> InputFields { get { return _model.InputFields; } }
 
         public delegate void InputNumbmberEvent(NumberInputDialog view);
 
@@ -103,6 +122,5 @@ namespace MathFunctionWPF.Views.Sorting
                 }
             }
         }
-
     }
 }

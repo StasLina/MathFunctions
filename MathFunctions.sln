@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OxyPlot.Wpf", "..\oxyplot\S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OxyPlot.Wpf.Shared", "..\oxyplot\Source\OxyPlot.Wpf.Shared\OxyPlot.Wpf.Shared.csproj", "{C68B9480-0BE8-4B77-AAC1-17FB1B37BCCB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp1", "WpfApp1\WpfApp1.csproj", "{530831D7-DABF-48B1-8236-7A24D9019BB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SortingAnimation", "WpfApp1\SortingAnimation.csproj", "{530831D7-DABF-48B1-8236-7A24D9019BB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

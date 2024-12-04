@@ -60,4 +60,9 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Integral\Models\" />
+    <Folder Include="Integral\Views\" />
+  </ItemGroup>
+
 </Project>
