@@ -184,7 +184,6 @@ namespace AnimationsDemo
                 // Invalidate the plot asynchronously without blocking the UI thread
                 plotModel.InvalidatePlot(true);
 
-
                 // Проверка отмены перед выполнением задержки
                 try { 
                 cancellationToken.ThrowIfCancellationRequested();

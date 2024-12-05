@@ -15,9 +15,10 @@ namespace MathFunctionWPF.Integral.ViewModels
 
     internal class IntegralControlModel : INotifyPropertyChanged, IFunctionCalculationData
     {
-        private string xStartText = "0";
-        private string xEndText = "5";
-        private string formula = "F(x)=x";
+        private string xStartText = "1";
+        private string xEndText = "20";
+        private string formula = "F(x)=sin(x)";
+        public string VerifyedFormula { get; set; } = "F(x)=sin(x)";
 
         public double XStart
         {
@@ -101,7 +102,6 @@ namespace MathFunctionWPF.Integral.ViewModels
             }
         }
 
-        public string VerifyedFormula { get; set; } = "F(x)=x";
 
 
         public string AccuracyText { get => getFiled(); set { return; } }

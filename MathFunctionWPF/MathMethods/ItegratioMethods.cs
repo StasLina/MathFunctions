@@ -14,9 +14,14 @@ namespace MathFunctionWPF.MathMethods
     class NumericalIntegration
     {
         // Метод прямоугольников (левый)
+
+        public static double GetStep(double a, double b, double n)
+        {
+            return (b - a) / n;
+        }
         public static double RectangleMethodLeft(Func<double, double> func, double a, double b, double n)
         {
-            double h = (b - a) / n;  // Шаг
+            double h = GetStep(a, b, n); // Шаг
             double sum = 0.0;
 
             for (int i = 0; i < n; i++)
@@ -30,7 +35,7 @@ namespace MathFunctionWPF.MathMethods
 
         public static double RectangleMethodRight(Func<double, double> func, double a, double b, double n)
         {
-            double h = (b - a) / n;  // Шаг
+            double h = GetStep(a, b, n); // Шаг
             double sum = 0.0;
 
             for (int i = 0; i < n; i++)
@@ -44,7 +49,7 @@ namespace MathFunctionWPF.MathMethods
 
         public static double RectangleMethodCenter(Func<double, double> func, double a, double b, double n)
         {
-            double h = (b - a) / n;  // Шаг
+            double h = GetStep(a, b, n); // Шаг
             double sum = 0.0;
 
             for (int i = 0; i < n; i++)
@@ -59,7 +64,7 @@ namespace MathFunctionWPF.MathMethods
         // Метод трапеций
         public static double TrapezoidMethod(Func<double, double> func, double a, double b, double n)
         {
-            double h = (b - a) / n;  // Шаг
+            double h = GetStep(a, b, n); // Шаг
             double sum = 0.5 * (func(a) + func(b));  // Добавляем концы отрезков с весом 1/2
 
             for (int i = 1; i < n; i++)
@@ -128,7 +133,7 @@ namespace MathFunctionWPF.MathMethods
                 derivative4Max = Math.Abs(derivative4Max);
                 //count = Math.Pow(Math.Pow(b - a, 5) * derivative4Max / 180 / epsilon, 1 / 4);
                 count = Math.Pow(b - a, 5) * derivative4Max / 180 / epsilon;
-                count = Math.Pow(count, 0.25);
+                //count = Math.Pow(count, 0.25);
                 count = Math.Ceiling(count);
                 
                 if (count % 2 != 0)
@@ -151,9 +156,9 @@ namespace MathFunctionWPF.MathMethods
                         derivative2Max = Math.Abs(derivative2b);
                     }
 
-                    count = Math.Pow(Math.Pow(b - a, 3) / 12 / epsilon * derivative2Max, 1 / 2);
+                    //count = Math.Pow(Math.Pow(b - a, 3) / 12 / epsilon * derivative2Max, 1 / 2);
                     // Количество трапеция равно O(1/n^2) поэтому квадрат сохраняем
-                    //count = Math.Pow(b - a, 3) / 12 / epsilon * derivative2Max;
+                    count = Math.Pow(b - a, 3) / 12 / epsilon * derivative2Max;
                     count = Math.Ceiling(count);
                 }
                 else

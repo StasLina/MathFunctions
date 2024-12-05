@@ -16,7 +16,9 @@ namespace AnimationsDemo
     using OxyPlot.Axes;
     using OxyPlot.Series;
 
-    public class LinearBarViewModel : AnimationViewModelBase
+
+
+        public class LinearBarViewModel : AnimationViewModelBase
     {
         public LinearBarViewModel()
         {

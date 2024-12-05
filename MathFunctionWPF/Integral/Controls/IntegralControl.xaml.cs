@@ -24,6 +24,8 @@ using System.Reflection.Metadata;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+using OxyPlot.Annotations;
+using System.Drawing;
 
 namespace MathFunctionWPF.Integral.Controls
 
@@ -31,8 +33,93 @@ namespace MathFunctionWPF.Integral.Controls
     /// <summary>
     /// Логика взаимодействия для IntegralControl.xaml
     /// </summary>
+    /// 
+    public class Pnl 
+    {
+        public double X { get; set; }
+        public double Y { get; set; }
+    }
+
+
+    public static class MathExtension
+    {
+        public static (double a, double b, double c) FindParabolaCoefficients(double x0, double x1, double x2, double f0, double f1, double f2)
+        {
+            // Проверка на совпадение координат, чтобы избежать деления на ноль
+            if (x0 == x1 || x1 == x2 || x0 == x2)
+            {
+                throw new ArgumentException("Значения x0, x1, x2 не должны совпадать.");
+            }
+
+            // Формируем систему линейных уравнений для нахождения коэффициентов a, b, c
+            // ax^2 + bx + c = f(x)
+
+            // Решаем систему для a, b, c
+            double A = x0 * x0; // x0^2
+            double B = x1 * x1; // x1^2
+            double C = x2 * x2; // x2^2
+
+            double D = x0;  // x0
+            double E = x1;  // x1
+            double F = x2;  // x2
+
+            double[,] matrix = {
+                { A, D, 1 },
+                { B, E, 1 },
+                { C, F, 1 }
+            };
+
+            double[] results = { f0, f1, f2 };  // f(x0), f(x1), f(x2)
+
+            // Решаем систему линейных уравнений с помощью метода Гаусса или другой подходящей библиотеки
+            double[] coefficients = SolveLinearSystem(matrix, results);
+
+            return (coefficients[0], coefficients[1], coefficients[2]);  // a, b, c
+        }
+
+        // Метод для решения системы линейных уравнений (например, методом Гаусса)
+        public static double[] SolveLinearSystem(double[,] matrix, double[] results)
+        {
+            int n = results.Length;
+            double[] x = new double[n];
+
+            // Прямой ход Гаусса
+            for (int i = 0; i < n; i++)
+            {
+                double pivot = matrix[i, i];
+                if (Math.Abs(pivot) < 1e-10)  // Проверка на деление на ноль
+                {
+                    throw new InvalidOperationException("Матрица вырождена, деление на ноль.");
+                }
+
+                for (int j = 0; j < n; j++)
+                    matrix[i, j] /= pivot;
+                results[i] /= pivot;
+
+                for (int j = i + 1; j < n; j++)
+                {
+                    double factor = matrix[j, i];
+                    for (int k = 0; k < n; k++)
+                        matrix[j, k] -= factor * matrix[i, k];
+                    results[j] -= factor * results[i];
+                }
+            }
+
+            // Обратный ход
+            for (int i = n - 1; i >= 0; i--)
+            {
+                x[i] = results[i];
+                for (int j = i + 1; j < n; j++)
+                    x[i] -= matrix[i, j] * x[j];
+            }
+
+            return x;
+        }
+    }
+
     public partial class IntegralControl : UserControl
     {
+
 
         IntegralControlModel _model;
 
@@ -45,7 +132,7 @@ namespace MathFunctionWPF.Integral.Controls
                 {
                     new InputField { Label = "Точность", ValidationType = ValidationType.Double, Key = "AccuracyText", Value = "0.01"},
                     new InputField { Label = "Кол-во знаков", ValidationType = ValidationType.Double, Key = "PrecisionText", Value = "-2"},
-                    new InputField { Label = "Количество шагов", ValidationType = ValidationType.Double, Key="CountStepsText", Value = "0"}
+                    new InputField { Label = "Количество шагов", ValidationType = ValidationType.Double, Key="CountStepsText", Value = "4"}
                 };
 
             _model.OutputFields = new ObservableCollection<InputField>
@@ -256,7 +343,9 @@ namespace MathFunctionWPF.Integral.Controls
             try
             {
                 Func<double, double> func = _calculation.Calculate;
-                
+
+                double step = NumericalIntegration.GetStep(_model.XStart, _model.XEnd, _model.CountSteps);
+
                 var pm = new PlotModel
                 {
                     Title = _calculation.Formula,
@@ -266,15 +355,129 @@ namespace MathFunctionWPF.Integral.Controls
                 };
                 double incrementRate = _model.Accuracy;
 
-                pm.Axes.Add(new LinearAxis
+                var serFunc = new FunctionSeries(func, _model.XStart, _model.XEnd, 0.1, _calculation.Formula);
+                serFunc.Color = OxyColor.Parse("#000000");
+                
+                serFunc.StrokeThickness = 4;
+                var annotation = new LineAnnotation
                 {
-                    Position = AxisPosition.Bottom,
-                    Title = "Ось X",
-                    Minimum = _model.XStart, // Минимальное значение по оси X
-                    Maximum = _model.XEnd // Максимальное значение по оси X
-                });
+                    Type = LineAnnotationType.Horizontal,
+                    Y = 0
+                };
 
-                pm.Series.Add(new FunctionSeries(func, _model.XStart, _model.XEnd, 0.1, _calculation.Formula));
+                pm.Annotations.Add(annotation);
+                var maximum = _model.XEnd;
+                var minimum = _model.XStart;
+                var margin = (maximum - minimum) * 0.05;
+
+                var valueAxis = new LinearAxis
+                {
+                    Position = AxisPosition.Left,
+                    Minimum = minimum - margin,
+                    Maximum = maximum + margin,
+                };
+
+                pm.Axes.Add(valueAxis);
+
+                var listPanels = new List<Pnl>();
+                var listPanels2 = new List<Pnl>();
+                var listPanels3 = new List<Pnl>();
+                var serBar = new FunctionSeries(func, _model.XStart, _model.XEnd, step, _calculation.Formula);
+
+                foreach (var point in serBar.Points)
+                {
+                    listPanels.Add(new Pnl() { X = point.X, Y=point.Y});
+                }
+                listPanels2.Add(new Pnl() { X = serBar.Points[0].X, Y = serBar.Points[0].Y });
+
+                double multipl = 1;
+                for (int idxPoint = 1; idxPoint < serBar.Points.Count; ++idxPoint)
+                {
+                    DataPoint point = serBar.Points[idxPoint];
+                    DataPoint point2 = serBar.Points[idxPoint -1];
+                    listPanels2.Add(new Pnl() { X = point.X, Y = point2.Y });
+                    listPanels2.Add(new Pnl() { X = point.X, Y = point.Y });
+
+
+                    //if (idxPoint % 2 == 1)
+                    //{
+                        //multipl = 1;
+                        //double x2 = point.X + step;
+                        double x2 = (point.X + point2.X) / 2;
+                        double y2 = func(x2);
+
+                        listPanels3.AddRange(FillParabolaPoints(point2.X,x2, point.X, point2.Y, y2, point.Y, multipl));
+                    //}
+                    //else
+                    //{
+                    //    multipl = -1;
+                    //}
+
+                }
+                //{
+                //    new Pnl() { X = 3, Y = 4 },
+                //    new Pnl() {X = 4, Y = 3}
+                //};
+                var paraolSwries = new LineSeries
+                {
+                    Title = "P & L",
+                    ItemsSource = listPanels3,
+                    DataFieldX = "X",
+                    DataFieldY = "Y",
+                    StrokeThickness= 2 //140000FF
+                };
+
+                paraolSwries.Color = OxyColor.Parse("#FF0000");
+
+                // Добавляем Прямоугольники
+                var seriesBar = new LinearBarSeries
+                {
+                    Title = "P & L",
+                    ItemsSource = listPanels,
+                    DataFieldX = "X",
+                    DataFieldY = "Y",
+                    //FillColor = OxyColor.Parse("#14FF0000"),//14FF0000
+                    StrokeColor = OxyColor.Parse("#000000"),
+                    StrokeThickness = 1,
+                    BarWidth = 0
+                };
+
+
+                var seriesBar2 = new AreaSeries
+                {
+                    Title = "P & L",
+                    ItemsSource = listPanels2,
+                    DataFieldX = "X",
+                    DataFieldY = "Y",
+                    Fill = OxyColor.Parse("#10FF0000"),//14FF0000
+                    StrokeThickness = 0,
+                };
+
+                var seriesArea = new AreaSeries
+                {
+                    Title = "P & L",
+                    ItemsSource = listPanels,
+                    DataFieldX = "X",
+                    DataFieldY = "Y",
+                    Color = OxyColor.Parse("#4CAF50"),
+                    Fill = OxyColor.Parse("#454CAF50"),
+                    MarkerSize = 3,
+                    MarkerFill = OxyColor.Parse("#FFFFFFFF"),
+                    MarkerStroke = OxyColor.Parse("#4CAF50"),
+                    MarkerStrokeThickness = 1.5,
+                    MarkerType = MarkerType.Circle,
+                    StrokeThickness = 1,
+                };
+
+                pm.Series.Add(serFunc);
+                pm.Series.Add(paraolSwries);
+
+                pm.Series.Add(seriesBar);
+                pm.Series.Add(seriesBar2);
+                pm.Series.Add(seriesArea);
+
+                Drawing.Model = pm;
+                pm.InvalidatePlot(true);
             }
             catch (Exception ex)
             {
@@ -282,7 +485,31 @@ namespace MathFunctionWPF.Integral.Controls
             }
         }
 
-    private void Calculate_Click(object sender, RoutedEventArgs e)
+        private List<Pnl> FillParabolaPoints(double x0, double x1,double x2, double y0, double y1, double y2, double multipl = 1)
+        {
+            List<Pnl> listResults = new List<Pnl>();
+
+
+            var coefficients = MathExtension.FindParabolaCoefficients(x0, x1, x2, y0, y1, y2);
+            double a = coefficients.a;
+            double b = coefficients.b;
+            double c = coefficients.c;
+
+
+            // Рисуем параболу
+            for (double x = x0; x <= x2; x += 0.01)
+            {
+                double y = multipl * a * x * x + b * x + c;
+                listResults.Add(new Pnl() { X = x, Y = y });
+                //int screenX = offsetX + (int)(x * scale);
+                //int screenY = offsetY - (int)(y * scale);
+                //g.FillEllipse(Brushes.Red, screenX, screenY, 2, 2);  // Отображаем параболу красным
+            }
+            return listResults;
+        }
+
+
+        private void Calculate_Click(object sender, RoutedEventArgs e)
     {
         try
         {
