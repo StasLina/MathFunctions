@@ -58,8 +58,8 @@ namespace MathFunctionWPF.Views
             sortMethod.Panel.Children.Add(AddButtonIconSVG(MathFunctionWPF.Resources.Resource1.bubble_chart_svgrepo_com, TypeMathMethod.BubbleSort));
             listItems.Add(sortMethod);
 
-            listItems.Add(AddButtonIconSVG(MathFunctionWPF.Resources.Resource1.i_svgrepo_com, TypeMathMethod.Integral));
-            listItems.Add(AddButtonIconSVG(MathFunctionWPF.Resources.Resource1.integral_svgrepo_com, TypeMathMethod.SLAU));
+            listItems.Add(AddButtonIconSVG(MathFunctionWPF.Resources.Resource1.integral_svgrepo_com, TypeMathMethod.Integral));
+            listItems.Add(AddButtonIconSVG(MathFunctionWPF.Resources.Resource1.research_matrix_svgrepo_com, TypeMathMethod.SLAU));
             //ExpandableIconContainer integr = AddExtandableButton(LoaderIcon.LoadPngImage(MathFunctionWPF.Resources.Resource1.alg_sortirovki));
             //listItems.Add(AddButton("I", TypeMathMethod.Integral));
             //listItems.Add(AddButton("T", TypeMathMethod.Test));

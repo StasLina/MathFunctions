@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 
 namespace MathFunctionWPF.SLAU.ViewModels
 {
-    class SLAUMainControlModels : INotifyPropertyChanged
+    class SLAUMainControlModel : INotifyPropertyChanged
     {
         private object listMethodsControl;
         private object resultsTableContent;
         private object matrixDataContent;
+        private object vectorDataContent;
+        private double rows;
+        private double columns;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -49,7 +52,34 @@ namespace MathFunctionWPF.SLAU.ViewModels
             }
         }
 
+        public object VectorDataContent
+        {
+            get => vectorDataContent;
+            set
+            {
+                vectorDataContent = value;
+                OnPropertyChanged();
+            }
+        }
 
+        public double Rows
+        {
+            get => rows;
+            set
+            {
+                rows = value;
+                OnPropertyChanged();
+            }
+        }
+        public double Columns
+        {
+            get => columns;
+            set
+            {
+                columns = value;
+                OnPropertyChanged();
+            }
+        }
 
     }
 }

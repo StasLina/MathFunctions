@@ -1,4 +1,6 @@
-﻿using MathFunctionWPF.SLAU.ViewModels;
+﻿using MathFunctionWPF.Integral.ViewModels;
+using MathFunctionWPF.Models;
+using MathFunctionWPF.SLAU.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,17 +26,64 @@ namespace MathFunctionWPF.SLAU.Controls
         public SLAUMainControl()
         {
             InitializeComponent();
-            DataContext = new SLAUMainControlModels();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void InputField_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
+            //e.Handled = true;
+            if (sender is System.Windows.Controls.TextBox textBox)
+            {
 
-        }
+                if (textBox.DataContext is InputField)
+                {
+                    InputField inputField = (InputField)textBox.DataContext;
+                    e.Handled = true;
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
+                    // Выбираем правило проверки на основе ValidationType
+                    switch (inputField.ValidationType)
+                    {
+                        case ValidationType.Double:
+                            if (Common.IsDouble(e.Text, textBox.CaretIndex, textBox.Text))
+                            {
+                                e.Handled = false;
+                            }
+                            break;
 
+                        case ValidationType.Number:
+                            if (Common.IsNumber(e.Text, textBox.CaretIndex))
+                                e.Handled = false;
+                            break;
+
+                        case ValidationType.PositiveNumber:
+                            if (Common.IsNumberPositive(e.Text))
+                                e.Handled = false;
+                            break;
+
+                        case ValidationType.None:
+                            e.Handled = false;
+                            break;
+
+                        case ValidationType.Block:
+                            e.Handled = true;
+                            break;
+                        default:
+                            e.Handled = false;
+                            break;
+                    }
+                }
+                else if (textBox.DataContext is SLAUMainControlModel)
+                {
+                    switch (textBox.Name)
+                    {
+                        case "RowField":
+                        case "ColumnField":
+                            e.Handled = true;
+                            if (Common.IsNumberPositive(e.Text))
+                                e.Handled = false;
+                            break;
+                    }
+                }
+            }
         }
     }
 }

@@ -65,7 +65,6 @@
   <ItemGroup>
     <Folder Include="Integral\Models\" />
     <Folder Include="Integral\Views\" />
-    <Folder Include="SLAU\Models\" />
   </ItemGroup>
 
 </Project>
