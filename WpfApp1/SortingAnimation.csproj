@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -11,7 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\oxyplot\Source\OxyPlot.Wpf.Shared\OxyPlot.Wpf.Shared.csproj" />
     <ProjectReference Include="..\..\oxyplot\Source\OxyPlot.Wpf\OxyPlot.Wpf.csproj" />
-    <ProjectReference Include="..\MathFunctionWPF\MathFunctionWPF.csproj" />
     <ProjectReference Include="..\oxyplot\Source\OxyPlot\OxyPlot.csproj" />
   </ItemGroup>
 

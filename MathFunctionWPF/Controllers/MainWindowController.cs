@@ -9,7 +9,7 @@ using MathFunctionWPF.Models;
 using MathFunctionWPF.MathMethods;
 using Microsoft.VisualBasic;
 using static System.Net.Mime.MediaTypeNames;
-
+using MathFunctionWPF.SLAU.Controls;
 namespace MathFunctionWPF.Controllers
 {
     
@@ -125,6 +125,25 @@ namespace MathFunctionWPF.Controllers
                         {
                             isNewWindow = true;
                             IntegralController controller = new IntegralController(new Integral.Controls.IntegralControl());
+                            _contrllerSelectionView = controller;
+                            return controller.View;
+                        }
+
+
+                    }
+                    break;
+
+                case TypeMathMethod.SLAU:
+                    {
+                        if (_navNodel.SelectionView is SLAU.Controls.SLAUMainControl)
+                        {
+                            isNewWindow = false;
+                            return _navNodel.SelectionView;
+                        }
+                        else
+                        {
+                            isNewWindow = true;
+                            SLAUController controller = new SLAUController(new SLAUMainControl());
                             _contrllerSelectionView = controller;
                             return controller.View;
                         }

@@ -34,7 +34,7 @@ namespace MathFunctionWPF.Integral.Controls
     /// Логика взаимодействия для IntegralControl.xaml
     /// </summary>
     /// 
-    public class Pnl 
+    public class Pnl
     {
         public double X { get; set; }
         public double Y { get; set; }
@@ -221,7 +221,7 @@ namespace MathFunctionWPF.Integral.Controls
                         case "ArgA":
                         case "ArgB":
                             e.Handled = true;
-                            if (Common.IsNumber(e.Text, textBox.CaretIndex))
+                            if (Common.IsDouble(e.Text, textBox.CaretIndex, textBox.Text))
                                 e.Handled = false;
                             break;
                     }
@@ -233,55 +233,113 @@ namespace MathFunctionWPF.Integral.Controls
         {
             if (sender is System.Windows.Controls.TextBox textBox && textBox.DataContext is IntegralControlModel _model)
             {
-                e.Handled = true;
                 // Выбираем правило проверки на основе ValidationType
-
-                if (textBox.Name != "FunctionInput")
+                if (textBox.Name == "ArgB")
                 {
-                    return;
-                }
+                    e.Handled = true;
 
-                if (_model.VerifyedFormula == textBox.Text)
-                {
-                    e.Handled = false;
-                    return;
-                }
-
-
-                FunctionCalculation calculation;
-                try
-                {
-                    _model.Formula = textBox.Text;
-                    calculation = new FunctionCalculation(_model);
-
-
-                    if (calculation.ArgsCount != 1)
+                    if (_model.XEnd < _model.XStart)
                     {
-                        throw new Exception("Количество аргументов не равно 1");
-                    }
+                        MessageBoxResult result = MessageBox.Show(
+                            ". Конец интервала больше начала, изменить?", // Текст сообщения
+                            "Ошибка ввода формулы", // Заголовок окна
+                            MessageBoxButton.YesNo, // Кнопки "Да" и "Нет"
+                            MessageBoxImage.Question // Иконка вопроса
+                        );
 
-                    _model.VerifyedFormula = _model.Formula;
-                    e.Handled = false;
-                }
-                catch (Exception ex)
-                {
-                    MessageBoxResult result = MessageBox.Show(
-                        ex.Message + ". Продолжить редактирование?", // Текст сообщения
-                        "Ошибка ввода формулы", // Заголовок окна
-                        MessageBoxButton.YesNo, // Кнопки "Да" и "Нет"
-                        MessageBoxImage.Question // Иконка вопроса
-                    );
-
-                    // Обработка результата
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        e.Handled = true;
+                        // Обработка результата
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            e.Handled = true;
+                        }
+                        else
+                        {
+                            e.Handled = false;
+                            _model.XEnd = _model.XStart;
+                        }
                     }
                     else
                     {
                         e.Handled = false;
-                        textBox.Text = _model.VerifyedFormula;
                     }
+                }
+                else
+                if (textBox.Name == "ArgA")
+                {
+                    e.Handled = true;
+
+                    if (_model.XEnd < _model.XStart)
+                    {
+                        MessageBoxResult result = MessageBox.Show(
+                            "Начало интервала должно быть меньше конца, изменить?", // Текст сообщения
+                            "Ошибка ввода формулы", // Заголовок окна
+                            MessageBoxButton.YesNo, // Кнопки "Да" и "Нет"
+                            MessageBoxImage.Question // Иконка вопроса
+                        );
+
+                        // Обработка результата
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            e.Handled = true;
+                        }
+                        else
+                        {
+                            e.Handled = false;
+                            _model.XEnd = _model.XStart;
+                        }
+                    }
+                    else
+                    {
+                        e.Handled = false;
+                    }
+                }
+                else if (textBox.Name == "FunctionInput")
+                {
+                    e.Handled = true;
+
+                    if (_model.VerifyedFormula == textBox.Text)
+                    {
+                        e.Handled = false;
+                        return;
+                    }
+
+
+                    FunctionCalculation calculation;
+                    try
+                    {
+                        _model.Formula = textBox.Text;
+                        calculation = new FunctionCalculation(_model);
+
+
+                        if (calculation.ArgsCount != 1)
+                        {
+                            throw new Exception("Количество аргументов не равно 1");
+                        }
+
+                        _model.VerifyedFormula = _model.Formula;
+                        e.Handled = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBoxResult result = MessageBox.Show(
+                            ex.Message + ". Продолжить редактирование?", // Текст сообщения
+                            "Ошибка ввода формулы", // Заголовок окна
+                            MessageBoxButton.YesNo, // Кнопки "Да" и "Нет"
+                            MessageBoxImage.Question // Иконка вопроса
+                        );
+
+                        // Обработка результата
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            e.Handled = true;
+                        }
+                        else
+                        {
+                            e.Handled = false;
+                            textBox.Text = _model.VerifyedFormula;
+                        }
+                    }
+                    return;
                 }
             }
         }
@@ -294,7 +352,9 @@ namespace MathFunctionWPF.Integral.Controls
 
                 // Рассчёт количества итераций
                 double countIterations = NumericalIntegration.CalculateCountIterations(_calculation, _model.XStart, _model.XEnd, _model.Accuracy);
+                SetInput("CountStepsText", countIterations.ToString("F0"));
                 MessageBox.Show($"Необходимо количество итераций {countIterations}");
+
                 //_model.CountStepsText = FormatValue();
                 //outputView.SetResult(TypeMathResult.IntegralRectangelValue, result);
 
@@ -335,6 +395,29 @@ namespace MathFunctionWPF.Integral.Controls
             }
         }
 
+        void SetResults(string key, string text = "")
+        {
+            foreach (var elm in _model.OutputFields)
+            {
+                if (elm.Key == key)
+                {
+                    elm.Value = text;
+                    break;
+                }
+            }
+        }
+        void SetInput(string key, string value)
+        {
+            foreach (var elm in _model.InputFields)
+            {
+                if (elm.Key == key)
+                {
+                    elm.Value = value;
+                    break;
+                }
+            }
+        }
+
 
         private void DrawClick(object sender, RoutedEventArgs e)
         {
@@ -357,7 +440,7 @@ namespace MathFunctionWPF.Integral.Controls
 
                 var serFunc = new FunctionSeries(func, _model.XStart, _model.XEnd, 0.1, _calculation.Formula);
                 serFunc.Color = OxyColor.Parse("#000000");
-                
+
                 serFunc.StrokeThickness = 4;
                 var annotation = new LineAnnotation
                 {
@@ -366,8 +449,27 @@ namespace MathFunctionWPF.Integral.Controls
                 };
 
                 pm.Annotations.Add(annotation);
-                var maximum = _model.XEnd;
-                var minimum = _model.XStart;
+
+                // Нкаходим минимум\максимум функции
+
+                double yMin = double.MaxValue, yMax = -double.MaxValue;
+
+                foreach (var item in serFunc.Points)
+                {
+                    if (item.Y < yMin)
+                    {
+                        yMin = item.Y;
+                    }
+
+                    if (item.Y > yMax)
+                    {
+                        yMax = item.Y;
+                    }
+                }
+
+                var maximum = yMax;
+                var minimum = yMin;
+
                 var margin = (maximum - minimum) * 0.05;
 
                 var valueAxis = new LinearAxis
@@ -377,6 +479,9 @@ namespace MathFunctionWPF.Integral.Controls
                     Maximum = maximum + margin,
                 };
 
+
+                //PlotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = "X" });
+                //PlotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Title = "Y" });
                 pm.Axes.Add(valueAxis);
 
                 var listPanels = new List<Pnl>();
@@ -386,7 +491,7 @@ namespace MathFunctionWPF.Integral.Controls
 
                 foreach (var point in serBar.Points)
                 {
-                    listPanels.Add(new Pnl() { X = point.X, Y=point.Y});
+                    listPanels.Add(new Pnl() { X = point.X, Y = point.Y });
                 }
                 listPanels2.Add(new Pnl() { X = serBar.Points[0].X, Y = serBar.Points[0].Y });
 
@@ -394,19 +499,19 @@ namespace MathFunctionWPF.Integral.Controls
                 for (int idxPoint = 1; idxPoint < serBar.Points.Count; ++idxPoint)
                 {
                     DataPoint point = serBar.Points[idxPoint];
-                    DataPoint point2 = serBar.Points[idxPoint -1];
+                    DataPoint point2 = serBar.Points[idxPoint - 1];
                     listPanels2.Add(new Pnl() { X = point.X, Y = point2.Y });
                     listPanels2.Add(new Pnl() { X = point.X, Y = point.Y });
 
 
                     //if (idxPoint % 2 == 1)
                     //{
-                        //multipl = 1;
-                        //double x2 = point.X + step;
-                        double x2 = (point.X + point2.X) / 2;
-                        double y2 = func(x2);
+                    //multipl = 1;
+                    //double x2 = point.X + step;
+                    double x2 = (point.X + point2.X) / 2;
+                    double y2 = func(x2);
 
-                        listPanels3.AddRange(FillParabolaPoints(point2.X,x2, point.X, point2.Y, y2, point.Y, multipl));
+                    listPanels3.AddRange(FillParabolaPoints(point2.X, x2, point.X, point2.Y, y2, point.Y, multipl));
                     //}
                     //else
                     //{
@@ -424,7 +529,7 @@ namespace MathFunctionWPF.Integral.Controls
                     ItemsSource = listPanels3,
                     DataFieldX = "X",
                     DataFieldY = "Y",
-                    StrokeThickness= 2 //140000FF
+                    StrokeThickness = 2 //140000FF
                 };
 
                 paraolSwries.Color = OxyColor.Parse("#FF0000");
@@ -485,7 +590,7 @@ namespace MathFunctionWPF.Integral.Controls
             }
         }
 
-        private List<Pnl> FillParabolaPoints(double x0, double x1,double x2, double y0, double y1, double y2, double multipl = 1)
+        private List<Pnl> FillParabolaPoints(double x0, double x1, double x2, double y0, double y1, double y2, double multipl = 1)
         {
             List<Pnl> listResults = new List<Pnl>();
 
@@ -510,35 +615,81 @@ namespace MathFunctionWPF.Integral.Controls
 
 
         private void Calculate_Click(object sender, RoutedEventArgs e)
-    {
-        try
         {
-            FunctionCalculation _calculation = new FunctionCalculation(_model);
+            try
+            {
+                FunctionCalculation _calculation = new FunctionCalculation(_model);
 
-            // Рассчёт количества итераций
-            //double countIterations = NumericalIntegration.CalculateCountIterations(_calculation, _model.XStart, _model.XEnd, _model.Accuracy);
-            //MessageBox.Show($"Необходимо количество итераций {countIterations}");
+                // Рассчёт количества итераций
+                //double countIterations = NumericalIntegration.CalculateCountIterations(_calculation, _model.XStart, _model.XEnd, _model.Accuracy);
+                //MessageBox.Show($"Необходимо количество итераций {countIterations}");
 
-            //var outputView = _functionOutputView as IFunctionIntegrationOutputView;
-            double integralValueRectL = NumericalIntegration.RectangleMethodLeft(_calculation.Calculate, _model.XStart, _model.XEnd, _model.CountSteps);
-            double integralValueRectC = NumericalIntegration.RectangleMethodCenter(_calculation.Calculate, _model.XStart, _model.XEnd, _model.CountSteps);
-            double integralValueRectR = NumericalIntegration.RectangleMethodRight(_calculation.Calculate, _model.XStart, _model.XEnd, _model.CountSteps);
-            double integralValueTrap = NumericalIntegration.TrapezoidMethod(_calculation.Calculate, _model.XStart, _model.XEnd, _model.CountSteps);
-            double integralValueSim = NumericalIntegration.SimpsonMethod(_calculation.Calculate, _model.XStart, _model.XEnd, _model.CountSteps);
-
-            SetResults("RectL", integralValueRectL);
-            SetResults("RectC", integralValueRectC);
-            SetResults("RectR", integralValueRectR);
-            SetResults("Trap", integralValueTrap);
-            SetResults("Simp", integralValueSim);
-            //outputView.SetResult(TypeMathResult.IntegralRectangelValue, result);
+                //var outputView = _functionOutputView as IFunctionIntegrationOutputView;
 
 
+
+
+                if (IsChecked("RectL"))
+                {
+                    double integralValueRectL = NumericalIntegration.RectangleMethodLeft(_calculation.Calculate, _model.XStart, _model.XEnd, _model.CountSteps);
+                    SetResults("RectL", integralValueRectL);
+                }
+                else
+                {
+                    SetResults("RectL");
+                }
+
+                if (IsChecked("RectC"))
+                {
+                    double integralValueRectC = NumericalIntegration.RectangleMethodCenter(_calculation.Calculate, _model.XStart, _model.XEnd, _model.CountSteps);
+                    SetResults("RectC", integralValueRectC);
+                    SetResults("RectC");
+                }
+
+                if (IsChecked("RectR"))
+                {
+                    double integralValueRectR = NumericalIntegration.RectangleMethodRight(_calculation.Calculate, _model.XStart, _model.XEnd, _model.CountSteps);
+                    SetResults("RectR", integralValueRectR);
+                    SetResults("RectR");
+                }
+
+                if (IsChecked("Trap"))
+                {
+                    double integralValueTrap = NumericalIntegration.TrapezoidMethod(_calculation.Calculate, _model.XStart, _model.XEnd, _model.CountSteps);
+                    SetResults("Trap", integralValueTrap);
+                    SetResults("Trap");
+                }
+
+                if (IsChecked("Simp"))
+                {
+                    double integralValueSim = NumericalIntegration.SimpsonMethod(_calculation.Calculate, _model.XStart, _model.XEnd, _model.CountSteps);
+                    SetResults("Simp", integralValueSim);
+                    SetResults("Simp");
+                }
+
+
+                //outputView.SetResult(TypeMathResult.IntegralRectangelValue, result);
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка");
+            }
         }
-        catch (Exception ex)
+
+        bool IsChecked(string key)
         {
-            MessageBox.Show(ex.Message, "Ошибка");
+            var result = from num in _model.OutputFields
+                         where num.Key == key
+                         select num;
+
+            if (result.Count() > 0)
+            {
+                return result.First().IsChecked;
+            }
+
+            return false;
         }
     }
-}
 }

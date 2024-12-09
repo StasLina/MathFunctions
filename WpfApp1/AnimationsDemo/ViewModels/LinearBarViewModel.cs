@@ -40,7 +40,7 @@ namespace AnimationsDemo
             var maximum = pnls.Max(x => x.Value);
 
             var plotModel = this.PlotModel;
-            plotModel.Title = "Linear Bar Series Animation Demo";
+            plotModel.Title = "Сортировка";
 
             var series = new LinearBarSeries
             {

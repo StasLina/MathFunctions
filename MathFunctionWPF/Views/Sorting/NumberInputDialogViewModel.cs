@@ -8,6 +8,7 @@ namespace MathFunctionWPF.Models
     {
         public string _key = "";
         private string _value = "";
+        private bool isChecked;
 
         public string Key
         {
@@ -42,6 +43,15 @@ namespace MathFunctionWPF.Models
             }
         } // Значение поля
 
+        public bool IsChecked
+        {
+            get => isChecked; 
+            set
+            {
+                isChecked = value;
+                OnPropertyChanged();
+            }
+        }
         public ValidationType ValidationType { get; set; } = ValidationType.None;
 
         public event PropertyChangedEventHandler PropertyChanged;

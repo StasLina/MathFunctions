@@ -130,7 +130,7 @@ namespace MathFunctionWPF.Controllers
 
         public int[] GetCountArgsForMethod(TypeMathMethod typeMethod)
         {
-            _functionInputModel.ResetLabels();
+            //_functionInputModel.ResetLabels();
             switch (typeMethod)
             {
                 case TypeMathMethod.Bisection:
@@ -445,6 +445,9 @@ namespace MathFunctionWPF.Controllers
                 {
                     _functionInputModel.X1Label = "X1";
                     _functionInputModel.X0Label = "X0";
+                    //_functionInputModel.X1Label = "fadfadsfasfas";
+                    //_functionInputModel.X0Label = "asfdasdfas";
+                    //_functionInputModel.AccuracyLabel = "fasdfasfasf";
 
                     var view = _functionInputView as Views.Input.CoordinateDescent;
                     //view.

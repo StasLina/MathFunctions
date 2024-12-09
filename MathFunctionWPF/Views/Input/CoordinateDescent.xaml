@@ -13,16 +13,16 @@ d:DesignHeight="175" d:DesignWidth="413">
           TextWrapping="Wrap" 
           Text="{Binding XStartText, UpdateSourceTrigger=PropertyChanged}"
           VerticalAlignment="Top" Width="74" LostFocus="XStart_LostFocus"/>
-        <Label Content="X" 
+        <Label Content="{Binding X0Label}" 
         HorizontalAlignment="Right" 
         Margin="0,36,247,0" VerticalAlignment="Top"/>
         <TextBox x:Name="XEnd" 
           HorizontalAlignment="Center" 
           Margin="0,68,0,0" 
           TextWrapping="Wrap" 
-          Text="{Binding X1EndText, UpdateSourceTrigger=PropertyChanged}" 
+          Text="{Binding XEndText, UpdateSourceTrigger=PropertyChanged}" 
           VerticalAlignment="Top" Width="74" LostFocus="XEnd_LostFocus"/>
-        <Label Content="Y" 
+        <Label Content="{Binding X1Label}" 
         HorizontalAlignment="Right"
         Margin="0,62,247,0"
         VerticalAlignment="Top"/>
@@ -40,7 +40,7 @@ d:DesignHeight="175" d:DesignWidth="413">
           HorizontalAlignment="Center" 
           Margin="0,126,0,0" 
           TextWrapping="Wrap" 
-          Text="{Binding PrecisionValue, UpdateSourceTrigger=PropertyChanged}"
+          Text="{Binding PrecisionText, UpdateSourceTrigger=PropertyChanged}"
           VerticalAlignment="Top" Width="75" LostFocus="Precision_LostFocus"/>
         <Label Content="{Binding PrecisionLabel, UpdateSourceTrigger=PropertyChanged, FallbackValue='Кол-во знаков', TargetNullValue='Кол-во знаков'}"
         Margin="0,121,247,0" 

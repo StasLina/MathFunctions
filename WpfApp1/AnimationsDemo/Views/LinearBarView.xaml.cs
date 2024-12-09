@@ -10,8 +10,8 @@ namespace AnimationsDemo
     {
         public LinearBarView()
         {
-            this.InitializeComponent();
-            this.DataContext = new LinearBarViewModel();
+            //this.InitializeComponent();
+            //this.DataContext = new LinearBarViewModel();
         }
     }
 }

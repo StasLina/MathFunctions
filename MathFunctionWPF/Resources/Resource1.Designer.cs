@@ -333,6 +333,16 @@ namespace MathFunctionWPF.Resources {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
+        internal static byte[] research_matrix_svgrepo_com {
+            get {
+                object obj = ResourceManager.GetObject("research_matrix_svgrepo_com", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Byte[].
+        /// </summary>
         internal static byte[] s_svgrepo_com {
             get {
                 object obj = ResourceManager.GetObject("s_svgrepo_com", resourceCulture);

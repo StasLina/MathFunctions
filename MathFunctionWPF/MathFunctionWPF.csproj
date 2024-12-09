@@ -33,6 +33,8 @@
     <ProjectReference Include="..\..\oxyplot\Source\OxyPlot.Wpf\OxyPlot.Wpf.csproj" />
     <ProjectReference Include="..\MathParser.org-mXparser\CURRENT\c-sharp\1-Current-Dev.csproj" />
     <ProjectReference Include="..\oxyplot\Source\OxyPlot\OxyPlot.csproj" />
+    <ProjectReference Include="..\SortLibrary\SortLibrary.csproj" />
+    <ProjectReference Include="..\SortOxyModel\SortOxyModel.csproj" />
   
   </ItemGroup>
 
@@ -63,6 +65,7 @@
   <ItemGroup>
     <Folder Include="Integral\Models\" />
     <Folder Include="Integral\Views\" />
+    <Folder Include="SLAU\Models\" />
   </ItemGroup>
 
 </Project>

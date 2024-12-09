@@ -10,7 +10,22 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
-        <!-- Шаблон для отображения одного поля ввода -->
+        <!-- Шаблон для отображения одного поля ввода " -->
+        <DataTemplate x:Key="InputFieldCheckibleTemplate">
+            <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Stretch">
+                <TextBlock Text="{Binding Label}" FontWeight="Bold" Width="150" HorizontalAlignment="Right" TextAlignment="Right" VerticalAlignment="Center"/>
+                <CheckBox IsChecked="{Binding IsChecked}"></CheckBox>
+                <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" 
+                     Width="150"
+                     HorizontalAlignment="Stretch" 
+                     HorizontalContentAlignment="Left" 
+                     VerticalContentAlignment="Center"
+                     PreviewTextInput="InputField_PreviewTextInput" 
+                         />
+                <!-- PreviewTextInput="InputField_PreviewTextInput" -->
+            </StackPanel>
+        </DataTemplate>
+        
         <DataTemplate x:Key="InputFieldTemplate">
             <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Stretch">
                 <TextBlock Text="{Binding Label}" FontWeight="Bold" Width="150" HorizontalAlignment="Right" TextAlignment="Right" VerticalAlignment="Center"/>
@@ -87,6 +102,7 @@
                                 VerticalAlignment="Center" 
                                 VerticalContentAlignment="Center"
                                 PreviewTextInput="InputField_PreviewTextInput"
+                                PreviewLostKeyboardFocus="InputField_FocusLeave"
                                 />
                         </StackPanel>
                         <ContentControl Grid.Row="1"  Content="{Binding IntegralImage, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Right" VerticalAlignment="Center" Padding="0,-10,0,-10"/>
@@ -97,7 +113,9 @@
                                 Text="{Binding XStartText, UpdateSourceTrigger=PropertyChanged}" 
                                 PreviewTextInput="InputField_PreviewTextInput" 
                                 MinWidth="50" HorizontalAlignment="Center" 
-                                VerticalAlignment="Center" VerticalContentAlignment="Center"/>
+                                VerticalAlignment="Center" VerticalContentAlignment="Center"
+                                PreviewLostKeyboardFocus="InputField_FocusLeave"
+                                />
                         </StackPanel>
                     </Grid>
 
@@ -127,7 +145,7 @@
                 
                 <Grid Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center">
                     <ItemsControl Grid.Row="1" ItemsSource="{Binding OutputFields}" 
-                    ItemTemplate="{StaticResource InputFieldTemplate}" />
+                    ItemTemplate="{StaticResource InputFieldCheckibleTemplate}" />
                 </Grid>
 
             </Grid>

@@ -13,41 +13,41 @@ namespace AnimationsDemo
     {
         public AnimationSettingsControl()
         {
-            this.InitializeComponent();
+            //this.InitializeComponent();
         }
 
         CancellationTokenSource cancellationTokenSource;
         private async void OnAnimateClick(object sender, RoutedEventArgs e)
         {
-            var vm = this.DataContext as IAnimationViewModel;
-            if (vm != null)
-            {
-                if (vm.IsAnimationRuning == false)
-                {
-                    cancellationTokenSource = new CancellationTokenSource();
-                    var cancellationToken = cancellationTokenSource.Token;
-                    vm.IsAnimationRuning = true;
+            //var vm = this.DataContext as IAnimationViewModel;
+            //if (vm != null)
+            //{
+            //    if (vm.IsAnimationRuning == false)
+            //    {
+            //        cancellationTokenSource = new CancellationTokenSource();
+            //        var cancellationToken = cancellationTokenSource.Token;
+            //        vm.IsAnimationRuning = true;
 
-                    try
-                    {
-                        // Ожидаем завершение задачи
+            //        try
+            //        {
+            //            // Ожидаем завершение задачи
                        
-                        await Task.Run(async () =>
-                        {
-                            vm.AnimateAsync(cancellationToken).Wait();
-                            vm.IsAnimationRuning = false;
-                        });
-                    }
-                    catch (OperationCanceledException)
-                    {
-                    }
+            //            await Task.Run(async () =>
+            //            {
+            //                vm.AnimateAsync(cancellationToken).Wait();
+            //                vm.IsAnimationRuning = false;
+            //            });
+            //        }
+            //        catch (OperationCanceledException)
+            //        {
+            //        }
      
-                }
-                else
-                {
-                    cancellationTokenSource.Cancel();
-                }
-            }
+            //    }
+            //    else
+            //    {
+            //        cancellationTokenSource.Cancel();
+            //    }
+            //}
         }
     }
 }

@@ -19,6 +19,10 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System;
+using SortLibrary;
+using MathData;
+using AnimationsDemo;
 
 
 namespace MathFunctionWPF.Models
@@ -112,7 +116,9 @@ namespace MathFunctionWPF.Controllers
                         _view.SortView.BSortData.Click += BSortData_Click;
                         _view.SortView.BRandInput.Click += BRandInput_Click;
                         //_view.SortView.BUpdateTable.Click += BUpdateTable_Click;
-                        _view.SortView.CBViewResults.SelectionChanged += CBViewResults_SelectionChanged; ;
+                        _view.SortView.CBViewResults.SelectionChanged += CBViewResults_SelectionChanged;
+
+                        _view.SortView.BVizulizate.Click += BVizulizate_Click;
                         draw = new Draw(_view.SortView.Drawing);
 
                         _view.SortView.BSaveData.Click += BSaveData_Click;
@@ -126,6 +132,13 @@ namespace MathFunctionWPF.Controllers
                     }
                     break;
             }
+        }
+
+        private void BVizulizate_Click(object sender, RoutedEventArgs e)
+        {
+            draw.SortAnimModel(_data.ArrValues, _view.SortView.CBViewResults.Text);
+            //draw.DrawModel();
+            //throw new NotImplementedException();
         }
 
         private void BSaveData_Click(object sender, RoutedEventArgs e)
@@ -223,11 +236,7 @@ namespace MathFunctionWPF.Controllers
             return _view.SortView.OrderSort.Sorting == false ? SortOder.Asc : SortOder.Desc;
         }
 
-
         CompanionData _data = new CompanionData();
-
-
-
 
         void Save(List<double>? listValues = null)
         {
@@ -406,6 +415,15 @@ namespace MathFunctionWPF.Controllers
             }
         }
 
+        public class CONSTANTS
+        {
+            public const string BOGO = "Бого";
+            public const string BUBLE = "Пузырьковая";
+            public const string INSERT = "Вставками";
+            public const string SHEIKER = "Шэйкерная";
+            public const string QUICK= "Быстрая";
+        }
+
         ObservableCollection<RecordSortResults>? _records = null;
         async void Sort()
         {
@@ -415,43 +433,43 @@ namespace MathFunctionWPF.Controllers
             }
             BubbleModel model = (BubbleModel)_view.SortView.DataContext;
 
-            List<SortBase> sortingBase = new List<SortBase>();
+            List<SortLibrary.SortBase> sortingBase = new List<SortLibrary.SortBase>();
             //            List<RecordSortResults> records = new List<RecordSortResults>();
             _records = new ObservableCollection<RecordSortResults>();
 
             //records[0].
-
+            ;
             if (model.IsBogo)
             {
-                var sort = new Bogosort() { Results = new RecordSortResults { Tile = "Бого", Time = 0, Iteration = 0, Results = null } };
+                var sort = new Bogosort() { Results = new RecordSortResults { Tile = CONSTANTS.BOGO, Time = 0, Iteration = 0, Results = null } };
                 sortingBase.Add(sort);
                 _records.Add(sort.Results);
             }//Results = new List<double> { 1.2, 2.4, 3.6 } }
 
             if (model.IsBuble)
             {
-                var sort = new BubbleSort() { Results = new RecordSortResults { Tile = "Пузырьковая", Time = 0, Iteration = 0, Results = null } };
+                var sort = new BubbleSort() { Results = new RecordSortResults { Tile = CONSTANTS.BUBLE, Time = 0, Iteration = 0, Results = null } };
                 sortingBase.Add(sort);
                 _records.Add(sort.Results);
             }//Results = new List<double> { 1.2, 2.4, 3.6 } }
 
             if (model.IsInserter)
             {
-                var sort = new InsertionSort() { Results = new RecordSortResults { Tile = "Вставками", Time = 0, Iteration = 0, Results = null } };
+                var sort = new InsertionSort() { Results = new RecordSortResults { Tile = CONSTANTS.INSERT, Time = 0, Iteration = 0, Results = null } };
                 sortingBase.Add(sort);
                 _records.Add(sort.Results);
             }
 
             if (model.IsSheikernay)
             {
-                var sort = new ShakerSort() { Results = new RecordSortResults { Tile = "Шэйкерная", Time = 0, Iteration = 0, Results = null } };
+                var sort = new ShakerSort() { Results = new RecordSortResults { Tile = CONSTANTS.SHEIKER, Time = 0, Iteration = 0, Results = null } };
                 sortingBase.Add(sort);
                 _records.Add(sort.Results);
             }
 
             if (model.IsFaster)
             {
-                var sort = new QuickSort() { Results = new RecordSortResults { Tile = "Быстрая", Time = 0, Iteration = 0, Results = null } };
+                var sort = new SortLibrary.QuickSort() { Results = new RecordSortResults { Tile = CONSTANTS.QUICK, Time = 0, Iteration = 0, Results = null } };
                 sortingBase.Add(sort);
                 _records.Add(sort.Results);
             }
@@ -520,9 +538,8 @@ namespace MathFunctionWPF.Controllers
         void UpdateCBViewResults()
         {
             updatingCBViewResults = true;
+            _view.SortView.BVizulizate.Visibility = Visibility.Hidden;
             _view.SortView.CBViewResults.Items.Clear();
-
-
             if (_records == null)
             {
 
@@ -547,6 +564,7 @@ namespace MathFunctionWPF.Controllers
         {
             if (updatingCBViewResults) return;
             UpdateResults(_view.SortView.CBViewResults.SelectedIndex);
+            _view.SortView.BVizulizate.Visibility = Visibility.Visible;
         }
 
 
@@ -572,13 +590,78 @@ namespace MathFunctionWPF.Controllers
             }
 
             // Метод для построения диаграммы
+
+            AnimationsDemo.LinearBarViewModel model = null;
+
+            CancellationTokenSource cancellationTokenSource;
+
+            public async void SortAnimModel(List<double> listValues, string name = "")
+            {
+                //if (model == null)
+                //{
+                //}
+                List<double> data = listValues.ToList();
+                model = new AnimationsDemo.LinearBarViewModel(data);
+
+                AnimationSettings animationSettings = new AnimationSettings();
+                switch (name)
+                {
+                    case CONSTANTS.BOGO:
+                        animationSettings.SortBase = new Bogosort();
+                        break;
+                    case CONSTANTS.SHEIKER:
+                        animationSettings.SortBase = new ShakerSort();
+                        break;
+                    case CONSTANTS.BUBLE:
+                        animationSettings.SortBase = new BubbleSort();
+                        break;
+                    case CONSTANTS.INSERT:
+                        animationSettings.SortBase = new InsertionSort();
+                        break;
+                    case CONSTANTS.QUICK:
+                        animationSettings.SortBase = new SortLibrary.QuickSort();
+                        break;
+
+                }
+
+                var plotView = _drawing;
+                plotView.Model = model.PlotModel;
+
+                //var vm = this.DataContext as IAnimationViewModel;
+                var vm = model;
+                if (vm != null)
+                {
+                    if (vm.IsAnimationRuning == false)
+                    {
+                        cancellationTokenSource = new CancellationTokenSource();
+                        var cancellationToken = cancellationTokenSource.Token;
+                        vm.IsAnimationRuning = true;
+
+                        try
+                        {
+                            // Ожидаем завершение задачи
+                            await Task.Run(async () =>
+                            {
+                                vm.AnimateAsync2(cancellationToken,animationSettings).Wait();
+                                vm.IsAnimationRuning = false;
+                            });
+                        }
+                        catch (OperationCanceledException)
+                        {
+                        }
+
+                    }
+                    else
+                    {
+                        cancellationTokenSource.Cancel();
+                    }
+                }
+            }
             public void DrawModel(List<double> listValues)
             {
 
                 double[] data = listValues.ToArray();
                 var plotView = _drawing;
-
-
 
                 //plotView.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
                 //plotView.HorizontalAlignment = System.Windows.VerticalAlignment.Stretch;
@@ -657,545 +740,3 @@ namespace MathFunctionWPF.Controllers
 //    public int Iteration { get; set; } = 0; // Кол-во итераций
 //    public object Results { get; set; } // Результаты на List<double>
 //}
-public class RecordSortResults : INotifyPropertyChanged
-{
-    public CancellationTokenSource cts = new CancellationTokenSource();
-    public object _lock = new object();
-    public bool isPaused = false;
-    private string tile = "";
-    private long time = 0;
-    private int iteration = 0;
-    private object results = null;
-
-    public string Tile
-    {
-        get => tile;
-        set
-        {
-            tile = value;
-            OnPropertyChanged();
-        }
-    }
-    public long Time
-    {
-        get => time;
-        set
-        {
-            time = value;
-            OnPropertyChanged();
-        }
-    }
-    public int Iteration
-    {
-        get => iteration;
-        set
-        {
-            iteration = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public object Results
-    {
-        get => results;
-        set
-        {
-            results = value;
-            OnPropertyChanged();
-        } // Результаты на List<double>
-    }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string name = null)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
-}
-
-public abstract class SortBase
-{
-    public RecordSortResults Results { get; set; }
-    Stopwatch _stopwatch;
-    public int InstructionCount { get; protected set; }
-
-    // Метод для сортировки, будет реализован в подклассах
-    //public abstract void Sort(List<double> data);
-    public abstract void Sort(List<double> data, bool order);
-
-
-    List<double> _data;
-    public void TimingSort(List<double> data, bool order)
-    {
-        _stopwatch = new Stopwatch();
-        _data = data;
-        // Запускаем таймер
-        _stopwatch.Start();
-        Sort(data, order);
-        _stopwatch.Stop();
-        long elapsedMilliseconds = _stopwatch.ElapsedMilliseconds;
-
-        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-        {
-            Results.Time = _stopwatch.ElapsedMilliseconds;
-            Results.Results = _data;
-            Results.Iteration = InstructionCount;
-
-        }
-        );
-    }
-
-    // Метод для увеличения счетчика инструкций
-    protected void IncrementInstructionCount()
-    {
-        InstructionCount++;
-
-        System.Windows.Application.Current.Dispatcher.Invoke(() =>
-        {
-            Results.Time = _stopwatch.ElapsedMilliseconds;
-            Results.Iteration = InstructionCount;
-        }
-        );
-        //Results.Time = _stopwatch.ElapsedMilliseconds;
-
-
-        if (Results.cts.Token.IsCancellationRequested)
-        {
-            Results.cts.Token.ThrowIfCancellationRequested();
-        }
-        else
-        {
-            // Проверяем  на паузы
-
-            while (Results.isPaused)
-            {
-                Monitor.Wait(Results._lock); // Ждём, пока приостановка не будет снята
-            }
-        }
-    }
-
-
-    void Pause()
-    {
-        lock (Results._lock)
-        {
-            Results.isPaused = true;
-        }
-    }
-
-    void Resume()
-    {
-        lock (Results._lock)
-        {
-            Results.isPaused = false;
-            Monitor.PulseAll(Results._lock); // Уведомляем все ожидающие потоки
-        }
-    }
-
-
-    //class Program
-    //    {
-    //        private static CancellationTokenSource cts = new CancellationTokenSource();
-    //        private static object _lock = new object();
-    //        private static bool isPaused = false;
-
-    //        var task = Task.Run(() => DoWork(cts.Token));
-
-    //static void DoWork(CancellationToken token)
-    //{
-    //    cts.Cancel();
-    //    int i = 0;
-
-    //    while (!token.IsCancellationRequested)
-    //    {
-    //        lock (_lock)
-    //        {
-    //            while (isPaused)
-    //            {
-    //                Monitor.Wait(_lock); // Ждём, пока приостановка не будет снята
-    //            }
-    //        }
-
-    //        //Console.WriteLine($"Работаем... {++i}");
-    //        //Thread.Sleep(1000); // Симуляция работы
-    //    }
-    //}
-
-
-
-
-
-
-}
-
-public class BubbleSort : SortBase
-{
-    public void Sort(List<double> data)
-    {
-        int n = data.Count;
-        bool swapped;
-
-        for (int i = 0; i < n - 1; i++)
-        {
-            swapped = false;
-
-            // Проходим по массиву, и находим элементы, которые нужно обменять
-            for (int j = 0; j < n - i - 1; j++)
-            {
-                IncrementInstructionCount(); // Подсчёт инструкции для сравнения
-                if (data[j] > data[j + 1])
-                {
-                    // Обмен элементов
-                    double temp = data[j];
-                    data[j] = data[j + 1];
-                    data[j + 1] = temp;
-                    swapped = true;
-                }
-            }
-
-            // Если в этом проходе не было обменов, то массив уже отсортирован
-            if (!swapped)
-                break;
-        }
-    }
-
-    public override void Sort(List<double> data, bool ascending)
-    {
-        int n = data.Count;
-        for (int i = 0; i < n - 1; i++)
-        {
-            for (int j = 0; j < n - i - 1; j++)
-            {
-                IncrementInstructionCount();
-
-                bool condition = ascending ? data[j] > data[j + 1] : data[j] < data[j + 1];
-
-                if (condition)
-                {
-                    // Обмен элементов
-                    double temp = data[j];
-                    data[j] = data[j + 1];
-                    data[j + 1] = temp;
-                }
-            }
-        }
-    }
-
-}
-
-public class InsertionSort : SortBase
-{
-    public void Sort(List<double> data)
-    {
-        int n = data.Count;
-        for (int i = 1; i < n; i++)
-        {
-            double key = data[i];
-            int j = i - 1;
-
-            // Перемещаем элементы массива, которые больше ключа
-            while (j >= 0 && data[j] > key)
-            {
-                IncrementInstructionCount(); // Подсчёт инструкции для сравнения
-                data[j + 1] = data[j];
-                j--;
-            }
-
-            // Вставляем ключ на нужную позицию
-            data[j + 1] = key;
-            IncrementInstructionCount(); // Подсчёт инструкции для присваивания
-        }
-    }
-
-    public override void Sort(List<double> data, bool ascending)
-    {
-        int n = data.Count;
-
-        for (int i = 1; i < n; i++)
-        {
-            double key = data[i];
-            int j = i - 1;
-
-            // Сортировка по возрастанию или убыванию в зависимости от флага ascending
-            while (j >= 0 && (ascending ? data[j] > key : data[j] < key))
-            {
-                IncrementInstructionCount();
-                data[j + 1] = data[j];
-                j--;
-            }
-
-            data[j + 1] = key; // Вставка ключа на правильную позицию
-            IncrementInstructionCount();
-        }
-    }
-
-}
-
-
-public class QuickSort : SortBase
-{
-    public void Sort(List<double> data)
-    {
-        QuickSortHelper(data, 0, data.Count - 1);
-    }
-
-    public override void Sort(List<double> data, bool asxending)
-    {
-        QuickSortHelper(data, 0, data.Count - 1, asxending);
-    }
-
-    private void QuickSortHelper(List<double> data, int low, int high)
-    {
-        if (low < high)
-        {
-            int pi = Partition(data, low, high);
-
-            // Рекурсивный вызов для сортировки двух частей
-            QuickSortHelper(data, low, pi - 1);
-            QuickSortHelper(data, pi + 1, high);
-        }
-    }
-
-    private int Partition(List<double> data, int low, int high)
-    {
-        double pivot = data[high];
-        int i = low - 1;
-
-        for (int j = low; j < high; j++)
-        {
-            IncrementInstructionCount(); // Подсчёт инструкции для сравнения
-            if (data[j] <= pivot)
-            {
-                i++;
-                double temp = data[i];
-                data[i] = data[j];
-                data[j] = temp;
-            }
-        }
-
-        double swapTemp = data[i + 1];
-        data[i + 1] = data[high];
-        data[high] = swapTemp;
-        IncrementInstructionCount(); // Подсчёт инструкции для присваивания
-
-        return i + 1;
-    }
-
-
-    // Метод сортировки QuickSort с параметром ascending
-    public void QuickSortHelper(List<double> data, int low, int high, bool ascending)
-    {
-        if (low < high)
-        {
-            int pi = Partition(data, low, high, ascending);
-
-            // Рекурсивные вызовы для сортировки двух частей
-            QuickSortHelper(data, low, pi - 1, ascending);
-            QuickSortHelper(data, pi + 1, high, ascending);
-        }
-    }
-
-    // Метод для разделения данных в зависимости от порядка сортировки (ascending или descending)
-    private int Partition(List<double> data, int low, int high, bool ascending)
-    {
-        double pivot = data[high];
-        int i = low - 1;
-
-        for (int j = low; j < high; j++)
-        {
-            IncrementInstructionCount(); // Подсчёт инструкций для сравнения
-            if ((ascending && data[j] <= pivot) || (!ascending && data[j] >= pivot))
-            {
-                i++;
-                double temp = data[i];
-                data[i] = data[j];
-                data[j] = temp;
-            }
-        }
-
-        // Меняем элементы местами
-        double swapTemp = data[i + 1];
-        data[i + 1] = data[high];
-        data[high] = swapTemp;
-        IncrementInstructionCount(); // Подсчёт инструкций для присваивания
-
-        return i + 1;
-    }
-
-    // Метод для подсчёта инструкций (например, сравнений или присваиваний)
-
-}
-
-
-public class ShakerSort : SortBase
-{
-    public void Sort(List<double> data)
-    {
-        int left = 0;
-        int right = data.Count - 1;
-        bool swapped = true;
-
-        while (left < right && swapped)
-        {
-            swapped = false;
-
-            // Проходим слева направо
-            for (int i = left; i < right; i++)
-            {
-                IncrementInstructionCount(); // Подсчёт инструкции для сравнения
-                if (data[i] > data[i + 1])
-                {
-                    // Обмен элементов
-                    double temp = data[i];
-                    data[i] = data[i + 1];
-                    data[i + 1] = temp;
-                    swapped = true;
-                }
-            }
-
-            // Уменьшаем правую границу
-            right--;
-
-            // Если элементы были перемещены, делаем обратный проход справа налево
-            if (swapped)
-            {
-                for (int i = right; i > left; i--)
-                {
-                    IncrementInstructionCount(); // Подсчёт инструкции для сравнения
-                    if (data[i] < data[i - 1])
-                    {
-                        // Обмен элементов
-                        double temp = data[i];
-                        data[i] = data[i - 1];
-                        data[i - 1] = temp;
-                        swapped = true;
-                    }
-                }
-                // Увеличиваем левую границу
-                left++;
-            }
-        }
-    }
-
-    public override void Sort(List<double> data, bool ascending)
-    {
-        int left = 0;
-        int right = data.Count - 1;
-        bool swapped = true;
-
-        while (left < right && swapped)
-        {
-            swapped = false;
-
-            // Проход слева направо
-            for (int i = left; i < right; i++)
-            {
-                IncrementInstructionCount(); // Подсчёт инструкции для сравнения
-                if ((ascending && data[i] > data[i + 1]) || (!ascending && data[i] < data[i + 1]))
-                {
-                    // Обмен элементов
-                    double temp = data[i];
-                    data[i] = data[i + 1];
-                    data[i + 1] = temp;
-                    swapped = true;
-                }
-            }
-
-            // Уменьшаем правую границу
-            right--;
-
-            // Если элементы были перемещены, делаем обратный проход справа налево
-            if (swapped)
-            {
-                for (int i = right; i > left; i--)
-                {
-                    IncrementInstructionCount(); // Подсчёт инструкции для сравнения
-                    if ((ascending && data[i] < data[i - 1]) || (!ascending && data[i] > data[i - 1]))
-                    {
-                        // Обмен элементов
-                        double temp = data[i];
-                        data[i] = data[i - 1];
-                        data[i - 1] = temp;
-                        swapped = true;
-                    }
-                }
-                // Увеличиваем левую границу
-                left++;
-            }
-        }
-    }
-
-}
-
-public class Bogosort : SortBase
-{
-    // Свойство, которое определяет порядок сортировки: по возрастанию (true) или по убыванию (false)
-
-    public void Sort(List<double> data)
-    {
-        Random rand = new Random();
-        InstructionCount = 0;  // Сбрасываем счетчик перед началом сортировки
-
-        // Продолжаем случайно перемешивать элементы, пока они не окажутся отсортированными
-        while (!IsSorted(data))
-        {
-            Shuffle(data, rand);  // Перемешиваем элементы
-            IncrementInstructionCount();  // Увеличиваем счетчик инструкций за перемешивание
-            if (InstructionCount > 5000)
-            {
-                MessageBox.Show("Количество итераций больше 5000 сортировка завершено досрочна");
-                break;
-            }
-        }
-
-    }
-
-    // Метод для выполнения сортировки
-    public override void Sort(List<double> data, bool isAscending)
-    {
-        Random rand = new Random();
-        InstructionCount = 0;  // Сбрасываем счетчик перед началом сортировки
-
-        // Продолжаем случайно перемешивать элементы, пока они не окажутся отсортированными
-        while (!IsSorted(data, isAscending))
-        {
-            Shuffle(data, rand);  // Перемешиваем элементы
-            IncrementInstructionCount();  // Увеличиваем счетчик инструкций за перемешивание
-
-            if (InstructionCount > 5000)
-            {
-                MessageBox.Show("Количество итераций больше 5000 сортировка завершено досрочна");
-                break;
-            }
-        }
-    }
-
-    // Метод для проверки, отсортирован ли список
-    private bool IsSorted(List<double> data, bool isAscending = true)
-    {
-        for (int i = 1; i < data.Count; i++)
-        {
-            IncrementInstructionCount();  // Подсчитываем инструкции на каждой проверке
-            if ((isAscending && data[i - 1] > data[i]) || (!isAscending && data[i - 1] < data[i]))
-            {
-                // Если элементы не отсортированы в нужном порядке
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // Метод для случайного перемешивания элементов
-    private void Shuffle(List<double> data, Random rand)
-    {
-        int n = data.Count;
-        for (int i = 0; i < n; i++)
-        {
-            int j = rand.Next(i, n);  // Генерируем случайный индекс для обмена
-            double temp = data[i];
-            data[i] = data[j];
-            data[j] = temp;
-        }
-    }
-}
-
-

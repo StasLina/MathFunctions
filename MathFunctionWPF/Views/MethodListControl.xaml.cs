@@ -59,6 +59,7 @@ namespace MathFunctionWPF.Views
             listItems.Add(sortMethod);
 
             listItems.Add(AddButtonIconSVG(MathFunctionWPF.Resources.Resource1.i_svgrepo_com, TypeMathMethod.Integral));
+            listItems.Add(AddButtonIconSVG(MathFunctionWPF.Resources.Resource1.integral_svgrepo_com, TypeMathMethod.SLAU));
             //ExpandableIconContainer integr = AddExtandableButton(LoaderIcon.LoadPngImage(MathFunctionWPF.Resources.Resource1.alg_sortirovki));
             //listItems.Add(AddButton("I", TypeMathMethod.Integral));
             //listItems.Add(AddButton("T", TypeMathMethod.Test));
@@ -226,7 +227,7 @@ namespace MathFunctionWPF.Views
 
     public enum TypeMathMethod
     {
-        Bisection, GoldenSearch, Test, Integration, Newton, CoordinateDesent, MainMenu, Search, BubbleSort, Integral
+        Bisection, GoldenSearch, Test, Integration, Newton, CoordinateDesent, MainMenu, Search, BubbleSort, Integral, SLAU
     };
 
 

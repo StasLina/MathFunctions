@@ -21,7 +21,7 @@
                  HorizontalAlignment="Center" 
                  Margin="0,68,0,0" 
                  TextWrapping="Wrap" 
-                 Text="{Binding X1EndText, UpdateSourceTrigger=PropertyChanged}" 
+                 Text="{Binding XEndText, UpdateSourceTrigger=PropertyChanged}" 
                  VerticalAlignment="Top" Width="74" LostFocus="XEnd_LostFocus"/>
         <Label Content="{Binding X1Label, UpdateSourceTrigger=PropertyChanged, FallbackValue='X1', TargetNullValue='X1'}" 
                HorizontalAlignment="Right"
@@ -41,7 +41,7 @@
                  HorizontalAlignment="Center" 
                  Margin="0,120,0,0" 
                  TextWrapping="Wrap" 
-                 Text="{Binding PrecisionValue, UpdateSourceTrigger=PropertyChanged}"
+                 Text="{Binding PrecisionText, UpdateSourceTrigger=PropertyChanged}"
                  VerticalAlignment="Top" Width="75" LostFocus="Precision_LostFocus"/>
         <Label Content="{Binding PrecisionLabel, UpdateSourceTrigger=PropertyChanged, FallbackValue='Кол-во знаков', TargetNullValue='Кол-во знаков'}" 
                Margin="0,115,247,0" 
