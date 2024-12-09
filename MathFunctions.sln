@@ -17,9 +17,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OxyPlot.Wpf.Shared", "..\ox
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SortOxyModel", "SortOxyModel\SortOxyModel.csproj", "{5F45A396-703E-4941-8CB1-697618BBFC84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SortLibrary", "SortLibrary\SortLibrary.csproj", "{B7996BBC-81BF-4034-BC3A-97B327177250}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SortLibrary", "SortLibrary\SortLibrary.csproj", "{B7996BBC-81BF-4034-BC3A-97B327177250}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathData", "MathData\MathData.csproj", "{45191040-EF4A-4BF7-AD27-0830F9BCD530}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathData", "MathData\MathData.csproj", "{45191040-EF4A-4BF7-AD27-0830F9BCD530}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{4FE76169-08FA-4A0A-9400-96AC6F6FA110}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathTableMatrix", "MathTableMatrix\MathTableMatrix.csproj", "{783717FC-0A31-4323-A5ED-4012A2712565}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -139,6 +143,30 @@ Global
 		{45191040-EF4A-4BF7-AD27-0830F9BCD530}.Release|x64.Build.0 = Release|Any CPU
 		{45191040-EF4A-4BF7-AD27-0830F9BCD530}.Release|x86.ActiveCfg = Release|Any CPU
 		{45191040-EF4A-4BF7-AD27-0830F9BCD530}.Release|x86.Build.0 = Release|Any CPU
+		{4FE76169-08FA-4A0A-9400-96AC6F6FA110}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FE76169-08FA-4A0A-9400-96AC6F6FA110}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FE76169-08FA-4A0A-9400-96AC6F6FA110}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4FE76169-08FA-4A0A-9400-96AC6F6FA110}.Debug|x64.Build.0 = Debug|Any CPU
+		{4FE76169-08FA-4A0A-9400-96AC6F6FA110}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4FE76169-08FA-4A0A-9400-96AC6F6FA110}.Debug|x86.Build.0 = Debug|Any CPU
+		{4FE76169-08FA-4A0A-9400-96AC6F6FA110}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FE76169-08FA-4A0A-9400-96AC6F6FA110}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FE76169-08FA-4A0A-9400-96AC6F6FA110}.Release|x64.ActiveCfg = Release|Any CPU
+		{4FE76169-08FA-4A0A-9400-96AC6F6FA110}.Release|x64.Build.0 = Release|Any CPU
+		{4FE76169-08FA-4A0A-9400-96AC6F6FA110}.Release|x86.ActiveCfg = Release|Any CPU
+		{4FE76169-08FA-4A0A-9400-96AC6F6FA110}.Release|x86.Build.0 = Release|Any CPU
+		{783717FC-0A31-4323-A5ED-4012A2712565}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{783717FC-0A31-4323-A5ED-4012A2712565}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{783717FC-0A31-4323-A5ED-4012A2712565}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{783717FC-0A31-4323-A5ED-4012A2712565}.Debug|x64.Build.0 = Debug|Any CPU
+		{783717FC-0A31-4323-A5ED-4012A2712565}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{783717FC-0A31-4323-A5ED-4012A2712565}.Debug|x86.Build.0 = Debug|Any CPU
+		{783717FC-0A31-4323-A5ED-4012A2712565}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{783717FC-0A31-4323-A5ED-4012A2712565}.Release|Any CPU.Build.0 = Release|Any CPU
+		{783717FC-0A31-4323-A5ED-4012A2712565}.Release|x64.ActiveCfg = Release|Any CPU
+		{783717FC-0A31-4323-A5ED-4012A2712565}.Release|x64.Build.0 = Release|Any CPU
+		{783717FC-0A31-4323-A5ED-4012A2712565}.Release|x86.ActiveCfg = Release|Any CPU
+		{783717FC-0A31-4323-A5ED-4012A2712565}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

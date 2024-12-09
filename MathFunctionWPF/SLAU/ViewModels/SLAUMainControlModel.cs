@@ -14,8 +14,8 @@ namespace MathFunctionWPF.SLAU.ViewModels
         private object resultsTableContent;
         private object matrixDataContent;
         private object vectorDataContent;
-        private double rows;
-        private double columns;
+        private int rows = 5;
+        private int columns = 5;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -62,7 +62,7 @@ namespace MathFunctionWPF.SLAU.ViewModels
             }
         }
 
-        public double Rows
+        public int Rows
         {
             get => rows;
             set
@@ -71,7 +71,7 @@ namespace MathFunctionWPF.SLAU.ViewModels
                 OnPropertyChanged();
             }
         }
-        public double Columns
+        public int Columns
         {
             get => columns;
             set

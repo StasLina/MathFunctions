@@ -12,6 +12,7 @@ using MathFunctionWPF.SLAU.Controls;
 using MathFunctionWPF.SLAU.ViewModels;
 using MathFunctionWPF.SLAU.Models;
 using System.Windows;
+using System.ComponentModel;
 
 namespace MathFunctionWPF.Controllers
 {
@@ -31,6 +32,9 @@ namespace MathFunctionWPF.Controllers
         ComplexGradient complexGradient = new ComplexGradient() { IsChecked = true };
         ObservableCollection<MethodBase> _dataListMethod;
 
+        MathTableMatrix.DynamicTableController _matrixGrid, _vectorGrid;
+
+        private List<DynamicRow> _tableData;
         public SLAUController(SLAUMainControl view)
         {
             _view = view;
@@ -42,11 +46,33 @@ namespace MathFunctionWPF.Controllers
             };
 
             _model.ListMethodsControl = _dataListMethod;
-            _model.MatrixDataContent = new DataGrid();
-            _model.VectorDataContent = new DataGrid();
+
+            
+
+            // Создаём таблицы
+
+
+            _matrixGrid = new MathTableMatrix.DynamicTableController(
+            new MathTableMatrix.DynamicTableControl(), new MathTableMatrix.DynamicTableControlModel());
+            _matrixGrid.InitializeDynamicTable(_model.Rows, _model.Columns);
+
+            _vectorGrid = new MathTableMatrix.DynamicTableController(
+            new MathTableMatrix.DynamicTableControl(), new MathTableMatrix.DynamicTableControlModel());
+            _vectorGrid.InitializeDynamicTable(_model.Rows, 1);    
+
+            _model.MatrixDataContent = _matrixGrid.View;
+            _model.VectorDataContent = _vectorGrid.View;
             _view.DataContext = _model;
 
+            _view.BChangeSize.Click += CreateMatrixButton_Click;
+
+            _vectorGrid.View.SizeChanged += View_SizeChanged;
             //_view.Calcculcate.
+        }
+
+        private void View_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //throw new NotImplementedException();
         }
 
         public Control View { get => _view; }
@@ -62,54 +88,66 @@ namespace MathFunctionWPF.Controllers
                     break;
             }
         }
+        private void InitializeDynamicTable(int rows, int cols)
+        {
+            _tableData = new List<DynamicRow>();
 
+            for (int i = 0; i < rows; i++)
+            {
+                var row = new DynamicRow();
+                for (int j = 0; j < cols; j++)
+                {
+                    row[$"Col{j + 1}"] = 0; // Заполняем нулями
+                }
+                _tableData.Add(row);
+            }
+        }
         private void CreateMatrixButton_Click(object sender, RoutedEventArgs e)
         {
-            int rows, cols;
+
+            int rows = _model.Rows, cols = _model.Columns;
             // Создаём таблицу
             {
-                //    if (int.TryParse(RowCountTextBox.Text, out rows) && int.TryParse(ColCountTextBox.Text, out cols))
-                //    {
-                //        // Создаём матрицу с заданными размерами
-                //        var matrix = new List<List<double>>();
-
-                //        for (int i = 0; i < rows; i++)
-                //        {
-                //            var row = new List<double>();
-                //            for (int j = 0; j < cols; j++)
-                //            {
-                //                row.Add(0);  // Изначально заполняем 0
-                //            }
-                //            matrix.Add(row);
-                //        }
-
-                //        // Заполнение DataGrid
-                //        MatrixDataGrid.ItemsSource = matrix;
-                //    }
-                //    else
-                //    {
-                //        MessageBox.Show("Введите корректные размеры матрицы.");
-                //    }
-                //}
-                //// Создаём вектор
-                //{
-                //    int vectorSize;
-                //    if (int.TryParse(VectorSizeTextBox.Text, out vectorSize))
-                //    {
-                //        // Создаём вектор с заданным количеством элементов
-                //        List<double> vector = new List<double>(new double[vectorSize]);
-
-                //        // Заполнение текста для вектора
-                //        VectorTextBox.Text = string.Join(", ", vector);
-                //    }
-                //    else
-                //    {
-                //        MessageBox.Show("Введите корректный размер вектора.");
-                //    }
-                //}
+                if (rows > 0 && cols > 0)
+                {
+                    _matrixGrid.InitializeDynamicTable(rows, cols);
+                    _vectorGrid.InitializeDynamicTable(rows, 1);
+                }
+                else
+                {
+                    MessageBox.Show("Введите корректные размеры матрицы.");
+                }
             }
 
+        }
+    }
 
+    public class DynamicRow : INotifyPropertyChanged
+    {
+        private readonly Dictionary<string, object> _values = new Dictionary<string, object>();
+
+        public object this[string propertyName]
+        {
+            get => _values.ContainsKey(propertyName) ? _values[propertyName] : null;
+            set
+            {
+                if (_values.ContainsKey(propertyName))
+                {
+                    _values[propertyName] = value;
+                }
+                else
+                {
+                    _values.Add(propertyName, value);
+                }
+                OnPropertyChanged(propertyName);
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
