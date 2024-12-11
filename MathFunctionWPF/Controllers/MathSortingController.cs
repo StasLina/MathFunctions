@@ -23,6 +23,7 @@ using System;
 using SortLibrary;
 using MathData;
 using AnimationsDemo;
+using MathFunctionWPF.Utils;
 
 
 namespace MathFunctionWPF.Models
@@ -251,7 +252,6 @@ namespace MathFunctionWPF.Controllers
                 Title = "Сохранить файл как JSON",
                 DefaultExt = "json", // Расширение по умолчанию
                 FileName = "data" // Имя файла по умолчанию
-
             };
 
             if (saveFileDialog.ShowDialog() == true)
@@ -304,22 +304,13 @@ namespace MathFunctionWPF.Controllers
         }
         private void BLoadFile_Click(object sender, RoutedEventArgs e)
         {
+
+            OpenExcelFileDialog openExcelFileDialog = new OpenExcelFileDialog();
             try
             {
-                // Создание и конфигурация диалога для выбора файла
-                var openFileDialog = new OpenFileDialog
+                if (openExcelFileDialog.Show(out var path))
                 {
-                    Filter = "Excel Files (*.xlsx)|*.xlsx", // |All Files (*.*)|*.*
-                    Title = "Выберите файл .xlsx",
-                    Multiselect = false
-                };
-
-                // Открытие диалога и проверка, был ли выбран файл
-                if (openFileDialog.ShowDialog() == true) // В WPF это возвращает true/false
-                {
-                    LoadExcelFile(openFileDialog.FileName);
-                    // Показать путь к выбранному файлу (можно заменить на сохранение в переменную)
-                    //MessageBox.Show($"Выбран файл: {openFileDialog.FileName}", "Файл выбран", MessageBoxButton.OK, MessageBoxImage.Information);
+                    LoadExcelFile(path);
                 }
             }
             catch (Exception ex)

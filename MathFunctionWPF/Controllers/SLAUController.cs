@@ -16,6 +16,9 @@ using System.ComponentModel;
 using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 using System.Data.Common;
+using System.Net.WebSockets;
+using System.Windows.Media;
+using System.IO;
 
 namespace MathFunctionWPF.Controllers
 {
@@ -37,7 +40,11 @@ namespace MathFunctionWPF.Controllers
 
         MathTableMatrix.DynamicTableController _matrixGrid, _vectorGrid;
 
-        private List<DynamicRow> _tableData;
+
+        // Используется при загрузке
+        double[,]? resultLoadMatrix;
+        double[]? resultLoadVector;
+
         public SLAUController(SLAUMainControl view)
         {
             _view = view;
@@ -69,11 +76,47 @@ namespace MathFunctionWPF.Controllers
 
             _view.BChangeSize.Click += CreateMatrixButton_Click;
             _view.BFillRand.Click += BFillRand_Click;
-
+            _view.BLoadExcel.Click += BLoadExcel_Click; ;
+            _view.BSaveExcel.Click += BSaveExcel_Click; ; ;
         }
 
-        
 
+        private void BSaveExcel_Click(object sender, RoutedEventArgs e)
+        {
+            var save = new Utils.SaveExcelFileDialog();
+            if (save.Show(out var pathToSave))
+            {
+                SaveExcelFile(pathToSave, _matrixGrid.GetData(), _matrixGrid.GetDataColumn());
+            }
+        }
+
+        private void BLoadExcel_Click(object sender, RoutedEventArgs e)
+        {
+            var open = new Utils.OpenExcelFileDialog();
+            if (open.Show(out var pathToOpen))
+            {
+                resultLoadMatrix = null;
+                resultLoadVector = null;
+
+                LoadExcelFile(pathToOpen);
+
+                if (resultLoadVector != null)
+                {
+                    _matrixGrid.SetData(resultLoadMatrix);
+
+                    if (resultLoadVector != null)
+                    {
+                        _vectorGrid.SetData(resultLoadVector);
+                    }
+
+                    // Обновляем числа
+                    _model.Rows = _matrixGrid.RowCount;
+                    _model.Columns = _matrixGrid.ColumnCount;
+                }
+
+                
+            }
+        }
 
         public Control View { get => _view; }
 
@@ -86,20 +129,6 @@ namespace MathFunctionWPF.Controllers
                         _method = TypeMathMethod.SLAU;
                     }
                     break;
-            }
-        }
-        private void InitializeDynamicTable(int rows, int cols)
-        {
-            _tableData = new List<DynamicRow>();
-
-            for (int i = 0; i < rows; i++)
-            {
-                var row = new DynamicRow();
-                for (int j = 0; j < cols; j++)
-                {
-                    row[$"Col{j + 1}"] = 0; // Заполняем нулями
-                }
-                _tableData.Add(row);
             }
         }
         private void CreateMatrixButton_Click(object sender, RoutedEventArgs e)
@@ -141,38 +170,6 @@ namespace MathFunctionWPF.Controllers
             _matrixGrid.SetData(values);
             _vectorGrid.SetData(valuesVector);
         }
-    }
-
-    public class DynamicRow : INotifyPropertyChanged
-    {
-        private readonly Dictionary<string, object> _values = new Dictionary<string, object>();
-
-        public object this[string propertyName]
-        {
-            get => _values.ContainsKey(propertyName) ? _values[propertyName] : null;
-            set
-            {
-                if (_values.ContainsKey(propertyName))
-                {
-                    _values[propertyName] = value;
-                }
-                else
-                {
-                    _values.Add(propertyName, value);
-                }
-                OnPropertyChanged(propertyName);
-            }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        double[,]? resultLoadMatrix = null;
-        double[]? resultLoadVector = null;
 
         void SaveExcelFile(string filePath, double[,] arrValues, double[] arrVector)
         {
@@ -180,10 +177,19 @@ namespace MathFunctionWPF.Controllers
             Workbook workbook = null;
             Worksheet worksheet = null;
             List<List<String>>? tableData = null;
+            bool isNewFile = false;
             try
             {
                 // Открываем книгу Excel
-                workbook = excelApp.Workbooks.Open(filePath);
+                if(File.Exists(filePath))
+                {
+                    workbook = excelApp.Workbooks.Open(filePath);
+                }
+                else
+                {
+                    workbook = excelApp.Workbooks.Add(XlWBATemplate.xlWBATWorksheet);
+                    isNewFile = true;
+                }
                 worksheet = workbook.Sheets[1]; // Выбираем первый лист
 
                 Microsoft.Office.Interop.Excel.Range range = worksheet.UsedRange; // Диапазон используемых ячеек
@@ -201,10 +207,14 @@ namespace MathFunctionWPF.Controllers
                 {
                     range.Cells[idxRow + 1, LastColumn].Value = arrVector[idxRow];
                 }
-
-                workbook.Save();
-
-
+                if(isNewFile)
+                {
+                    workbook.SaveAs(filePath);
+                }
+                else
+                {
+                    workbook.Save();
+                }
             }
             catch (Exception ex)
             {
@@ -236,6 +246,10 @@ namespace MathFunctionWPF.Controllers
             Worksheet worksheet = null;
             List<List<String>>? tableData = null;
             List<String>? vectorData = null;
+
+            int maxColumn = 0;
+            List<List<double>>? doublesMatrix = null;
+            List<double>? doublesVector = null;
             try
             {
                 // Открываем книгу Excel
@@ -255,7 +269,6 @@ namespace MathFunctionWPF.Controllers
                 while (range.Cells[row, column].Value != null)
                 {
                     List<String> values = new List<String>();
-                    column = 1; // Начинаем с первой строки
 
                     while (range.Cells[row, column].Value != null)
                     {
@@ -269,6 +282,7 @@ namespace MathFunctionWPF.Controllers
                     }
                     tableData.Add(values);
                     ++row;
+                    column = 1;
                 }
 
                 maxColumnText += 2;
@@ -276,13 +290,65 @@ namespace MathFunctionWPF.Controllers
                 // Собиираем вектор
                 while (range.Cells[rowVector, maxColumnText].Value != null && rowVector < row)
                 {
-                    vectorData.Add(range.Cells[rowVector, maxColumnText].Value.toString());
+                    vectorData.Add(range.Cells[rowVector, maxColumnText].Value.ToString());
                     ++rowVector;
                 }
 
                 // Показать загруженные данные
                 //string result = string.Join("\n", tableData);
                 //MessageBox.Show($"Загруженные данные:\n{result}", "Данные из Excel", MessageBoxButton.OK, MessageBoxImage.Information);
+
+
+                if (tableData != null)
+                {
+                    doublesMatrix  = new List<List<double>>();
+                    doublesVector = new List<double>();
+
+                    bool needBreak = false;
+
+                    for (int rowIdx = 0; rowIdx < tableData.Count; rowIdx++)
+                    {
+                        List<string>? RowData = tableData[rowIdx];
+                        List<double> values = new List<double>();
+                        int columnIdx = 0;
+                        for (columnIdx = 0; columnIdx < RowData.Count; columnIdx++)
+                        {
+                            string? text = RowData[columnIdx];
+                            if (double.TryParse(text, out double value) == true)
+                            {
+                                values.Add(value);
+                            }
+                            else
+                            {
+                                if(columnIdx == 0)
+                                {
+                                    needBreak = true;
+                                }
+                                break;
+                            }
+                        }
+
+                        // Запоминаем максимальный тсобец
+                        if (columnIdx > maxColumn)
+                        {
+                            maxColumn = columnIdx;
+                        }
+
+                        if (needBreak)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            doublesMatrix.Add(values);
+                        }
+                    }
+
+                    for (int rowIdx = 0; rowIdx < vectorData.Count; ++rowIdx)
+                    {
+                        doublesVector.Add(double.Parse(vectorData[rowIdx]));
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -304,79 +370,63 @@ namespace MathFunctionWPF.Controllers
                 }
             }
 
-            int maxColumn = 0;
-            if (tableData != null)
+            // Заполняем недостоющие столбцы нулями
+            
+            if (maxColumn > 0)
             {
-                List<List<double>> doublesMatrix = new List<List<double>>();
-                List<double> doublesVector = new List<double>();
+                resultLoadMatrix = new double[doublesMatrix.Count, maxColumn];
 
-                bool needBreak = false;
-
-                for (int rowIdx = 0; rowIdx < tableData.Count; rowIdx++)
+                for (int rowIdx = 0; rowIdx < doublesMatrix.Count; ++rowIdx)
                 {
-                    List<string>? RowData = tableData[rowIdx];
-                    List<double> values = new List<double>();
                     int columnIdx = 0;
-                    for (columnIdx = 0; columnIdx < RowData.Count; columnIdx++)
+                    for (; columnIdx < doublesMatrix[rowIdx].Count; ++columnIdx)
                     {
-                        string? text = RowData[columnIdx];
-                        if (double.TryParse(text, out double value) == true)
-                        {
-                            values.Add(value);
-                        }
-                        else
-                        {
-                            needBreak = true;
-                            break;
-                        }
-                    }
-
-                    // Запоминаем максимальный тсобец
-                    if (columnIdx > maxColumn)
-                    {
-                        maxColumn = columnIdx;
-                    }
-
-                    if (needBreak)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        doublesMatrix.Add(values);
+                        resultLoadMatrix[rowIdx, columnIdx] = doublesMatrix[rowIdx][columnIdx];
                     }
                 }
 
-                for (int rowIdx = 0; rowIdx < vectorData.Count; ++rowIdx)
+                resultLoadVector = new double[doublesMatrix.Count];
+
+                for (int rowIdx = 0; rowIdx < doublesVector.Count; ++rowIdx)
                 {
-                    doublesVector[rowIdx] = double.Parse(vectorData[rowIdx]);
+                    resultLoadVector[rowIdx] = doublesVector[rowIdx];
                 }
-
-                // Заполняем недостоющие столбцы нулями
-
-                if (maxColumn > 0)
-                {
-                    resultLoadMatrix = new double[doublesMatrix.Count, maxColumn];
-
-                    for (int rowIdx = 0; rowIdx < resultLoadMatrix.Length; ++rowIdx)
-                    {
-                        int columnIdx = 0;
-                        for (; columnIdx < doublesMatrix[rowIdx].Count; ++columnIdx)
-                        {
-                            resultLoadMatrix[rowIdx, columnIdx] = doublesMatrix[rowIdx][columnIdx];
-                        }
-                    }
-
-                    resultLoadVector = new double[doublesMatrix.Count];
-
-                    for(int rowIdx = 0;rowIdx < doublesVector.Count; ++rowIdx)
-                    {
-                        resultLoadVector[rowIdx] = doublesVector[rowIdx];
-                    }
-                }
-            } // if (tableData != null) end
+            }
+        //} // if (tableData != null) end
 
         }
-
     }
+
+    //public class DynamicRow : INotifyPropertyChanged
+    //{
+    //    private readonly Dictionary<string, object> _values = new Dictionary<string, object>();
+
+    //    public object this[string propertyName]
+    //    {
+    //        get => _values.ContainsKey(propertyName) ? _values[propertyName] : null;
+    //        set
+    //        {
+    //            if (_values.ContainsKey(propertyName))
+    //            {
+    //                _values[propertyName] = value;
+    //            }
+    //            else
+    //            {
+    //                _values.Add(propertyName, value);
+    //            }
+    //            OnPropertyChanged(propertyName);
+    //        }
+    //    }
+
+    //    public event PropertyChangedEventHandler? PropertyChanged;
+
+    //    protected void OnPropertyChanged(string propertyName)
+    //    {
+    //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    //    }
+
+    //    double[,]? resultLoadMatrix = null;
+    //    double[]? resultLoadVector = null;
+
+    //}
 }

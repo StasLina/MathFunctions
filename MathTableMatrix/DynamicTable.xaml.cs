@@ -105,7 +105,6 @@ namespace MathTableMatrix
             View.DataContext = model;
         }
 
-
         public int ColumnCount
         {
             get
@@ -146,6 +145,25 @@ namespace MathTableMatrix
                 {
                     returnValue[idxRow, idxColumn] = (double)rowValues.Values[idxColumn];
                 }
+            }
+            return returnValue;
+        }
+
+        public double[] GetDataColumn(int column = 0)
+        {
+            int colCount = ColumnCount;
+            int rowCount = RowCount;
+            var returnValue = new double[rowCount];
+
+            if(column>= rowCount)
+            {
+                return returnValue;
+            }
+
+            for (int idxRow = 0; idxRow < rowCount; ++idxRow)
+            {
+                DynamicRow rowValues = Model.TableData[idxRow];
+                returnValue[idxRow] = (double)rowValues.Values[column];
             }
             return returnValue;
         }
@@ -257,7 +275,7 @@ namespace MathTableMatrix
             _values = new ObservableCollection<object>();
             for (int i = 0; i < columnCount; i++)
             {
-                _values.Add(0); // Инициализируем нулями
+                _values.Add((double)0); // Инициализируем нулями
             }
         }
 

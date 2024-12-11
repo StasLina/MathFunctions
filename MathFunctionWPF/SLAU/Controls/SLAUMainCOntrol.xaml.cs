@@ -71,6 +71,7 @@ namespace MathFunctionWPF.SLAU.Controls
                             break;
                     }
                 }
+
                 else if (textBox.DataContext is SLAUMainControlModel)
                 {
                     switch (textBox.Name)
