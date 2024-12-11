@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -24,11 +25,11 @@ namespace MathTableMatrix
     /// Логика взаимодействия для DynamicTable.xaml
     /// </summary>
     /// 
-    
+
     public class DynamicTableControlModel : INotifyPropertyChanged
     {
         private ObservableCollection<DynamicRow> _tableData;
-        
+
         public ObservableCollection<DynamicRow> TableData
         {
             get { return _tableData; }
@@ -47,7 +48,7 @@ namespace MathTableMatrix
 
         public double ColumnCount
         {
-            get;set;
+            get; set;
         }
     }
 
@@ -100,9 +101,75 @@ namespace MathTableMatrix
             model.TableData = tableData;
 
             Model = model;
-                
+
             View.DataContext = model;
-           
+        }
+
+
+        public int ColumnCount
+        {
+            get
+            {
+                if (_model != null)
+                {
+                    return Model.TableData.Count;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public int RowCount
+        {
+            get
+            {
+                if (_model == null) return 0;
+                if (_model.TableData == null) return 0;
+                if (_model.TableData.Count == 0) return 0;
+                return _model.TableData[0].Values.Count;
+            }
+        }
+
+        public double[,] GetData()
+        {
+            int colCount = ColumnCount;
+            int rowCount = RowCount;
+            var returnValue = new double[rowCount, colCount];
+
+            for (int idxRow = 0; idxRow < rowCount; ++idxRow)
+            {
+                DynamicRow rowValues = Model.TableData[idxRow];
+
+                for (int idxColumn = 0; idxColumn < rowValues.Values.Count; ++idxColumn)
+                {
+                    returnValue[idxRow, idxColumn] = (double)rowValues.Values[idxColumn];
+                }
+            }
+            return returnValue;
+        }
+
+        public void SetData(double[,] data)
+        {
+            InitializeDynamicTable(data.GetLength(0), data.GetLength(1));
+            for (int rowIdx = 0, rowIdxEnd = data.GetLength(0); rowIdx < rowIdxEnd; ++rowIdx)
+            {
+                var rowValues = Model.TableData[rowIdx].Values;
+                for (int colIdx = 0, colIdxEnd = data.GetLength(1); colIdx < colIdxEnd; ++colIdx)
+                {
+                    rowValues[colIdx] = data[rowIdx, colIdx];
+                }
+            }
+        }
+
+        public void SetData(double[] data)
+        {
+            InitializeDynamicTable(data.GetLength(0), 1);
+            for (int rowIdx = 0, rowIdxEnd = data.GetLength(0); rowIdx < rowIdxEnd; ++rowIdx)
+            {
+                Model.TableData[rowIdx].Values[0] = data[rowIdx];
+            }
         }
 
         public void AddRow()
@@ -125,7 +192,7 @@ namespace MathTableMatrix
     public partial class DynamicTableControl : UserControl
     {
 
-   
+
 
         public DynamicTableControl()
         {
@@ -142,7 +209,7 @@ namespace MathTableMatrix
 
             // Назначаем стиль DataGrid
             DGDataGrid.RowHeaderStyle = rowHeaderStyle;
-    
+
             DataContext = this;
         }
 
