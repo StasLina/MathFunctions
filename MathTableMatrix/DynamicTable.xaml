@@ -20,6 +20,7 @@
             CanUserResizeColumns="True"
             ColumnWidth="40" RowHeight="40"
             PreviewTextInput="InputField_PreviewTextInput"
+            CellEditEnding="DataGrid_CellEditEnding"
             ItemsSource="{Binding TableData}"
             >
             <DataGrid.ColumnHeaderStyle>

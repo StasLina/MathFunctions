@@ -19,9 +19,16 @@ using System.Data.Common;
 using System.Net.WebSockets;
 using System.Windows.Media;
 using System.IO;
+using System.Runtime.CompilerServices;
+using MathFunctionWPF.SLAU.Interfaces;
+using System.Windows.Threading;
+
+
+
 
 namespace MathFunctionWPF.Controllers
 {
+
     class SLAUController : IBaseController
     {
         private TypeMathMethod _method;
@@ -31,11 +38,13 @@ namespace MathFunctionWPF.Controllers
         SLAUMainControlModel _model;
 
         Gaus gaus = new Gaus() { IsChecked = true };
-        Squre squre = new Squre() { IsChecked = true };
-        Progonki progonki = new Progonki() { IsChecked = true };
-        SimpleIter simpleIter = new SimpleIter() { IsChecked = true };
-        HirestDown hirestDown = new HirestDown() { IsChecked = true };
-        ComplexGradient complexGradient = new ComplexGradient() { IsChecked = true };
+        GaussJordan gaussJordan = new GaussJordan() { IsChecked = true };
+        KramerMethod kramera = new KramerMethod() { IsChecked = true };
+        Squre squre = new Squre() { IsChecked = false };
+        Progonki progonki = new Progonki() { IsChecked = false };
+        SimpleIter simpleIter = new SimpleIter() { IsChecked = false };
+        HirestDown hirestDown = new HirestDown() { IsChecked = false };
+        ComplexGradient complexGradient = new ComplexGradient() { IsChecked = false };
         ObservableCollection<MethodBase> _dataListMethod;
 
         MathTableMatrix.DynamicTableController _matrixGrid, _vectorGrid;
@@ -52,12 +61,10 @@ namespace MathFunctionWPF.Controllers
 
             _dataListMethod = new ObservableCollection<MethodBase>()
             {
-                gaus, squre, progonki, simpleIter, hirestDown, complexGradient
+                gaus,gaussJordan,kramera, squre, progonki, simpleIter, hirestDown, complexGradient
             };
 
             _model.ListMethodsControl = _dataListMethod;
-
-
 
             // Создаём таблицы
 
@@ -76,11 +83,106 @@ namespace MathFunctionWPF.Controllers
 
             _view.BChangeSize.Click += CreateMatrixButton_Click;
             _view.BFillRand.Click += BFillRand_Click;
-            _view.BLoadExcel.Click += BLoadExcel_Click; ;
-            _view.BSaveExcel.Click += BSaveExcel_Click; ; ;
+            _view.BLoadExcel.Click += BLoadExcel_Click;
+            _view.BSaveExcel.Click += BSaveExcel_Click;
+            _view.BCalcculcate.Click += BCalcculcate_Click;
         }
 
+        CancellationTokenSource? cancelTokenSource = null;
 
+        struct A
+        {
+            public MethodBase _method;
+            public Task<double[]> _task;
+            public A(MethodBase method, Task<double[]> task)
+            {
+                _method = method; _task = task;
+            }
+        };
+
+        private async void BCalcculcate_Click(object sender, RoutedEventArgs e)
+        {
+            if (cancelTokenSource != null)
+            {
+                cancelTokenSource.Cancel();
+            }
+            cancelTokenSource = new CancellationTokenSource();
+
+            try
+            {
+                var resultTableContent = new SLAU.Controls.ResultTableControl();
+
+                ObservableCollection<SLAU.Models.RecordSlauResults> results = new ObservableCollection<RecordSlauResults>();
+
+
+                List<A> tasks = new List<A>();
+
+                foreach (var sort in (ObservableCollection<MethodBase>)_model.ListMethodsControl)
+                {
+                    if (sort.IsChecked)
+                    {
+
+                        var newRow = new RecordSlauResults();
+                        sort.Result = newRow;
+                        newRow.Tile = sort.TypeTitle;
+                        newRow.Time = 0;
+                        results.Add(newRow);
+
+
+                        if (sort is IMatrixSolver solver)
+                        {
+                            //var task = solver.SolveAsync(_matrixGrid.GetData(), _vectorGrid.GetDataColumn(), cancelTokenSource.Token);
+                            //newRow.ResultMatrix = await task;
+                            //bool isInit = false;
+
+                            //var ta = Task.Run(async () =>
+                            //{
+                            //MethodBase method = sort;
+                            //isInit = true;
+                            solver.SLAUSolved += SLAUSolved;
+                            var task = solver.SolveAsync(_matrixGrid.GetData(), _vectorGrid.GetDataColumn(), cancelTokenSource.Token);
+                            tasks.Add(new A(sort, task));
+                        }
+                    }
+                }
+
+                resultTableContent.DataGrid.ItemsSource = results;
+                _model.ResultsTableContent = resultTableContent;
+
+                foreach (var task in tasks)
+                {
+                    task._method.Result.ResultMatrix = await task._task;
+                }
+
+                //foreach (var task in tasks)
+                //{
+                //    await Task.Run(async () =>
+                //    {
+                //        task._method.Result.ResultMatrix = await task._task;
+                //    });
+                //}
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void SLAUSolved(object sender, EventArgs e)
+        {
+            if (sender is IMatrixSolver solver)
+            {
+                if (sender is MethodBase basee)
+                {
+                    if (e is SLAU.Events.Results res)
+                    {
+                        basee.Result.ResultMatrix = res.Result;
+                    }
+                }
+            }
+
+        }
         private void BSaveExcel_Click(object sender, RoutedEventArgs e)
         {
             var save = new Utils.SaveExcelFileDialog();
@@ -114,7 +216,7 @@ namespace MathFunctionWPF.Controllers
                     _model.Columns = _matrixGrid.ColumnCount;
                 }
 
-                
+
             }
         }
 
@@ -133,7 +235,6 @@ namespace MathFunctionWPF.Controllers
         }
         private void CreateMatrixButton_Click(object sender, RoutedEventArgs e)
         {
-
             int rows = _model.Rows, cols = _model.Columns;
             // Создаём таблицу
             {
@@ -181,7 +282,7 @@ namespace MathFunctionWPF.Controllers
             try
             {
                 // Открываем книгу Excel
-                if(File.Exists(filePath))
+                if (File.Exists(filePath))
                 {
                     workbook = excelApp.Workbooks.Open(filePath);
                 }
@@ -191,6 +292,16 @@ namespace MathFunctionWPF.Controllers
                     isNewFile = true;
                 }
                 worksheet = workbook.Sheets[1]; // Выбираем первый лист
+
+                // Очищаем старые данные
+                if (isNewFile == false)
+                {
+                    // Получаем диапазон всех используемых ячеек на листе
+                    Microsoft.Office.Interop.Excel.Range usedRange = worksheet.UsedRange;
+
+                    // Очищаем форматирование и содержимое всех ячеек
+                    usedRange.Clear();
+                }
 
                 Microsoft.Office.Interop.Excel.Range range = worksheet.UsedRange; // Диапазон используемых ячеек
 
@@ -207,7 +318,7 @@ namespace MathFunctionWPF.Controllers
                 {
                     range.Cells[idxRow + 1, LastColumn].Value = arrVector[idxRow];
                 }
-                if(isNewFile)
+                if (isNewFile)
                 {
                     workbook.SaveAs(filePath);
                 }
@@ -301,7 +412,7 @@ namespace MathFunctionWPF.Controllers
 
                 if (tableData != null)
                 {
-                    doublesMatrix  = new List<List<double>>();
+                    doublesMatrix = new List<List<double>>();
                     doublesVector = new List<double>();
 
                     bool needBreak = false;
@@ -320,7 +431,7 @@ namespace MathFunctionWPF.Controllers
                             }
                             else
                             {
-                                if(columnIdx == 0)
+                                if (columnIdx == 0)
                                 {
                                     needBreak = true;
                                 }
@@ -371,7 +482,7 @@ namespace MathFunctionWPF.Controllers
             }
 
             // Заполняем недостоющие столбцы нулями
-            
+
             if (maxColumn > 0)
             {
                 resultLoadMatrix = new double[doublesMatrix.Count, maxColumn];
@@ -392,7 +503,7 @@ namespace MathFunctionWPF.Controllers
                     resultLoadVector[rowIdx] = doublesVector[rowIdx];
                 }
             }
-        //} // if (tableData != null) end
+            //} // if (tableData != null) end
 
         }
     }

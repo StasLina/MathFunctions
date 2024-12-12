@@ -14,8 +14,8 @@ namespace MathFunctionWPF.SLAU.ViewModels
         private object resultsTableContent;
         private object matrixDataContent;
         private object vectorDataContent;
-        private int rows = 5;
-        private int columns = 5;
+        private int rows = 2;
+        private int columns = 2;
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)

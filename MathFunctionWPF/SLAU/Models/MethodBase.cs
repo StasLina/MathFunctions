@@ -9,9 +9,13 @@ using System.Threading.Tasks;
 
 namespace MathFunctionWPF.SLAU.Models
 {
+
+    
     public enum TypeMethod
     {
         Gaus,          // Гауса
+        GaussJordan, // Гауса Жордана
+        Kramera, // Крамера
         Squre,         // Квадратных корней
         Progonki,      // Прогонки
         SimpleIter,    // Простой итерации
@@ -25,7 +29,9 @@ namespace MathFunctionWPF.SLAU.Models
         {
             return method switch
             {
-                TypeMethod.Gaus => "Гауса",
+                TypeMethod.Gaus => "Гауcса",
+                TypeMethod.GaussJordan => "Гауcса-Жордана",
+                TypeMethod.Kramera => "Крамера",
                 TypeMethod.Squre => "Квадратных корней",
                 TypeMethod.Progonki => "Прогонки",
                 TypeMethod.SimpleIter => "Простой итерации",
@@ -73,6 +79,8 @@ namespace MathFunctionWPF.SLAU.Models
                 OnPropertyChanged();
             }
         }
+
+        public RecordSlauResults Result;
     }
 
 }

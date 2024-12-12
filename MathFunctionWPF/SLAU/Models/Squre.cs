@@ -1,4 +1,5 @@
-﻿using MathFunctionWPF.SLAU.Interfaces;
+﻿using MathFunctionWPF.SLAU.Events;
+using MathFunctionWPF.SLAU.Interfaces;
 
 namespace MathFunctionWPF.SLAU.Models
 {
@@ -8,11 +9,13 @@ namespace MathFunctionWPF.SLAU.Models
 
         public event EventHandler SLAUSolved;
 
-        public double[] Solve(double[,] matrix, double[] vector)
+        // Определён как разложение Холецкого
+        public double[] Solve(double[,] matrix, double[] vector, EventHandler action = null)
         {
             int n = matrix.GetLength(0);
             double[,] L = new double[n, n];
 
+            action?.Invoke(this, null);
             // Разложение Холецкого
             for (int i = 0; i < n; i++)
             {
@@ -33,6 +36,7 @@ namespace MathFunctionWPF.SLAU.Models
                         L[i, j] = (matrix[i, j] - sum) / L[j, j];
                     }
                 }
+                action?.Invoke(this, null);
             }
 
             // Прямой ход: решаем L * y = b
@@ -45,6 +49,7 @@ namespace MathFunctionWPF.SLAU.Models
                     sum += L[i, k] * y[k];
                 }
                 y[i] = (vector[i] - sum) / L[i, i];
+                action?.Invoke(this, null);
             }
 
             // Обратный ход: решаем L^T * x = y
@@ -57,10 +62,39 @@ namespace MathFunctionWPF.SLAU.Models
                     sum += L[k, i] * x[k];
                 }
                 x[i] = (y[i] - sum) / L[i, i];
+                action?.Invoke(this, null);
             }
 
-            SLAUSolved?.Invoke(this, new EventArgs());
+            SLAUSolved?.Invoke(this, new Results() { Result = x });
             return x;
+        }
+
+
+        public async Task<double[]> SolveAsync(double[,] matrix, double[] vector, CancellationToken token)
+        {
+            DateTime time = DateTime.Now;
+            return await Task.Run(() =>
+            {
+                double[] result = new double[] { 0 };
+                try
+                {
+                    result = Solve(matrix, vector, (obk, args) =>
+                    {
+                        if (this.Result != null)
+                        {
+                            this.Result.Time = (DateTime.Now - time).Seconds;
+                        }
+                        token.ThrowIfCancellationRequested();
+                    });
+                }
+                catch (Exception ex)
+                {
+
+                }
+                return result;
+
+            }
+            );
         }
     }
 

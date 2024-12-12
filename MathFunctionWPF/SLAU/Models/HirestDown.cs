@@ -1,4 +1,5 @@
-﻿using MathFunctionWPF.SLAU.Interfaces;
+﻿using MathFunctionWPF.SLAU.Events;
+using MathFunctionWPF.SLAU.Interfaces;
 
 namespace MathFunctionWPF.SLAU.Models
 {
@@ -8,12 +9,44 @@ namespace MathFunctionWPF.SLAU.Models
 
         public event EventHandler SLAUSolved;
 
-        public double[] Solve(double[,] matrix, double[] vector)
+        public int MaxCountIteration = 1000;
+
+        public async Task<double[]> SolveAsync(double[,] matrix, double[] vector, CancellationToken token)
+        {
+
+            return await Task.Run(() =>
+            {
+                double[] result = new double[] { 0 };
+                DateTime time = DateTime.Now;
+                try
+                {
+                    result = Solve(matrix, vector, (obk, args) =>
+                    {
+                        token.ThrowIfCancellationRequested();
+
+                        if (this.Result != null)
+                        {
+                            this.Result.Time = (DateTime.Now - time).Seconds;
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+
+                }
+                return result;
+
+            }
+            );
+        }
+
+        public double[] Solve(double[,] matrix, double[] vector, EventHandler action = null)
         {
             int n = vector.Length;
             double[] x = new double[n];
             double tolerance = 1e-6;
 
+            int iteration = 0;
             while (true)
             {
                 double[] r = Subtract(vector, Multiply(matrix, x)); // r = b - Ax
@@ -21,6 +54,7 @@ namespace MathFunctionWPF.SLAU.Models
                 if (Math.Sqrt(rr) < tolerance)
                     break;
 
+                
                 double[] Ar = Multiply(matrix, r);
                 double alpha = rr / Dot(r, Ar);
 
@@ -28,9 +62,11 @@ namespace MathFunctionWPF.SLAU.Models
                 {
                     x[i] += alpha * r[i];
                 }
+                ++iteration;    
+                action?.Invoke(this,null);
             }
 
-            SLAUSolved?.Invoke(this, new EventArgs());
+            SLAUSolved?.Invoke(this, new Results() { Result = x });
             return x;
         }
 

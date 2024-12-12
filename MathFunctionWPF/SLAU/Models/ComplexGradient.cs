@@ -1,4 +1,5 @@
-﻿using MathFunctionWPF.SLAU.Interfaces;
+﻿using MathFunctionWPF.SLAU.Events;
+using MathFunctionWPF.SLAU.Interfaces;
 
 namespace MathFunctionWPF.SLAU.Models
 {
@@ -8,7 +9,34 @@ namespace MathFunctionWPF.SLAU.Models
 
         public event EventHandler SLAUSolved;
 
-        public double[] Solve(double[,] matrix, double[] vector)
+        public async Task<double[]> SolveAsync(double[,] matrix, double[] vector, CancellationToken token)
+        {
+            return await Task.Run(() =>
+            {
+                double[] result = new double[] { 0 };
+                DateTime time = DateTime.Now;
+                try
+                {
+                    result = Solve(matrix, vector, (obk, args) =>
+                    {
+                        if (this.Result != null)
+                        {
+                            this.Result.Time = (DateTime.Now - time).Seconds;
+                        }
+                        token.ThrowIfCancellationRequested();
+                    });
+                }
+                catch (Exception ex)
+                {
+
+                }
+                return result;
+
+            }
+            );
+        }
+
+        public double[] Solve(double[,] matrix, double[] vector, EventHandler action = null)
         {
             int n = vector.Length;
             double[] x = new double[n];
@@ -38,7 +66,7 @@ namespace MathFunctionWPF.SLAU.Models
                 rsOld = rsNew;
             }
 
-            SLAUSolved?.Invoke(this, new EventArgs());
+            SLAUSolved?.Invoke(this, new Results() { Result = x});
             return x;
         }
 

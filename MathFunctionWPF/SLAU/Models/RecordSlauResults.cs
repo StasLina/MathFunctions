@@ -1,18 +1,19 @@
-
+Ôªøusing System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace MathData
+namespace MathFunctionWPF.SLAU.Models
 {
-    public class RecordSortResults : INotifyPropertyChanged
+    public class RecordSlauResults : INotifyPropertyChanged
     {
-        public CancellationTokenSource cts = new CancellationTokenSource();
-        public object _lock = new object();
-        public bool isPaused = false;
         private string tile = "";
         private long time = 0;
-        private int iteration = 0;
         private object results = null;
+        double[]? resultMatrix = null;
 
         public string Tile
         {
@@ -32,24 +33,28 @@ namespace MathData
                 OnPropertyChanged();
             }
         }
-        public int Iteration
-        {
-            get => iteration;
-            set
-            {
-                iteration = value;
-                OnPropertyChanged();
-            }
-        }
 
         public object Results
         {
-            get => results;
+            get => ResultMatrix;
             set
             {
                 results = value;
                 OnPropertyChanged();
-            } // –ÂÁÛÎ¸Ú‡Ú˚ Ì‡ List<double>
+            } // –†–µ–∑—É–ª—å—Ç–∞—Ç—ã –Ω–∞ List<double>
+        }
+
+
+
+        public double[]? ResultMatrix
+        {
+            get => resultMatrix;
+            set
+            {
+                resultMatrix = value;
+                OnPropertyChanged();
+                OnPropertyChanged("Results");
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -58,4 +63,5 @@ namespace MathData
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
+
 }

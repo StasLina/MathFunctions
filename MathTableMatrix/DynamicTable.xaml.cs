@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -55,18 +57,18 @@ namespace MathTableMatrix
     public class DynamicTableController
     {
         DynamicTableControl _view;
-        DynamicTableControlModel _model;
+        //DynamicTableControlModel _model;
 
 
 
         public DynamicTableController(DynamicTableControl view, DynamicTableControlModel model)
         {
-            Model = model;
+            //Model = model;
             View = view;
         }
 
         public DynamicTableControl View { get => _view; set => _view = value; }
-        public DynamicTableControlModel Model { get => _model; set => _model = value; }
+        public DynamicTableControlModel Model { get => (DynamicTableControlModel)View.DataContext;}
 
         public void InitializeDynamicTable(int rows, int cols)
         {
@@ -100,16 +102,16 @@ namespace MathTableMatrix
             }
             model.TableData = tableData;
 
-            Model = model;
+            //Model = model;
 
             View.DataContext = model;
         }
 
-        public int ColumnCount
+        public int RowCount
         {
             get
             {
-                if (_model != null)
+                if (Model != null)
                 {
                     return Model.TableData.Count;
                 }
@@ -120,14 +122,14 @@ namespace MathTableMatrix
             }
         }
 
-        public int RowCount
+        public int ColumnCount
         {
             get
             {
-                if (_model == null) return 0;
-                if (_model.TableData == null) return 0;
-                if (_model.TableData.Count == 0) return 0;
-                return _model.TableData[0].Values.Count;
+                if (Model == null) return 0;
+                if (Model.TableData == null) return 0;
+                if (Model.TableData.Count == 0) return 0;
+                return Model.TableData[0].Values.Count;
             }
         }
 
@@ -143,7 +145,15 @@ namespace MathTableMatrix
 
                 for (int idxColumn = 0; idxColumn < rowValues.Values.Count; ++idxColumn)
                 {
-                    returnValue[idxRow, idxColumn] = (double)rowValues.Values[idxColumn];
+                    object value = rowValues.Values[idxColumn];
+                    if(value is double doubleValue)
+                    {
+                        returnValue[idxRow, idxColumn] = doubleValue;
+                    }
+                    if(value is string stringValue)
+                    {
+                        returnValue[idxRow, idxColumn] = double.Parse(stringValue);
+                    }
                 }
             }
             return returnValue;
@@ -232,12 +242,53 @@ namespace MathTableMatrix
         }
 
         // Обработчик события PreviewTextInput
+        //private void InputField_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        //{
+        //    // Пример: ограничение ввода только цифр
+        //    if (sender is DataGrid grid)
+        //    {
+        //        if (grid.CurrentCell.Item is DynamicRow row)
+        //        {
+        //            string text = grid.CurrentCell.Item.ToString();
+        //            string header = (string)grid.CurrentCell.Column.Header;
+        //            header = header.Substring(1);
+
+        //            int column = int.Parse(header) - 1;
+
+        //            string currentText = row.Values[column].ToString();
+        //            //if (IsDouble(e.Text, textBox.CaretIndex, textBox.Text))
+
+        //            //    int i = grid.SelectedIndex;
+        //            if (!IsInputValid(text))
+        //            {
+        //                e.Handled = true; // Отменить ввод, если данные не соответствуют условиям
+        //            }
+        //        }
+
+        //    }
+        //}
+
         private void InputField_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            // Пример: ограничение ввода только цифр
-            if (!IsInputValid(e.Text))
+            Regex regex = new Regex("[^0-9.-]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            if (e.EditAction == DataGridEditAction.Commit)
             {
-                e.Handled = true; // Отменить ввод, если данные не соответствуют условиям
+                TextBox textBox = e.EditingElement as TextBox;
+                if (textBox != null)
+                {
+                    double value;
+                    if (!double.TryParse(textBox.Text, NumberStyles.Any, CultureInfo.InvariantCulture, out value))
+                    {
+                        MessageBox.Show("Значение должно быть числом с плавающей точкой.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        e.Cancel = true;
+                        textBox.Text = "0";
+                    }
+                }
             }
         }
 
@@ -247,12 +298,42 @@ namespace MathTableMatrix
             // Допустим, мы разрешаем только ввод цифр
             return double.TryParse(input, out _); // Возвращает true, если ввод можно преобразовать в число
         }
+
+
+        public static bool IsDouble(string inputCharacter, int CaretIndex, string allText, string comma = ".")
+        {
+            // Провяем что входной тект число
+            var regex = new Regex(@$"[^0-9\{comma}\+\-]+");
+            //e.Handled = regex.IsMatch(e.Text);
+            if (regex.IsMatch(inputCharacter))
+            {
+                return false;
+            }
+
+            {
+                // Ввели +\-
+                if ((inputCharacter == "+" || inputCharacter == "-") && CaretIndex != 0)
+                {
+                    return false;
+                }
+
+                // Уже есть запятая?
+                if (inputCharacter == comma && allText.Contains(comma))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
+
+    
 
     // Класс для динамической строки таблицы
     public class DynamicRow : INotifyPropertyChanged
     {
-        private readonly ObservableCollection<object> _values;
+        private readonly ObservableCollection<double> _values;
         private string rowHeader;
 
         public string RowHeader
@@ -265,14 +346,14 @@ namespace MathTableMatrix
             }
         }
 
-        public ObservableCollection<object> Values
+        public ObservableCollection<double> Values
         {
             get => _values;
         }
 
         public DynamicRow(int columnCount)
         {
-            _values = new ObservableCollection<object>();
+            _values = new ObservableCollection<double> ();
             for (int i = 0; i < columnCount; i++)
             {
                 _values.Add((double)0); // Инициализируем нулями
