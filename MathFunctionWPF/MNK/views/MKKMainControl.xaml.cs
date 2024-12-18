@@ -24,5 +24,17 @@ namespace MathFunctionWPF.MNK.views
         {
             InitializeComponent();
         }
+
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Drawing.Width = e.NewSize.Width;
+            Drawing.Height = e.NewSize.Height;
+
+            // Если нужно оповестить OxyPlot о перерисовке
+            if (Drawing.Model != null)
+            {
+                Drawing.Model.InvalidatePlot(true);
+            }
+        }
     }
 }

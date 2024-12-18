@@ -71,7 +71,6 @@ namespace MathFunctionWPF.Views
             {
                 Drawing.Model.InvalidatePlot(true);
             }
-
         }
     }
 

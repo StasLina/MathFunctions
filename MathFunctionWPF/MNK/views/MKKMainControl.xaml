@@ -5,8 +5,56 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MathFunctionWPF.MNK.views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+             xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
+             d:DesignHeight="450" d:DesignWidth="800"
+             >
+    <Grid SizeChanged="Grid_SizeChanged">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <!--Заголовок-->
+        <Label Grid.Row="0" FontWeight="Bold" HorizontalAlignment="Center" FontSize="24" >Метод наименьших квадратов</Label>
+
+        <Grid Grid.Row="1">
+            <Grid>
+                <!--Введите данные для апроксимации-->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MaxWidth="400" MinWidth="200"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0">Заполните данные для апроксимации</Label>
+                    <ContentControl Grid.Row="1" Content="{Binding InputView}"></ContentControl>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <Button Content="Рассчитать"></Button>
+                        <Button Content="Отобразить"></Button>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="3">
+                        <Label>Функция одного аргумента</Label>
+                        <Label x:Name="Func1" Content="{Binding Func1Result}"></Label>
+                    </StackPanel>
+                    <StackPanel Grid.Row="4">
+                        <Label>Функция двух аргументов</Label>
+                        <Label x:Name="Func2" Content="{Binding Func2Result}"></Label>
+                    </StackPanel>
+                        
+                </Grid>
+                <!--График-->
+                <oxy:PlotView  Grid.Column="1" x:Name="Drawing" Grid.Row="1" MinWidth="600" MinHeight="100" MaxHeight="10000" MaxWidth="10000" Margin="0,0,106,36" Width="600" Height="400"/>
+            </Grid>
+
+        </Grid>
     </Grid>
 </UserControl>
