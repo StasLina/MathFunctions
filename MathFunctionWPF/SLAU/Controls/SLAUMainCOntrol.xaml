@@ -7,7 +7,7 @@
              mc:Ignorable="d">
 
     <UserControl.Resources>
-        <!-- Шаблон для отображения одного поля ввода " -->
+        <!-- Шаблон для отображsения одного поля ввода " -->
         <DataTemplate x:Key="MethodNameList">
             <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Stretch">
                 <CheckBox IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Center"></CheckBox>

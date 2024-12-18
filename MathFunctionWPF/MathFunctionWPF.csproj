@@ -40,9 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="LeastSquares\Controls\LeastSquaresMainControl.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Resources\Resource1.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -69,6 +66,7 @@
   <ItemGroup>
     <Folder Include="Integral\Models\" />
     <Folder Include="Integral\Views\" />
+    <Folder Include="MNK\models\" />
   </ItemGroup>
 
 </Project>

@@ -151,6 +151,23 @@ namespace MathFunctionWPF.Controllers
 
                     }
                     break;
+
+                case TypeMathMethod.MNK:
+                    {
+                        if (_navNodel.SelectionView is MNK.views.MKKMainControl)
+                        {
+                            isNewWindow = false;
+                            return _navNodel.SelectionView;
+                        }
+                        else
+                        {
+                            isNewWindow = true;
+                            MNKController controller = new MNKController(new MNK.views.MKKMainControl());
+                            _contrllerSelectionView = controller;
+                            return controller.View;
+                        }
+                    }
+                    break;
                 case TypeMathMethod.MainMenu:
                 default:
 
