@@ -77,14 +77,30 @@
                                 Margin="0,0,0,0" 
                                 ItemTemplate="{StaticResource MethodNameList}"
                             />
-                            <Grid Grid.Row="2" >
+                            <Grid Grid.Row="2">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition></ColumnDefinition>
                                     <ColumnDefinition></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                                <Button x:Name="BResize" Content="Изменить" HorizontalAlignment="Center" Margin="0,5,0,0" VerticalAlignment="Center"/>
-                                <Button Grid.Column="1" x:Name="BRand" Content="Заполн" HorizontalAlignment="Center" Margin="0,5,0,0" VerticalAlignment="Center"/>
 
+                                <Grid.RowDefinitions>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                    <RowDefinition></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Button x:Name="BResize" Content="Изменить" HorizontalAlignment="Stretch" Margin="0,5,0,0" VerticalAlignment="Center"/>
+                                <Button Grid.Column="1" x:Name="BRand" Content="Заполн" HorizontalAlignment="Stretch" Margin="0,5,0,0" VerticalAlignment="Center"/>
+
+                                <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center">Сохранение</Label>
+                                <Label Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center">Загрузка</Label>
+
+                                <Button Grid.Row="3" Grid.Column="0" x:Name="BSaveExcel" Content="Excel" HorizontalAlignment="Stretch" Margin="0,5,0,0" VerticalAlignment="Center"/>
+                                <Button Grid.Row="3" Grid.Column="1"  x:Name="BLoadExcel" Content="Excel" HorizontalAlignment="Stretch" Margin="0,5,0,0" VerticalAlignment="Center"/>
+
+                                <Button Grid.Row="4" Grid.Column="0" x:Name="BSaveJson" Content="Json" HorizontalAlignment="Stretch" Margin="0,5,0,0" VerticalAlignment="Center"/>
+                                <Button Grid.Row="4" Grid.Column="1"  x:Name="BLoadJson" Content="Json" HorizontalAlignment="Stretch" Margin="0,5,0,0" VerticalAlignment="Center"/>
                             </Grid>
                         </StackPanel>
                     </Grid>

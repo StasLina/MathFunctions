@@ -15,7 +15,6 @@
                 <!-- PreviewTextInput="InputField_PreviewTextInput" -->
             </StackPanel>
         </DataTemplate>
-
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
