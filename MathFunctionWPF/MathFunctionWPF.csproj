@@ -66,7 +66,6 @@
   <ItemGroup>
     <Folder Include="Integral\Models\" />
     <Folder Include="Integral\Views\" />
-    <Folder Include="MNK\models\" />
   </ItemGroup>
 
 </Project>

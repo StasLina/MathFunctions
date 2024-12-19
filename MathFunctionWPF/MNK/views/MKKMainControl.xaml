@@ -8,6 +8,18 @@
              xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
              d:DesignHeight="450" d:DesignWidth="800"
              >
+
+    <UserControl.Resources>
+        <!-- Шаблон для отображsения одного поля ввода " -->
+        <DataTemplate x:Key="MethodNameList">
+            <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Stretch">
+                <TextBlock Text="{Binding TypeTitle}" FontWeight="Bold" Width="150" HorizontalAlignment="Center" TextAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding Value}" FontWeight="Bold" Width="150" HorizontalAlignment="Center" TextAlignment="Left" VerticalAlignment="Center"/>
+                <!-- PreviewTextInput="InputField_PreviewTextInput" -->
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
     <Grid SizeChanged="Grid_SizeChanged">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -21,7 +33,7 @@
             <Grid>
                 <!--Введите данные для апроксимации-->
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition MaxWidth="400" MinWidth="200"></ColumnDefinition>
+                    <ColumnDefinition MaxWidth="250" MinWidth="200"></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0">
@@ -33,13 +45,34 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <Label Grid.Row="0">Заполните данные для апроксимации</Label>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Label>Заполните данные для апроксимации</Label>
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ItemsControl 
+                                ItemsSource="{Binding ListInputControl}" 
+                                Margin="0,0,0,0" 
+                                ItemTemplate="{StaticResource MethodNameList}"
+                            />
+                            <Button Grid.Row="2" x:Name="BResize" Content="Вычилить" HorizontalAlignment="Center" Margin="0,5,0,0" VerticalAlignment="Center" RenderTransformOrigin="-0.003,0.857" Grid.ColumnSpan="2"/>
+                        </StackPanel>
+                    </Grid>
                     <ContentControl Grid.Row="1" Content="{Binding InputView}"></ContentControl>
 
-                    <StackPanel Grid.Row="2" Orientation="Horizontal">
-                        <Button Content="Рассчитать"></Button>
-                        <Button Content="Отобразить"></Button>
-                    </StackPanel>
+
+                    <Grid Grid.Row="2" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="BCalc" Grid.Column="0"  Content="Рассчитать"></Button>
+                        <Button x:Name="BDraw" Grid.Column="1" Content="Отобразить"></Button>
+
+                    </Grid>
 
                     <StackPanel Grid.Row="3">
                         <Label>Функция одного аргумента</Label>
@@ -49,7 +82,7 @@
                         <Label>Функция двух аргументов</Label>
                         <Label x:Name="Func2" Content="{Binding Func2Result}"></Label>
                     </StackPanel>
-                        
+
                 </Grid>
                 <!--График-->
                 <oxy:PlotView  Grid.Column="1" x:Name="Drawing" Grid.Row="1" MinWidth="600" MinHeight="100" MaxHeight="10000" MaxWidth="10000" Margin="0,0,106,36" Width="600" Height="400"/>

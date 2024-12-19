@@ -61,7 +61,7 @@ namespace MathTableMatrix
 
 
 
-        public DynamicTableController(DynamicTableControl view, DynamicTableControlModel model)
+        public DynamicTableController(DynamicTableControl view, DynamicTableControlModel model = null)
         {
             //Model = model;
             View = view;
@@ -219,9 +219,6 @@ namespace MathTableMatrix
 
     public partial class DynamicTableControl : UserControl
     {
-
-
-
         public DynamicTableControl()
         {
             InitializeComponent();
